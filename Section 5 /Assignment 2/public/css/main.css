@@ -1,0 +1,19 @@
+ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul li {
+    margin: 0 1rem;
+}
+
+ul li a {
+    text-decoration: none;
+    font-size: 18px;
+    color: azure;
+}
+
+.mainH1 {
+    color: goldenrod;
+}
