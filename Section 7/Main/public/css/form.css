@@ -1,0 +1,44 @@
+.product-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-control {
+    display: flex;
+    margin-top: 2rem;
+}
+
+.form-control label {
+    font-size: 25px;
+    font-family: inherit;
+    margin: 0 8px;
+    color: rgba(0, 0, 0, 0.801);
+}
+
+.form-control input {
+    border: 2px solid #123fd39f;
+    border-radius: 8px;
+    font: inherit;
+    width: 600px;
+    height: 32px;
+    padding: 0 10px;
+}
+
+button {
+    margin-top: 10px;
+    width: 25%;
+    height: 40px;
+    background-color: #123fd39f;
+    color: white;
+    font-size: 16px;
+    box-shadow: initial;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+}
+
+button:hover {
+    background-color: #0b2a91e7;
+}
