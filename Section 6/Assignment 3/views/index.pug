@@ -1,0 +1,11 @@
+extends layout/layout.pug
+
+block content
+  main
+    h1 This is the main page
+    form(action="/" method="POST")
+      label(for="name") Enter a name:
+      input(name="name" type="text" )
+      button(type="submit") Enter!
+
+

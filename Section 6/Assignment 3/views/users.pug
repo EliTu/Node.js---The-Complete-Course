@@ -1,0 +1,10 @@
+extends layout/layout.pug
+
+block content
+  main
+    if userList.length > 0
+      ul
+        each user in userList
+          li #{user} 
+    else
+      h4 Nothing to see here
