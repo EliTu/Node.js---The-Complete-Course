@@ -1,22 +1,11 @@
 const express = require("express");
 const path = require("path");
 const parser = require("body-parser");
-// const expressHbs = require("express-handlebars");
 
 const app = express();
 
-// Use express-handlebars as a custom templating engine
-// app.engine(
-//     "hbs",
-//     expressHbs({
-//         layoutsDir: "views/layouts/",
-//         defaultLayout: "main",
-//         extname: "hbs",
-//     })
-// );
-
 // Set a template engine global value
-app.set("view engine", "ejs");
+app.set("view engine", "pug");
 app.set("views", "views");
 
 // Set body parser middleware
@@ -30,11 +19,11 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes import
-const adminData = require("./routes/admin");
+const AdminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 
 // app routes
-app.use("/admin", adminData.route);
+app.use("/admin", AdminRoute);
 app.use(shopRoute);
 
 // 404 catch all route
