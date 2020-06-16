@@ -22,16 +22,16 @@ app.use(express.static(path.join(__dirname, "public")));
 const AdminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 
+const {
+    getPageNotFound
+} = require('./controllers/404')
+
 // app routes
 app.use("/admin", AdminRoute);
 app.use(shopRoute);
 
 // 404 catch all route
-app.use((req, res) => {
-    res.status(404).render("404", {
-        docTitle: "Page not found!",
-    });
-});
+app.use(getPageNotFound);
 
 // server setup and port
 const port = process.env.PORT || 3000;
