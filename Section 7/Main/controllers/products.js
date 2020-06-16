@@ -1,4 +1,4 @@
- const products = [];
+ const Product = require('../models/product');
  const forms = [{
      name: "title",
      type: "text",
@@ -18,20 +18,18 @@
  }
 
  const postNewProduct = (req, res) => {
-     console.log(req.body);
-
-     products.push({
-         title: req.body.title,
-     });
+     const product = new Product(req.body.title);
+     product.save();
 
      res.redirect("/");
  }
 
  //  Specific for '/':
  const getAllProducts = (req, res) => {
+     const products = Product.fetchAll();
      res.render("shop", {
-         products: products,
          docTitle: "Shop",
+         products: products,
          path: "/admin/shop",
          hasProducts: products.length,
          productsActive: true,
