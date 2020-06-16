@@ -26,14 +26,15 @@
 
  //  Specific for '/':
  const getAllProducts = (req, res) => {
-     const products = Product.fetchAll();
-     res.render("shop", {
-         docTitle: "Shop",
-         products: products,
-         path: "/admin/shop",
-         hasProducts: products.length,
-         productsActive: true,
-         productCSS: true,
+     Product.fetchAll((products) => {
+         res.render("shop", {
+             docTitle: "Shop",
+             products: products,
+             path: "/admin/shop",
+             hasProducts: products.length,
+             productsActive: true,
+             productCSS: true,
+         });
      });
  }
 

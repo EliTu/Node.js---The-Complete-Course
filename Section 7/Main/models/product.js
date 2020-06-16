@@ -15,19 +15,19 @@ class Product {
     save() {
         fs.readFile(filePath, (err, content) => {
             let products = [];
-            if (!err) {
-                products = JSON.parse(content);
-            }
+            if (!err) products = JSON.parse(content);
+
             products.push(this);
+
             fs.writeFile(filePath, JSON.stringify(products), (e) => console.log(e));
         });
     }
 
-    static fetchAll() {
+    static fetchAll(callback) {
         fs.readFile(filePath, (err, content) => {
-            if (err) return [];
+            if (err) callback([]);
 
-            return JSON.parse(content);
+            callback(JSON.parse(content));
         });
     }
 }
