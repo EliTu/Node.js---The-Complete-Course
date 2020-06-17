@@ -20,15 +20,15 @@ class Product {
     }
 
     save() {
-        const saveFile = products => {
+        const saveFileCallback = products => {
             products.push(this);
             fs.writeFile(filePath, JSON.stringify(products), (e) => console.log(e));
         }
-        getProductsFromFIle(saveFile);
+        getProductsFromFIle(saveFileCallback);
     }
 
-    static fetchAll(fetchProducts) {
-        getProductsFromFIle(fetchProducts)
+    static fetchAll(fetchProductsCallback) {
+        getProductsFromFIle(fetchProductsCallback)
     }
 }
 module.exports = Product;

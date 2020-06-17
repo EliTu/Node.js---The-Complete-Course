@@ -26,7 +26,7 @@
 
  //  Specific for '/':
  const getAllProducts = (req, res) => {
-     Product.fetchAll((products) => {
+     const fetchCallback = products => {
          res.render("shop", {
              docTitle: "Shop",
              products: products,
@@ -35,7 +35,8 @@
              productsActive: true,
              productCSS: true,
          });
-     });
+     }
+     Product.fetchAll(fetchCallback);
  }
 
  module.exports = {
