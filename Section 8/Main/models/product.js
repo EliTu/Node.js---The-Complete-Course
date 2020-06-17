@@ -19,7 +19,7 @@ class Product {
         this.title = title;
     }
 
-    save() {
+    saveProduct() {
         const saveFileCallback = products => {
             products.push(this);
             fs.writeFile(filePath, JSON.stringify(products), (e) => console.log(e));

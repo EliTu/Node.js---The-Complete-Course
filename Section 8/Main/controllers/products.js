@@ -7,7 +7,7 @@
 
  // Specific for '/admin/...':
  const getAddProduct = (req, res) => {
-     res.render("add-product", {
+     res.render("admin/add-product", {
          docTitle: "Add Product",
          forms: forms,
          path: "/admin/add-product",
@@ -19,7 +19,7 @@
 
  const postNewProduct = (req, res) => {
      const product = new Product(req.body.title);
-     product.save();
+     product.saveProduct();
 
      res.redirect("/");
  }
@@ -27,8 +27,8 @@
  //  Specific for '/':
  const getAllProducts = (req, res) => {
      const fetchCallback = products => {
-         res.render("shop", {
-             docTitle: "Shop",
+         res.render("shop/product-list", {
+             docTitle: "Product List",
              products: products,
              path: "/admin/shop",
              hasProducts: products.length,

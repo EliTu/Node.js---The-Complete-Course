@@ -1,1 +1,19 @@
-[{"title":"Product 2"},{"title":"Product 3"},{"title":"pos"},{"title":"lol2"},{"title":"sd"},{"title":"lol2"},{"title":"prod1"},{"title":"prod1"}]
+[{
+    "title": "Product 2"
+}, {
+    "title": "Product 3"
+}, {
+    "title": "pos"
+}, {
+    "title": "lol2"
+}, {
+    "title": "sd"
+}, {
+    "title": "lol2"
+}, {
+    "title": "prod1"
+}, {
+    "title": "prod1"
+}, {
+    "title": "lol2"
+}]
