@@ -6,7 +6,7 @@ const {
     getAddProduct,
     getAdminProduct,
     postNewProduct
-} = require('../controllers/products');
+} = require('../controllers/adminController');
 
 // /admin/add-product => GET
 router.get("/add-product", getAddProduct);
