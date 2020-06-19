@@ -6,7 +6,7 @@
  }, ];
 
  // Specific for '/admin/...':
- const getAddProduct = (req, res) => {
+ const getAddProduct = (_, res) => {
      res.render("admin/add-product", {
          docTitle: "Add Product",
          forms: forms,
@@ -24,13 +24,20 @@
      res.redirect("/");
  }
 
+ const getAdminProduct = (_, res) => {
+     res.render('admin/admin-products', {
+         docTitle: 'Admin Products',
+         path: '/admin/admin-products'
+     })
+ }
+
  //  Specific for '/':
- const getAllProducts = (req, res) => {
+ const getAllProducts = (_, res) => {
      const fetchCallback = products => {
          res.render("shop/product-list", {
              docTitle: "Product List",
              products: products,
-             path: "/admin/shop",
+             path: "/",
              hasProducts: products.length,
              productsActive: true,
              productCSS: true,
@@ -42,5 +49,6 @@
  module.exports = {
      getAddProduct,
      postNewProduct,
+     getAdminProduct,
      getAllProducts
  }
