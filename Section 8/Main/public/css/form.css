@@ -42,3 +42,13 @@ button {
 button:hover {
     background-color: #0b2a91e7;
 }
+
+@media only screen and (max-width: 500px) {
+    main {
+        width: fit-content;
+    }
+
+    .form-control input {
+        width: 100%;
+    }
+}
