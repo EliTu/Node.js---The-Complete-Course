@@ -3,6 +3,8 @@
        margin: 0;
        box-sizing: border-box;
        font-family: sans-serif;
+       width: 100%;
+       height: fit-content;
    }
 
    .main-header {
@@ -13,6 +15,7 @@
 
    .main-header__nav {
        height: 100%;
+       width: 100%;
        display: flex;
        align-items: center;
    }
@@ -114,4 +117,26 @@
    .btn:hover,
    .btn:active {
        background-color: #0b2a91e7;
+   }
+
+   @media only screen and (max-width: 500px) {
+       body {
+           width: fit-content;
+       }
+
+       .main-header {
+           width: fit-content;
+       }
+
+       .grid {
+           width: 100%;
+       }
+
+       .main-header__item-list {
+           margin: 0;
+       }
+
+       .main-header__item a {
+           font-size: 14px;
+       }
    }
