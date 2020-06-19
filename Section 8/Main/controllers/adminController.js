@@ -25,10 +25,15 @@
  }
 
  const getAdminProduct = (_, res) => {
-     res.render('admin/admin-products', {
-         docTitle: 'Admin Products',
-         path: '/admin/admin-products'
-     })
+     const fetchCallback = products => {
+         res.render('admin/admin-products', {
+             docTitle: 'Admin Products',
+             path: '/admin/admin-products',
+             products: products
+         })
+     }
+     Product.fetchAll(fetchCallback);
+
  }
 
  module.exports = {

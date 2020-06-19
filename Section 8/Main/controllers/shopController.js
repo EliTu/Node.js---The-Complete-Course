@@ -33,7 +33,7 @@
          res.render("shop/product-list", {
              docTitle: "Product List",
              products: products,
-             path: "/product-list",
+             path: "/products",
              hasProducts: products.length,
              productsActive: true,
              productCSS: true,
