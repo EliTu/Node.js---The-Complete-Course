@@ -13,6 +13,14 @@
      })
  }
 
+ const getCart = (_, res) => {
+     res.render('shop/cart', {
+         docTitle: 'Cart',
+         path: '/cart'
+
+     })
+ }
+
  const getCheckoutPage = (_, res) => {
      res.render('shop/checkout', {
          docTitle: 'checkout',
@@ -37,5 +45,6 @@
  module.exports = {
      getAllProducts,
      getShopPage,
-     getCheckoutPage
+     getCart,
+     getCheckoutPage,
  }
