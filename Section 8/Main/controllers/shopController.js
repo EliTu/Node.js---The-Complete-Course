@@ -13,11 +13,17 @@
      })
  }
 
+ const getOrdersPage = (_, res) => {
+     res.render('shop/orders', {
+         docTitle: 'Orders',
+         path: '/orders'
+     })
+ }
+
  const getCart = (_, res) => {
      res.render('shop/cart', {
          docTitle: 'Cart',
          path: '/cart'
-
      })
  }
 
@@ -46,5 +52,6 @@
      getAllProducts,
      getShopPage,
      getCart,
+     getOrdersPage,
      getCheckoutPage,
  }
