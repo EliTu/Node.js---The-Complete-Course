@@ -12,13 +12,14 @@ block content
                         header.card__header
                             h1.product__title #{product.title}
                         .card__image
-                            img(src=`${product.imageUrl ? product.imageUrl : 'https://picsum.photos/120/120'}`, alt="product image")
+                            img(src=`${product.imageUrl ? product.imageUrl :  'https://loremflickr.com/320/240/product' + '?random=' + products.indexOf(product)}`, alt="product image")
 
                         .card__content
                             h2.product__price $#{product.price}
                             p.product__description #{product.description}
 
                         .card__actions
-                            button.btn Add to Cart
+                            form(action="/add-to-cart" method="POST")
+                                button(class="btn" type="submit") Add to Cart
         else 
             h1 No products

@@ -13,7 +13,7 @@ block content
                         if form.type === 'textarea'
                             textarea(name=`${form.name}` form="add-product-form" placeholder=`${form.placeholder}`)
                         else
-                            input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`)
+                            input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` step="0.01")
                 button(type="submit") Add product!
         else
             h1 Nothing to see here!
