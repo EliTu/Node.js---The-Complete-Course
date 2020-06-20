@@ -1,1 +1,6 @@
-[{"title":"Product 2"},{"title":"Product 3"},{"title":"prod1"},{"title":"sd"},{"title":"sfsf"}]
+[{
+    "title": "Something",
+    "imageUrl": "",
+    "price": "30",
+    "description": "hahahaha"
+}]

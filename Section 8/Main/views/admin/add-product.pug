@@ -6,11 +6,14 @@ block styles
 block content 
     main
         if forms.length > 0
-            form.product-form(action="/admin/add-product", method="POST")
+            form.product-form(action="/admin/add-product", method="POST" id="add-product-form")
                 each form in forms 
                     .form-control
-                        label(for=`${form.name}`) #{form.title}
-                        input(type=`${form.type}`, name=`${form.name}`)
+                        label(for=`${form.name}`) #{form.title}:
+                        if form.type === 'textarea'
+                            textarea(name=`${form.name}` form="add-product-form" placeholder=`${form.placeholder}`)
+                        else
+                            input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`)
                 button(type="submit") Add product!
         else
             h1 Nothing to see here!

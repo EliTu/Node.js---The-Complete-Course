@@ -1,9 +1,29 @@
  const Product = require('../models/product');
  const forms = [{
-     name: "title",
-     type: "text",
-     title: "Title",
- }, ];
+         name: "title",
+         type: "text",
+         title: "Title",
+         placeholder: "Enter the product's title"
+     },
+     {
+         name: "imageUrl",
+         type: "url",
+         title: "Image URL",
+         placeholder: "Enter product image URL"
+     },
+     {
+         name: "price",
+         type: "number",
+         title: "Price",
+         placeholder: "Enter product's price"
+     },
+     {
+         name: "description",
+         type: "textarea",
+         title: "Description",
+         placeholder: "Enter a brief description of the product"
+     },
+ ];
 
  // Specific for '/admin/...':
  const getAddProduct = (_, res) => {
@@ -18,10 +38,20 @@
  }
 
  const postNewProduct = (req, res) => {
-     const product = new Product(req.body.title);
+     const {
+         title,
+         description,
+         price,
+         imageUrl
+     } = req.body;
+
+     const product = new Product(title,
+         imageUrl,
+         price,
+         description);
      product.saveProduct();
 
-     res.redirect("/");
+     res.redirect("/products");
  }
 
  const getAdminProduct = (_, res) => {
