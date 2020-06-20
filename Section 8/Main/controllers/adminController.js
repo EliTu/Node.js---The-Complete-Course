@@ -29,6 +29,7 @@
  const getAddProduct = (_, res) => {
      res.render("admin/add-product", {
          docTitle: "Add Product",
+         pageSubtitle: 'Add a product',
          forms: forms,
          path: "/admin/add-product",
          hasForms: forms.length,
@@ -58,6 +59,7 @@
      const fetchCallback = products => {
          res.render('admin/admin-products', {
              docTitle: 'Admin Products',
+             pageSubtitle: 'Products in store',
              path: '/admin/admin-products',
              products: products
          })

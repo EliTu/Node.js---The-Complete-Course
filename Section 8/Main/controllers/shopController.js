@@ -1,14 +1,10 @@
  const Product = require('../models/product');
- const forms = [{
-     name: "title",
-     type: "text",
-     title: "Title",
- }, ];
 
  //  Specific for shop or '/':
  const getShopPage = (_, res) => {
      res.render('shop/index', {
          docTitle: 'Shop Main Page',
+         pageSubtitle: 'Welcome to the shop',
          path: '/'
      })
  }
@@ -16,6 +12,7 @@
  const getOrdersPage = (_, res) => {
      res.render('shop/orders', {
          docTitle: 'Orders',
+         pageSubtitle: 'Your Orders',
          path: '/orders'
      })
  }
@@ -23,6 +20,7 @@
  const getCart = (_, res) => {
      res.render('shop/cart', {
          docTitle: 'Cart',
+         pageSubtitle: 'Your Cart',
          path: '/cart'
      })
  }
@@ -30,6 +28,7 @@
  const getCheckoutPage = (_, res) => {
      res.render('shop/checkout', {
          docTitle: 'checkout',
+         pageSubtitle: 'Checkout',
          path: '/checkout'
      })
  }
@@ -38,6 +37,7 @@
      const fetchCallback = products => {
          res.render("shop/product-list", {
              docTitle: "Product List",
+             pageSubtitle: 'Available Products',
              products: products,
              path: "/products",
              hasProducts: products.length,

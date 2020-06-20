@@ -4,7 +4,8 @@ block styles
     link(rel="stylesheet", href="/css/form.css")
 
 block content 
-    main
+    h2 #{pageSubtitle} 
+    main 
         if forms.length > 0
             form.product-form(action="/admin/add-product", method="POST" id="add-product-form")
                 each form in forms 
