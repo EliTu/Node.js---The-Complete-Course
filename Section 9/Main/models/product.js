@@ -23,6 +23,7 @@ class Product {
     }
 
     saveProduct() {
+        this.id = Math.random().toString();
         const saveFileCallback = products => {
             products.push(this);
             fs.writeFile(filePath, JSON.stringify(products), (e) => console.log(e));

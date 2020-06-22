@@ -20,6 +20,7 @@ block content
                             p.product__description #{product.description}
 
                         .card__actions
+                            a(class="link" href=`/products/${product.id}`) Details
                             form(action="/add-to-cart" method="POST")
                                 button(class="btn" type="submit") Add to Cart
         else 
