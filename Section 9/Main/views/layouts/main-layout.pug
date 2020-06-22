@@ -7,7 +7,9 @@ html(lang="en")
         block styles
 
     body
-        header.main-header  
+        .backdrop
+        header.main-header
+            button#side-menu-toggle Menu  
             nav.main-header__nav
                 ul.main-header__item-list
                     li.main-header__item 
@@ -24,4 +26,20 @@ html(lang="en")
                         a(href="/admin/add-product", class=(path === '/admin/add-product' ? 'active' : '')) Add Product
                     li.main-header__item 
                         a(href="/admin/admin-products", class=(path === '/admin/admin-products' ? 'active' : '')) Admin Products
+        nav.mobile-nav
+            ul.mobile-nav__item-list
+                li.mobile-nav__item
+                    a(class=(path === '/' ? 'active' : '') href="/") Shop
+                li.mobile-nav__item
+                    a(class=(path === '/products' ? 'active' : '') href="/products") Products
+                li.mobile-nav__item
+                    a(class=(path === '/cart' ? 'active' : '') href="/cart") Cart 
+                li.mobile-nav__item
+                    a(class=(path === '/orders' ? 'active' : '') href="/orders") Orders
+                li.mobile-nav__item
+                    a(class=(path === '/admin/add-product' ? 'active' : '') href="/admin/add-product") Add Product
+                li.mobile-nav__item
+                    a(class=(path === '/admin/products' ? 'active' : '') href="/admin/products") Admin Products
         block content
+
+        script(src="/js/main.js")

@@ -1,8 +1,15 @@
+   @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+
+   * {
+       box-sizing: border-box;
+   }
+
    body {
        padding: 0;
        margin: 0;
        box-sizing: border-box;
-       font-family: sans-serif;
+       font-family: 'Open Sans',
+           sans-serif;
        width: 100%;
        height: fit-content;
    }
@@ -16,6 +23,7 @@
        width: 100%;
        height: 3.5rem;
        background-color: #7894f1d8;
+       display: flex;
    }
 
    .main-header__nav {
@@ -144,6 +152,78 @@
        background-color: #0b2a91e7;
    }
 
+   .mobile-nav {
+       width: 30rem;
+       height: 100vh;
+       max-width: 90%;
+       position: fixed;
+       left: 0;
+       top: 0;
+       background: white;
+       z-index: 10;
+       padding: 2rem 1rem 1rem 2rem;
+       transform: translateX(-100%);
+       transition: transform 0.3s ease-out;
+   }
+
+   .mobile-nav.open {
+       transform: translateX(0);
+   }
+
+   .mobile-nav__item-list {
+       list-style: none;
+       display: flex;
+       flex-direction: column;
+       margin: 0;
+       padding: 0;
+   }
+
+   .mobile-nav__item {
+       margin: 1rem;
+       padding: 0;
+   }
+
+   .mobile-nav__item a {
+       text-decoration: none;
+       color: black;
+       font-size: 1.5rem;
+       padding: 0.5rem 2rem;
+   }
+
+   .mobile-nav__item a:active,
+   .mobile-nav__item a:hover,
+   .mobile-nav__item a.active {
+       background: #123fd39f;
+       color: white;
+       border-radius: 3px;
+   }
+
+   #side-menu-toggle {
+       display: none;
+   }
+
+   #side-menu-toggle:focus {
+       outline: none;
+   }
+
+   #side-menu-toggle:active,
+   #side-menu-toggle:hover {
+       color: #ffeb3b;
+       border-color: #ffeb3b;
+   }
+
+   .backdrop {
+       position: fixed;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100vh;
+       background: rgba(0, 0, 0, 0.5);
+       z-index: 5;
+       display: none;
+   }
+
+   /* Mobile */
    @media only screen and (max-width: 500px) {
        body {
            width: fit-content;
@@ -152,6 +232,21 @@
        .main-header {
            width: fit-content;
        }
+
+       .main-header__item {
+           visibility: hidden;
+       }
+
+       #side-menu-toggle {
+           border: 1px solid white;
+           font: inherit;
+           padding: 0.5rem;
+           display: block;
+           background: transparent;
+           color: white;
+           cursor: pointer;
+       }
+
 
        .grid {
            width: 100%;
