@@ -1,0 +1,20 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/form.css")
+
+block content 
+    h2 #{pageSubtitle} 
+    main 
+        if forms.length > 0
+            form.product-form(action="/admin/add-product", method="POST" id="add-product-form")
+                each form in forms 
+                    .form-control
+                        label(for=`${form.name}`) #{form.title}:
+                        if form.type === 'textarea'
+                            textarea(name=`${form.name}` form="add-product-form" placeholder=`${form.placeholder}`)
+                        else
+                            input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` step="0.01")
+                button(type="submit") Add product!
+        else
+            h1 Nothing to see here!
