@@ -4,15 +4,17 @@ const router = express.Router();
 
 const {
     getAllProducts,
+    getProductDetailsPage,
     getShopPage,
-    getCart,
+    getCartPage,
     getOrdersPage,
     getCheckoutPage
 } = require('../controllers/shopController');
 
 router.get("/", getShopPage);
 router.get('/products', getAllProducts);
-router.get('/cart', getCart);
+router.get('/products/:productId', getProductDetailsPage);
+router.get('/cart', getCartPage);
 router.get('/orders', getOrdersPage);
 router.get('/checkout', getCheckoutPage);
 

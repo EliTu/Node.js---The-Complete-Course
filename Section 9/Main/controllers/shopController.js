@@ -17,7 +17,7 @@
      })
  }
 
- const getCart = (_, res) => {
+ const getCartPage = (_, res) => {
      res.render('shop/cart', {
          docTitle: 'Cart',
          pageSubtitle: 'Your Cart',
@@ -27,7 +27,7 @@
 
  const getCheckoutPage = (_, res) => {
      res.render('shop/checkout', {
-         docTitle: 'checkout',
+         docTitle: 'Checkout',
          pageSubtitle: 'Checkout',
          path: '/checkout'
      })
@@ -48,10 +48,24 @@
      Product.fetchAll(fetchCallback);
  }
 
+ const getProductDetailsPage = (req, res) => {
+     const productId = req.params.productId;
+     const fetchProductCallback = product => {
+         res.render('shop/product-details', {
+             docTitle: 'Product Details',
+             pageSubtitle: 'Product Details',
+             productDetails: product,
+         });
+     }
+
+     Product.findProductById(productId, fetchProductCallback);
+ }
+
  module.exports = {
      getAllProducts,
+     getProductDetailsPage,
      getShopPage,
-     getCart,
+     getCartPage,
      getOrdersPage,
      getCheckoutPage,
  }
