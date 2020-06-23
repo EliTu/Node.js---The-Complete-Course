@@ -17,7 +17,7 @@ const getProductsFromFIle = action => {
 class Product {
     constructor(title, imageUrl, price, description) {
         this.title = title;
-        this.imageUrl = imageUrl;
+        this.imageUrl = !imageUrl ? `https://loremflickr.com/320/240/product?random=${Math.floor(Math.random() * (45 - 1)) + 1}` : imageUrl;
         this.price = price;
         this.description = description;
     }

@@ -4,7 +4,10 @@ block content
     h2 #{pageSubtitle}
     main
         if productDetails.id
-            ul
-                each detail in productDetails
-                    if detail !== '' && detail !== productDetails.id
-                        li #{detail}
+            .center
+                h1 #{productDetails.title}
+                img(src=`${productDetails.imageUrl}`)
+                h3 $#{productDetails.price}
+                p #{productDetails.description}
+                form(action="/cart" method="POST")
+                    button(class='btn' type="submit") Add to cart

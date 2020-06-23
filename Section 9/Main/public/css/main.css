@@ -77,6 +77,11 @@
        align-items: center;
    }
 
+   .center {
+       text-align: center;
+       margin: 0 auto;
+   }
+
    .grid {
        display: flex;
        flex-wrap: wrap;

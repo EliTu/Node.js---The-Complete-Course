@@ -52,9 +52,10 @@
      const productId = req.params.productId;
      const fetchProductCallback = product => {
          res.render('shop/product-details', {
-             docTitle: 'Product Details',
+             docTitle: `Product: ${product.title}`,
              pageSubtitle: 'Product Details',
              productDetails: product,
+             path: '/products'
          });
      }
 
