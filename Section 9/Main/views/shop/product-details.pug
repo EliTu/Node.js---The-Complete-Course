@@ -3,11 +3,10 @@ extends ../layouts/main-layout.pug
 block content 
     h2 #{pageSubtitle}
     main
-        if productDetails.id
+        if product.id
             .center
-                h1 #{productDetails.title}
-                img(src=`${productDetails.imageUrl}`)
-                h3 $#{productDetails.price}
-                p #{productDetails.description}
-                form(action="/cart" method="POST")
-                    button(class='btn' type="submit") Add to cart
+                h1 #{product.title}
+                img(src=`${product.imageUrl}`)
+                h3 $#{product.price}
+                p #{product.description}
+                include ../layouts/addToCart.pug

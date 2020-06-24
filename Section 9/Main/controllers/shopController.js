@@ -25,6 +25,13 @@
      })
  }
 
+ const postCart = (req, res) => {
+     const prodId = req.body.productId;
+     console.log(prodId);
+
+     res.redirect('/cart');
+ }
+
  const getCheckoutPage = (_, res) => {
      res.render('shop/checkout', {
          docTitle: 'Checkout',
@@ -54,7 +61,7 @@
          res.render('shop/product-details', {
              docTitle: `Product: ${product.title}`,
              pageSubtitle: 'Product Details',
-             productDetails: product,
+             product: product,
              path: '/products'
          });
      }
@@ -69,4 +76,5 @@
      getCartPage,
      getOrdersPage,
      getCheckoutPage,
+     postCart
  }

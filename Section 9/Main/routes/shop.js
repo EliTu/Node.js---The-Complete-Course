@@ -8,7 +8,8 @@ const {
     getShopPage,
     getCartPage,
     getOrdersPage,
-    getCheckoutPage
+    getCheckoutPage,
+    postCart
 } = require('../controllers/shopController');
 
 router.get("/", getShopPage);
@@ -17,5 +18,7 @@ router.get('/products/:productId', getProductDetailsPage);
 router.get('/cart', getCartPage);
 router.get('/orders', getOrdersPage);
 router.get('/checkout', getCheckoutPage);
+
+router.post('/cart', postCart);
 
 module.exports = router;

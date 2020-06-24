@@ -21,7 +21,6 @@ block content
 
                         .card__actions
                             a(class="link" href=`/products/${product.id}`) Details
-                            form(action="/add-to-cart" method="POST")
-                                button(class="btn" type="submit") Add to Cart
+                            include ../layouts/addToCart.pug
         else 
             h1 No products
