@@ -1,4 +1,5 @@
  const Product = require('../models/product');
+ const Cart = require('../models/cart.js');
 
  //  Specific for shop or '/':
  const getShopPage = (_, res) => {
@@ -27,7 +28,9 @@
 
  const postCart = (req, res) => {
      const prodId = req.body.productId;
-     console.log(prodId);
+     const addProductCallback = (product) => Cart.addProduct(prodId, product.price);
+
+     Product.findProductById(prodId, addProductCallback);
 
      res.redirect('/cart');
  }
