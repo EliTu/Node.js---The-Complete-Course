@@ -27,12 +27,11 @@
 
  // Specific for '/admin/...':
  const getAddProduct = (_, res) => {
-     res.render("admin/add-product", {
+     res.render("admin/set-product", {
          docTitle: "Add Product",
          pageSubtitle: 'Add a product',
          forms: forms,
          path: "/admin/add-product",
-         hasForms: forms.length,
          formsActive: true,
          formsCSS: true,
      });
@@ -55,6 +54,29 @@
      res.redirect("/products");
  }
 
+ const getEditProduct = (req, res) => {
+     const editMode = req.query.edit;
+     if (!editMode) return res.redirect('/');
+
+     const prodId = req.params.productId;
+     const getProductCallback = product => {
+         if (!product) return res.redirect('/');
+
+         res.render("admin/set-product", {
+             docTitle: "Edit Product",
+             pageSubtitle: 'Edit Product',
+             forms: forms,
+             path: "/admin/edit-product",
+             formsActive: true,
+             formsCSS: true,
+             isEditingProduct: editMode,
+             product: product
+         });
+     }
+
+     Product.findProductById(prodId, getProductCallback);
+ }
+
  const getAdminProduct = (_, res) => {
      const fetchCallback = products => {
          res.render('admin/admin-products', {
@@ -71,5 +93,6 @@
  module.exports = {
      getAddProduct,
      postNewProduct,
+     getEditProduct,
      getAdminProduct
  }

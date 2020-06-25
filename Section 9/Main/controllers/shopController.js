@@ -28,7 +28,7 @@
 
  const postCart = (req, res) => {
      const prodId = req.body.productId;
-     const addProductCallback = (product) => Cart.addProduct(prodId, product.price);
+     const addProductCallback = product => Cart.addProduct(prodId, product.price);
 
      Product.findProductById(prodId, addProductCallback);
 
