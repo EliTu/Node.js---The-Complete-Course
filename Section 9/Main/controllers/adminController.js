@@ -35,24 +35,7 @@
          formsActive: true,
          formsCSS: true,
      });
- }
-
- const postNewProduct = (req, res) => {
-     const {
-         title,
-         description,
-         price,
-         imageUrl
-     } = req.body;
-
-     const product = new Product(title,
-         imageUrl,
-         price,
-         description);
-     product.saveProduct();
-
-     res.redirect("/products");
- }
+ };
 
  const getEditProduct = (req, res) => {
      const editMode = req.query.edit;
@@ -75,7 +58,7 @@
      }
 
      Product.findProductById(prodId, getProductCallback);
- }
+ };
 
  const getAdminProduct = (_, res) => {
      const fetchCallback = products => {
@@ -88,11 +71,33 @@
      }
      Product.fetchAll(fetchCallback);
 
- }
+ };
+
+ const postNewProduct = (req, res) => {
+     const {
+         title,
+         description,
+         price,
+         imageUrl
+     } = req.body;
+
+     const product = new Product(title,
+         imageUrl,
+         price,
+         description);
+     product.saveProduct();
+
+     res.redirect("/products");
+ };
+
+ const postEditProduct = (req, res) => {
+    
+ };
 
  module.exports = {
      getAddProduct,
-     postNewProduct,
      getEditProduct,
-     getAdminProduct
- }
+     getAdminProduct,
+     postNewProduct,
+     postEditProduct,
+ };
