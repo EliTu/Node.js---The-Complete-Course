@@ -53,6 +53,17 @@
      res.redirect('/cart');
  }
 
+ const postCartDeleteProduct = (req, res) => {
+     const {
+         cartDeleteId: id,
+         cartDeletePrice: price
+     } = req.body;
+
+     Cart.deleteProduct(id, price);
+
+     res.redirect('/cart');
+ }
+
  const getCheckoutPage = (_, res) => {
      res.render('shop/checkout', {
          docTitle: 'Checkout',
@@ -97,5 +108,6 @@
      getCartPage,
      getOrdersPage,
      getCheckoutPage,
-     postCart
+     postCart,
+     postCartDeleteProduct
  }
