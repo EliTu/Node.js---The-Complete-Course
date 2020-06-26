@@ -53,6 +53,19 @@ class Product {
             fetchProductCallback(product);
         })
     }
+
+    static deleteProduct(id) {
+        const deleteProductCallback = products => {
+            const updatedProductList = products.filter(product => product.id !== id);
+
+            fs.writeFile(filePath, JSON.stringify(updatedProductList), e => {
+                if (!e) {
+
+                }
+            });
+        };
+        getProductsFromFIle(deleteProductCallback);
+    }
 }
 
 module.exports = Product;
