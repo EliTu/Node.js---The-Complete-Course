@@ -15,6 +15,8 @@ block content
                             textarea(name=`${form.name}` form="set-product-form" placeholder=`${form.placeholder}`) #{isEditingProduct ? product[form.name] : ''}
                         else
                             input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` step="0.01" value=`${isEditingProduct ? product[form.name] : ''}`)
+                if isEditingProduct
+                    input(type="hidden" name="productId" value=`${product.id}`)
                 button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}
         else
             h1 Nothing to see here!

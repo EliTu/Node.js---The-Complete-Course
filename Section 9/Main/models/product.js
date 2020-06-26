@@ -15,18 +15,30 @@ const getProductsFromFIle = action => {
 }
 
 class Product {
-    constructor(title, imageUrl, price, description) {
+    constructor(title, imageUrl, price, description, id) {
         this.title = title;
         this.imageUrl = !imageUrl ? `https://loremflickr.com/320/240/product?random=${Math.floor(Math.random() * (45 - 1)) + 1}` : imageUrl;
         this.price = price;
         this.description = description;
+        this.id = id;
     }
 
     saveProduct() {
-        this.id = Math.random().toString();
         const saveFileCallback = products => {
-            products.push(this);
-            fs.writeFile(filePath, JSON.stringify(products), (e) => console.log(e));
+            if (this.id) {
+                // If id exists, that means we're editing product
+                const productIndex = products.findIndex(prod => prod.id === this.id);
+                const updatedProductsArray = [...products];
+                updatedProductsArray[productIndex] = this;
+
+                fs.writeFile(filePath, JSON.stringify(updatedProductsArray), e => console.log(e));
+            } else {
+                // If id is null then we add a new product
+                this.id = Math.random().toString();
+                products.push(this);
+
+                fs.writeFile(filePath, JSON.stringify(products), e => console.log(e));
+            }
         }
         getProductsFromFIle(saveFileCallback);
     }
