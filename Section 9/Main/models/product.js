@@ -7,6 +7,8 @@ const filePath = path.join(
     'products.json'
 );
 
+const Cart = require('./cart');
+
 const getProductsFromFIle = action => {
     fs.readFile(filePath, (err, content) => {
         if (err) return action([]);
@@ -56,11 +58,15 @@ class Product {
 
     static deleteProduct(id) {
         const deleteProductCallback = products => {
+            const {
+                price
+            } = products.find(prod => prod.id === id);
+
             const updatedProductList = products.filter(product => product.id !== id);
 
             fs.writeFile(filePath, JSON.stringify(updatedProductList), e => {
                 if (!e) {
-
+                    Cart.deleteProduct(id, price);
                 }
             });
         };
