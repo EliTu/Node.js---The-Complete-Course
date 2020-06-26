@@ -8,10 +8,17 @@ block content
                 each product in cartProducts
                     li
                         p #{product.productData.title} x #{product.quantity}
-                        form(action="/cart-delete-product" method="POST")
-                            input(type="hidden" name="cartDeleteId" value=`${product.productData.id}`)
-                            input(type="hidden" name="cartDeletePrice" value=`${product.productData.price}`)
-                            button(class="btn" type="submit") X
+                        div(style="display: flex;")
+                            form(action="/cart-delete-product" method="POST")
+                                input(type="hidden" name="cartDeleteId" value=`${product.productData.id}`)
+                                input(type="hidden" name="cartDeletePrice" value=`${product.productData.price * product.quantity}`)
+                                input(type="hidden" name="isDeleteAll" value="true")
+                                button(class="btn" type="submit") X
+
+                            form(action="/cart-delete-product" method="POST")
+                                input(type="hidden" name="cartDeleteId" value=`${product.productData.id}`)
+                                input(type="hidden" name="cartDeletePrice" value=`${product.productData.price}`)
+                                button(class="btn" type="submit") -
 
             h2 Total price: $#{totalPrice}
         else

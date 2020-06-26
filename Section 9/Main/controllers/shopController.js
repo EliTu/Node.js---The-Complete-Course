@@ -56,10 +56,11 @@
  const postCartDeleteProduct = (req, res) => {
      const {
          cartDeleteId: id,
-         cartDeletePrice: price
+         cartDeletePrice: price,
+         isDeleteAll: isDeleteAll
      } = req.body;
 
-     Cart.deleteProduct(id, price);
+     Cart.deleteProduct(id, price, isDeleteAll);
 
      res.redirect('/cart');
  }

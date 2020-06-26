@@ -53,7 +53,7 @@ class Cart {
         })
     }
 
-    static deleteProduct(productId, productPrice) {
+    static deleteProduct(productId, productPrice, isDeleteAll) {
         fs.readFile(filePath, (error, existingCartContent) => {
             if (error) return;
 
@@ -63,11 +63,13 @@ class Cart {
                 ...cart
             };
             const product = updatedCart.products.find(prod => prod.id === productId);
+            product.quantity = product.quantity - 1;
 
-            updatedCart.products = updatedCart.products.filter(prod => prod.id !== productId);
-            updatedCart.totalPrice = updatedCart.totalPrice - productPrice * product.quantity;
+            updatedCart.products = product.quantity < 1 || !!isDeleteAll ? updatedCart.products.filter(prod => prod.id !== productId) : updatedCart.products;
+            updatedCart.totalPrice = product.quantity ? updatedCart.totalPrice - (productPrice * product.quantity) : updatedCart.totalPrice - productPrice;
 
             if (!updatedCart.products.length) updatedCart.totalPrice = 0;
+
             fs.writeFile(filePath, JSON.stringify(updatedCart), error => console.log(error));
         });
     }
