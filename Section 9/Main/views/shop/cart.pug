@@ -3,3 +3,10 @@ extends ../layouts/main-layout.pug
 block content 
     h2 #{pageSubtitle}
     main
+        if cartProducts.length 
+            ul
+                each product in cartProducts
+                    li #{product.productData.title} x #{product.quantity}
+            h2 Total price: $#{totalPrice}
+        else
+            h1 No products in cart!

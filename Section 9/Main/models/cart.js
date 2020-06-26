@@ -8,6 +8,15 @@ const filePath = path.join(
 );
 
 class Cart {
+    static getAllCartProducts(fetchCartCallback) {
+        fs.readFile(filePath, (error, existingCartContent) => {
+            if (error) fetchCartCallback(null);
+            const cart = JSON.parse(existingCartContent);
+
+            fetchCartCallback(cart);
+        });
+    }
+
     static addProduct(productId, productPrice) {
         fs.readFile(filePath, (error, existingCartContent) => {
             // Fetch previous cart
