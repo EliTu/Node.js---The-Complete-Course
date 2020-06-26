@@ -63,6 +63,8 @@ class Cart {
                 ...cart
             };
             const product = updatedCart.products.find(prod => prod.id === productId);
+            if (!product) return;
+
             product.quantity = product.quantity - 1;
 
             updatedCart.products = product.quantity < 1 || !!isDeleteAll ? updatedCart.products.filter(prod => prod.id !== productId) : updatedCart.products;

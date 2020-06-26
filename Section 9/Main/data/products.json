@@ -1,13 +1,1 @@
-[{
-    "title": "Prod 1",
-    "imageUrl": "https://loremflickr.com/320/240/product?random=29",
-    "price": "10.00",
-    "description": "none",
-    "id": "0.7921478092876009"
-}, {
-    "title": "Prod 3",
-    "imageUrl": "https://loremflickr.com/320/240/product?random=44",
-    "price": "99.50",
-    "description": "powow",
-    "id": "0.6093431246996195"
-}]
+[]
