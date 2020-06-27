@@ -4,6 +4,8 @@ const parser = require("body-parser");
 
 const app = express();
 
+const database = require('./util/database');
+
 // Set a template engine global value
 app.set("view engine", "pug");
 app.set("views", "views");
@@ -21,6 +23,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // Routes import
 const AdminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
+
+database.execute('SELECT * FROM products');
 
 const {
     getPageNotFound
