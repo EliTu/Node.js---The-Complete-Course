@@ -1,0 +1,22 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/form.css")
+
+block content 
+    h2 #{pageSubtitle} 
+    main 
+        if forms.length > 0
+            form.product-form(action=`/admin${isEditingProduct ? '/edit-product' : '/add-product'}`, method="POST" id="set-product-form")
+                each form in forms 
+                    .form-control
+                        label(for=`${form.name}`) #{form.title}:
+                        if form.type === 'textarea'
+                            textarea(name=`${form.name}` form="set-product-form" placeholder=`${form.placeholder}`) #{isEditingProduct ? product[form.name] : ''}
+                        else
+                            input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` step="0.01" value=`${isEditingProduct ? product[form.name] : ''}`)
+                if isEditingProduct
+                    input(type="hidden" name="productId" value=`${product.id}`)
+                button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}
+        else
+            h1 Nothing to see here!

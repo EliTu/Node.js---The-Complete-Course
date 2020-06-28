@@ -1,0 +1,12 @@
+extends ../layouts/main-layout.pug
+
+block content 
+    h2 #{pageSubtitle}
+    main
+        if product.id
+            .center
+                h1 #{product.title}
+                img(src=`${product.imageUrl}`)
+                h3 $#{product.price}
+                p #{product.description}
+                include ../layouts/addToCart.pug
