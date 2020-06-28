@@ -1,20 +1,21 @@
 const fs = require('fs');
-const path = require('path');
+// const path = require('path');
 
-const filePath = path.join(
-    path.dirname(process.mainModule.filename),
-    'data',
-    'products.json'
-);
+// const filePath = path.join(
+//     path.dirname(process.mainModule.filename),
+//     'data',
+//     'products.json'
+// );
+const db = require('../util/database');
 
 const Cart = require('./cart');
 
-const getProductsFromFIle = action => {
-    fs.readFile(filePath, (err, content) => {
-        if (err) return action([]);
-        else return action(JSON.parse(content));
-    });
-}
+// const getProductsFromFIle = action => {
+//     fs.readFile(filePath, (err, content) => {
+//         if (err) return action([]);
+//         else return action(JSON.parse(content));
+//     });
+// }
 
 class Product {
     constructor(title, imageUrl, price, description, id) {
@@ -45,8 +46,9 @@ class Product {
         getProductsFromFIle(saveFileCallback);
     }
 
-    static fetchAll(fetchProductsCallback) {
-        getProductsFromFIle(fetchProductsCallback)
+    static fetchAll() {
+        // getProductsFromFIle(fetchProductsCallback);
+        return db.execute('SELECT * FROM products');
     }
 
     static findProductById(id, fetchProductCallback) {

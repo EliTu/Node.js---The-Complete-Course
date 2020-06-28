@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const db = require('../util/database');
+
 const filePath = path.join(
     path.dirname(process.mainModule.filename),
     'data',

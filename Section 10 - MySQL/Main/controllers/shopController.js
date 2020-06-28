@@ -20,9 +20,9 @@
 
  const getCartPage = (_, res) => {
      const fetchCart = cart => {
-         Product.fetchAll(products => {
+         Product.fetchAll().then(([rows]) => {
              let cartProducts = [];
-             for (product of products) {
+             for (product of rows) {
                  const cartProductData = cart.products.find(prod => prod.id === product.id);
                  if (cartProductData) {
                      cartProducts.push({
@@ -39,7 +39,7 @@
                  cartProducts: cartProducts,
                  totalPrice: cart.totalPrice
              });
-         });
+         }).catch(e => console.log(e));
      }
      Cart.getAllCartProducts(fetchCart);
  }
@@ -74,18 +74,17 @@
  }
 
  const getAllProducts = (_, res) => {
-     const fetchCallback = products => {
+     Product.fetchAll().then(([rows, fieldData]) => {
          res.render("shop/product-list", {
              docTitle: "Product List",
              pageSubtitle: 'Available Products',
-             products: products,
+             products: rows,
              path: "/products",
-             hasProducts: products.length,
+             hasProducts: rows.length,
              productsActive: true,
              productCSS: true,
          });
-     }
-     Product.fetchAll(fetchCallback);
+     }).catch(e => console.log(e));
  }
 
  const getProductDetailsPage = (req, res) => {

@@ -24,12 +24,6 @@ app.use(express.static(path.join(__dirname, "public")));
 const AdminRoute = require("./routes/admin");
 const shopRoute = require("./routes/shop");
 
-database.execute('SELECT * FROM products').then(res => {
-    console.log(res[0]);
-}).catch(err => {
-    console.log(err)
-});
-
 const {
     getPageNotFound
 } = require('./controllers/404')
