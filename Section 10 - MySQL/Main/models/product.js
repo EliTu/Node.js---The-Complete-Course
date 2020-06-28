@@ -21,7 +21,7 @@ class Product {
 	constructor(title, imageUrl, price, description, id) {
 		this.title = title;
 		this.imageUrl = !imageUrl
-			? `https://loremflickr.com/320/240/product?random=${
+			? `https://loremflickr.com/320/240/taiwan?random=${
 					Math.floor(Math.random() * (45 - 1)) + 1
 			  }`
 			: imageUrl;
@@ -42,11 +42,8 @@ class Product {
 		return db.execute('SELECT * FROM products');
 	}
 
-	static findProductById(id, fetchProductCallback) {
-		getProductsFromFIle((products) => {
-			const product = products.find((product) => product.id === id);
-			fetchProductCallback(product);
-		});
+	static findProductById(id) {
+		return db.execute('SELECT * FROM products WHERE products.id = ?', [id]);
 	}
 
 	static deleteProduct(id) {

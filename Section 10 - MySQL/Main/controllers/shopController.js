@@ -96,16 +96,16 @@ const getAllProducts = (_, res) => {
 
 const getProductDetailsPage = (req, res) => {
 	const productId = req.params.productId;
-	const fetchProductCallback = (product) => {
-		res.render('shop/product-details', {
-			docTitle: `Product: ${product.title}`,
-			pageSubtitle: 'Product Details',
-			product: product,
-			path: '/products',
-		});
-	};
-
-	Product.findProductById(productId, fetchProductCallback);
+	Product.findProductById(productId)
+		.then(([product]) => {
+			res.render('shop/product-details', {
+				docTitle: `Product: ${product[0].title}`,
+				pageSubtitle: 'Product Details',
+				product: product[0],
+				path: '/products',
+			});
+		})
+		.catch((e) => console.log(e));
 };
 
 module.exports = {
