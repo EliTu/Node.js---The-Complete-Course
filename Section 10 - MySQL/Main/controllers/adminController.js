@@ -73,17 +73,20 @@ const getAdminProduct = (_, res) => {
 	Product.fetchAll(fetchCallback);
 };
 
-const postProduct = (req, res) => {
+const postProduct = async (req, res) => {
 	const productId = req.body.productId && req.body.productId;
 	const { title, description, price, imageUrl } = req.body;
 
 	if (!productId) {
 		// Save a new product
-		const product = new Product(title, imageUrl, price, description, null);
-		product
-			.saveProduct()
-			.then(() => res.redirect('/products'))
-			.catch((e) => console.log(e));
+		try {
+			const product = new Product(title, imageUrl, price, description, null);
+			await product.saveProduct();
+
+			res.redirect('/products');
+		} catch (error) {
+			console.log(error);
+		}
 	} else {
 		//  Update an existing product
 		const updatedProduct = new Product(

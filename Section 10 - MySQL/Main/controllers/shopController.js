@@ -78,34 +78,37 @@ const getCheckoutPage = (_, res) => {
 	});
 };
 
-const getAllProducts = (_, res) => {
-	Product.fetchAll()
-		.then(([rows]) => {
-			res.render('shop/product-list', {
-				docTitle: 'Product List',
-				pageSubtitle: 'Available Products',
-				products: rows,
-				path: '/products',
-				hasProducts: rows.length,
-				productsActive: true,
-				productCSS: true,
-			});
-		})
-		.catch((e) => console.log(e));
+const getAllProducts = async (_, res) => {
+	try {
+		const [products] = await Product.fetchAll();
+		res.render('shop/product-list', {
+			docTitle: 'Product List',
+			pageSubtitle: 'Available Products',
+			products: products,
+			path: '/products',
+			hasProducts: products.length,
+			productsActive: true,
+			productCSS: true,
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
-const getProductDetailsPage = (req, res) => {
+const getProductDetailsPage = async (req, res) => {
 	const productId = req.params.productId;
-	Product.findProductById(productId)
-		.then(([product]) => {
-			res.render('shop/product-details', {
-				docTitle: `Product: ${product[0].title}`,
-				pageSubtitle: 'Product Details',
-				product: product[0],
-				path: '/products',
-			});
-		})
-		.catch((e) => console.log(e));
+
+	try {
+		const [product] = await Product.findProductById(productId);
+		res.render('shop/product-details', {
+			docTitle: `Product: ${product[0].title}`,
+			pageSubtitle: 'Product Details',
+			product: product[0],
+			path: '/products',
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 module.exports = {
