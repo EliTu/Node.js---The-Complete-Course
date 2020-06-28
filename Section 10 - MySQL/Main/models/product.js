@@ -18,62 +18,53 @@ const Cart = require('./cart');
 // }
 
 class Product {
-    constructor(title, imageUrl, price, description, id) {
-        this.title = title;
-        this.imageUrl = !imageUrl ? `https://loremflickr.com/320/240/product?random=${Math.floor(Math.random() * (45 - 1)) + 1}` : imageUrl;
-        this.price = price;
-        this.description = description;
-        this.id = id;
-    }
+	constructor(title, imageUrl, price, description, id) {
+		this.title = title;
+		this.imageUrl = !imageUrl
+			? `https://loremflickr.com/320/240/product?random=${
+					Math.floor(Math.random() * (45 - 1)) + 1
+			  }`
+			: imageUrl;
+		this.price = price;
+		this.description = description;
+		this.id = id;
+	}
 
-    saveProduct() {
-        const saveFileCallback = products => {
-            if (this.id) {
-                // If id exists, that means we're editing product
-                const productIndex = products.findIndex(prod => prod.id === this.id);
-                const updatedProductsArray = [...products];
-                updatedProductsArray[productIndex] = this;
+	saveProduct() {
+		return db.execute(
+			'INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?)',
+			[this.title, this.price, this.description, this.imageUrl]
+		);
+	}
 
-                fs.writeFile(filePath, JSON.stringify(updatedProductsArray), e => console.log(e));
-            } else {
-                // If id is null then we add a new product
-                this.id = Math.random().toString();
-                products.push(this);
+	static fetchAll() {
+		// getProductsFromFIle(fetchProductsCallback);
+		return db.execute('SELECT * FROM products');
+	}
 
-                fs.writeFile(filePath, JSON.stringify(products), e => console.log(e));
-            }
-        }
-        getProductsFromFIle(saveFileCallback);
-    }
+	static findProductById(id, fetchProductCallback) {
+		getProductsFromFIle((products) => {
+			const product = products.find((product) => product.id === id);
+			fetchProductCallback(product);
+		});
+	}
 
-    static fetchAll() {
-        // getProductsFromFIle(fetchProductsCallback);
-        return db.execute('SELECT * FROM products');
-    }
+	static deleteProduct(id) {
+		const deleteProductCallback = (products) => {
+			const { price } = products.find((prod) => prod.id === id);
 
-    static findProductById(id, fetchProductCallback) {
-        getProductsFromFIle(products => {
-            const product = products.find(product => product.id === id);
-            fetchProductCallback(product);
-        })
-    }
+			const updatedProductList = products.filter(
+				(product) => product.id !== id
+			);
 
-    static deleteProduct(id) {
-        const deleteProductCallback = products => {
-            const {
-                price
-            } = products.find(prod => prod.id === id);
-
-            const updatedProductList = products.filter(product => product.id !== id);
-
-            fs.writeFile(filePath, JSON.stringify(updatedProductList), e => {
-                if (!e) {
-                    Cart.deleteProduct(id, price);
-                }
-            });
-        };
-        getProductsFromFIle(deleteProductCallback);
-    }
+			fs.writeFile(filePath, JSON.stringify(updatedProductList), (e) => {
+				if (!e) {
+					Cart.deleteProduct(id, price);
+				}
+			});
+		};
+		getProductsFromFIle(deleteProductCallback);
+	}
 }
 
 module.exports = Product;

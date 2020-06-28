@@ -1,113 +1,120 @@
- const Product = require('../models/product');
- const Cart = require('../models/cart.js');
+const Product = require('../models/product');
+const Cart = require('../models/cart.js');
 
- //  Specific for shop or '/':
- const getShopPage = (_, res) => {
-     res.render('shop/index', {
-         docTitle: 'Shop Main Page',
-         pageSubtitle: 'Welcome to the shop',
-         path: '/'
-     })
- }
+//  Specific for shop or '/':
+const getShopPage = (_, res) => {
+	res.render('shop/index', {
+		docTitle: 'Shop Main Page',
+		pageSubtitle: 'Welcome to the shop',
+		path: '/',
+	});
+};
 
- const getOrdersPage = (_, res) => {
-     res.render('shop/orders', {
-         docTitle: 'Orders',
-         pageSubtitle: 'Your Orders',
-         path: '/orders'
-     })
- }
+const getOrdersPage = (_, res) => {
+	res.render('shop/orders', {
+		docTitle: 'Orders',
+		pageSubtitle: 'Your Orders',
+		path: '/orders',
+	});
+};
 
- const getCartPage = (_, res) => {
-     const fetchCart = cart => {
-         Product.fetchAll().then(([rows]) => {
-             let cartProducts = [];
-             for (product of rows) {
-                 const cartProductData = cart.products.find(prod => prod.id === product.id);
-                 if (cartProductData) {
-                     cartProducts.push({
-                         productData: product,
-                         quantity: cartProductData.quantity
-                     });
-                 }
-             }
+const getCartPage = (_, res) => {
+	const fetchCart = (cart) => {
+		Product.fetchAll()
+			.then(([rows]) => {
+				let cartProducts = [];
+				for (product of rows) {
+					const cartProductData = cart.products.find(
+						(prod) => prod.id === product.id
+					);
+					if (cartProductData) {
+						cartProducts.push({
+							productData: product,
+							quantity: cartProductData.quantity,
+						});
+					}
+				}
 
-             res.render('shop/cart', {
-                 docTitle: 'Cart',
-                 pageSubtitle: 'Your Cart',
-                 path: '/cart',
-                 cartProducts: cartProducts,
-                 totalPrice: cart.totalPrice
-             });
-         }).catch(e => console.log(e));
-     }
-     Cart.getAllCartProducts(fetchCart);
- }
+				res.render('shop/cart', {
+					docTitle: 'Cart',
+					pageSubtitle: 'Your Cart',
+					path: '/cart',
+					cartProducts: cartProducts,
+					totalPrice: cart.totalPrice,
+				});
+			})
+			.catch((e) => console.log(e));
+	};
+	Cart.getAllCartProducts(fetchCart);
+};
 
- const postCart = (req, res) => {
-     const prodId = req.body.productId;
-     const addProductCallback = product => Cart.addProduct(prodId, product.price);
+const postCart = (req, res) => {
+	const prodId = req.body.productId;
+	const addProductCallback = (product) =>
+		Cart.addProduct(prodId, product.price);
 
-     Product.findProductById(prodId, addProductCallback);
+	Product.findProductById(prodId, addProductCallback);
 
-     res.redirect('/cart');
- }
+	res.redirect('/cart');
+};
 
- const postCartDeleteProduct = (req, res) => {
-     const {
-         cartDeleteId: id,
-         cartDeletePrice: price,
-         isDeleteAll: isDeleteAll
-     } = req.body;
+const postCartDeleteProduct = (req, res) => {
+	const {
+		cartDeleteId: id,
+		cartDeletePrice: price,
+		isDeleteAll: isDeleteAll,
+	} = req.body;
 
-     Cart.deleteProduct(id, price, isDeleteAll);
+	Cart.deleteProduct(id, price, isDeleteAll);
 
-     res.redirect('/cart');
- }
+	res.redirect('/cart');
+};
 
- const getCheckoutPage = (_, res) => {
-     res.render('shop/checkout', {
-         docTitle: 'Checkout',
-         pageSubtitle: 'Checkout',
-         path: '/checkout'
-     })
- }
+const getCheckoutPage = (_, res) => {
+	res.render('shop/checkout', {
+		docTitle: 'Checkout',
+		pageSubtitle: 'Checkout',
+		path: '/checkout',
+	});
+};
 
- const getAllProducts = (_, res) => {
-     Product.fetchAll().then(([rows, fieldData]) => {
-         res.render("shop/product-list", {
-             docTitle: "Product List",
-             pageSubtitle: 'Available Products',
-             products: rows,
-             path: "/products",
-             hasProducts: rows.length,
-             productsActive: true,
-             productCSS: true,
-         });
-     }).catch(e => console.log(e));
- }
+const getAllProducts = (_, res) => {
+	Product.fetchAll()
+		.then(([rows]) => {
+			res.render('shop/product-list', {
+				docTitle: 'Product List',
+				pageSubtitle: 'Available Products',
+				products: rows,
+				path: '/products',
+				hasProducts: rows.length,
+				productsActive: true,
+				productCSS: true,
+			});
+		})
+		.catch((e) => console.log(e));
+};
 
- const getProductDetailsPage = (req, res) => {
-     const productId = req.params.productId;
-     const fetchProductCallback = product => {
-         res.render('shop/product-details', {
-             docTitle: `Product: ${product.title}`,
-             pageSubtitle: 'Product Details',
-             product: product,
-             path: '/products'
-         });
-     }
+const getProductDetailsPage = (req, res) => {
+	const productId = req.params.productId;
+	const fetchProductCallback = (product) => {
+		res.render('shop/product-details', {
+			docTitle: `Product: ${product.title}`,
+			pageSubtitle: 'Product Details',
+			product: product,
+			path: '/products',
+		});
+	};
 
-     Product.findProductById(productId, fetchProductCallback);
- }
+	Product.findProductById(productId, fetchProductCallback);
+};
 
- module.exports = {
-     getAllProducts,
-     getProductDetailsPage,
-     getShopPage,
-     getCartPage,
-     getOrdersPage,
-     getCheckoutPage,
-     postCart,
-     postCartDeleteProduct
- }
+module.exports = {
+	getAllProducts,
+	getProductDetailsPage,
+	getShopPage,
+	getCartPage,
+	getOrdersPage,
+	getCheckoutPage,
+	postCart,
+	postCartDeleteProduct,
+};
