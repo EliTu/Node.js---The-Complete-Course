@@ -80,8 +80,16 @@ const postProduct = async (req, res) => {
 	if (!productId) {
 		// Save a new product
 		try {
-			const product = new Product(title, imageUrl, price, description, null);
-			await product.saveProduct();
+			await Product.create({
+				title: title,
+				price: price,
+				imageUrl: !imageUrl
+					? `https://loremflickr.com/320/240/taiwan?random=${
+							Math.floor(Math.random() * (45 - 1)) + 1
+					  }`
+					: imageUrl,
+				description: description,
+			});
 
 			res.redirect('/products');
 		} catch (error) {
