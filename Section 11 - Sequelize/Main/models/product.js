@@ -67,7 +67,6 @@
 const Sequelize = require('sequelize');
 
 const sequelizePool = require('../util/database');
-const sequelize = require('../util/database');
 
 const Product = sequelizePool.define('product', {
 	id: {
@@ -82,11 +81,11 @@ const Product = sequelizePool.define('product', {
 		allowNull: false,
 	},
 	imageUrl: {
-		type: sequelize.STRING,
+		type: Sequelize.STRING,
 		allowNull: false,
 	},
 	description: {
-		type: sequelize.STRING,
+		type: Sequelize.STRING,
 		allowNull: false,
 	},
 });
