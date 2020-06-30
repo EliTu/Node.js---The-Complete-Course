@@ -65,7 +65,6 @@
 // }
 
 const Sequelize = require('sequelize');
-
 const sequelizePool = require('../util/database');
 
 const Product = sequelizePool.define('product', {

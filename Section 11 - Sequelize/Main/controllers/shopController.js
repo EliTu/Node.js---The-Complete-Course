@@ -1,4 +1,4 @@
-const Product = require('../models/product');
+const Product = require('../models/product.js');
 const Cart = require('../models/cart.js');
 
 //  Specific for shop or '/':
@@ -99,11 +99,12 @@ const getProductDetailsPage = async (req, res) => {
 	const productId = req.params.productId;
 
 	try {
-		const [product] = await Product.findProductById(productId);
+		// const product = await Product.findAll({where: {id: productId}})
+		const product = await Product.findByPk(productId);
 		res.render('shop/product-details', {
-			docTitle: `Product: ${product[0].title}`,
+			docTitle: `Product: ${product.title}`,
 			pageSubtitle: 'Product Details',
-			product: product[0],
+			product: product,
 			path: '/products',
 		});
 	} catch (error) {
