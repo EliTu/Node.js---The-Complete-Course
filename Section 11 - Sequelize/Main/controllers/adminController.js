@@ -1,30 +1,5 @@
 const Product = require('../models/product');
-const forms = [
-	{
-		name: 'title',
-		type: 'text',
-		title: 'Title',
-		placeholder: "Enter the product's title",
-	},
-	{
-		name: 'imageUrl',
-		type: 'url',
-		title: 'Image URL',
-		placeholder: 'Enter product image URL',
-	},
-	{
-		name: 'price',
-		type: 'number',
-		title: 'Price',
-		placeholder: "Enter product's price",
-	},
-	{
-		name: 'description',
-		type: 'textarea',
-		title: 'Description',
-		placeholder: 'Enter a brief description of the product',
-	},
-];
+const forms = require('../util/forms');
 
 // Specific for '/admin/...':
 const getAddProduct = (_, res) => {
@@ -38,12 +13,14 @@ const getAddProduct = (_, res) => {
 	});
 };
 
-const getEditProduct = (req, res) => {
+const getEditProduct = async (req, res) => {
 	const editMode = req.query.edit;
 	if (!editMode) return res.redirect('/');
 
 	const prodId = req.params.productId;
-	const getProductCallback = (product) => {
+
+	try {
+		const product = await Product.findByPk(prodId);
 		if (!product) return res.redirect('/');
 
 		res.render('admin/set-product', {
@@ -56,21 +33,23 @@ const getEditProduct = (req, res) => {
 			isEditingProduct: editMode,
 			product: product,
 		});
-	};
-
-	Product.findProductById(prodId, getProductCallback);
+	} catch (error) {
+		console.log(error);
+	}
 };
 
-const getAdminProduct = (_, res) => {
-	const fetchCallback = (products) => {
+const getAdminProduct = async (_, res) => {
+	try {
+		const products = await Product.findAll();
 		res.render('admin/admin-products', {
 			docTitle: 'Admin Products',
 			pageSubtitle: 'Products in store',
 			path: '/admin/admin-products',
 			products: products,
 		});
-	};
-	Product.fetchAll(fetchCallback);
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const postProduct = async (req, res) => {
