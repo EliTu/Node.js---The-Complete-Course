@@ -80,7 +80,7 @@ const getCheckoutPage = (_, res) => {
 
 const getAllProducts = async (_, res) => {
 	try {
-		const [products] = await Product.fetchAll();
+		const products = await Product.findAll();
 		res.render('shop/product-list', {
 			docTitle: 'Product List',
 			pageSubtitle: 'Available Products',
