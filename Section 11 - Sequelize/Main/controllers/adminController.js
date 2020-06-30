@@ -74,6 +74,7 @@ const postProduct = async (req, res) => {
 			console.log(error);
 		}
 	} else {
+		// Update an existing product
 		try {
 			const productToUpdate = await Product.findByPk(productId);
 			if (!productToUpdate) res.redirect('/admin/admin-product');
