@@ -69,31 +69,40 @@ const postProduct = async (req, res) => {
 					: imageUrl,
 				description: description,
 			});
-
 			res.redirect('/products');
 		} catch (error) {
 			console.log(error);
 		}
 	} else {
-		//  Update an existing product
-		const updatedProduct = new Product(
-			title,
-			imageUrl,
-			price,
-			description,
-			productId
-		);
-		updatedProduct.saveProduct();
+		try {
+			const productToUpdate = await Product.findByPk(productId);
+			if (!productToUpdate) res.redirect('/admin/admin-product');
 
-		res.redirect('/admin/admin-products');
+			productToUpdate.update({
+				title: title,
+				imageUrl: imageUrl,
+				price: price,
+				description: description,
+			});
+			res.redirect('/admin/admin-products');
+		} catch (error) {
+			console.log(error);
+		}
 	}
 };
 
-const postDeleteProduct = (req, res) => {
+const postDeleteProduct = async (req, res) => {
 	const productId = req.body.deletedProductId;
-	Product.deleteProduct(productId);
-
-	res.redirect('/admin/admin-products');
+	try {
+		await Product.destroy({
+			where: {
+				id: productId,
+			},
+		});
+		res.redirect('/admin/admin-products');
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 module.exports = {
