@@ -20,7 +20,7 @@ const getEditProduct = async (req, res) => {
 	const prodId = req.params.productId;
 
 	try {
-		const product = await Product.findByPk(prodId);
+		const [product] = await req.user.getProducts({ where: { id: prodId } });
 		if (!product) return res.redirect('/');
 
 		res.render('admin/set-product', {
@@ -38,9 +38,9 @@ const getEditProduct = async (req, res) => {
 	}
 };
 
-const getAdminProduct = async (_, res) => {
+const getAdminProduct = async (req, res) => {
 	try {
-		const products = await Product.findAll();
+		const products = await req.user.getProducts();
 		res.render('admin/admin-products', {
 			docTitle: 'Admin Products',
 			pageSubtitle: 'Products in store',
@@ -59,7 +59,6 @@ const postProduct = async (req, res) => {
 	if (!productId) {
 		// Save a new product
 		try {
-			// Use Sequelize to create an associated user-product
 			await req.user.createProduct({
 				title: title,
 				price: price,
