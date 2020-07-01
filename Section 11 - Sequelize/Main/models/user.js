@@ -12,10 +12,7 @@ const User = sequelizePool.define('user', {
 		type: Sequelize.STRING,
 		allowNull: false,
 	},
-	email: {
-		type: Sequelize.STRING,
-		allowNull: false,
-	},
+	email: Sequelize.STRING,
 });
 
 module.exports = User;

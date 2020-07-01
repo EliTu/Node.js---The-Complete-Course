@@ -30,6 +30,17 @@ const shopRoute = require('./routes/shop');
 
 const { getPageNotFound } = require('./controllers/404');
 
+app.use(async (req, res, next) => {
+	try {
+		const user = await User.findByPk(1);
+		req.user = user;
+
+		next();
+	} catch (error) {
+		console.log(error);
+	}
+});
+
 // app routes
 app.use('/admin', AdminRoute);
 app.use(shopRoute);
@@ -41,7 +52,14 @@ Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
 
 sequelize
-	.sync({ force: true })
+	.sync()
+	.then(() => User.findByPk(1))
+	.then((user) => {
+		if (!user) {
+			User.create({ name: 'Durden', email: 'ddd@tt.com' });
+		}
+		return user;
+	})
 	.then(() => {
 		// server setup and port
 		const port = process.env.PORT || 3000;

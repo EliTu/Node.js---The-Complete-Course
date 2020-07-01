@@ -59,7 +59,8 @@ const postProduct = async (req, res) => {
 	if (!productId) {
 		// Save a new product
 		try {
-			await Product.create({
+			// Use Sequelize to create an associated user-product
+			await req.user.createProduct({
 				title: title,
 				price: price,
 				imageUrl: !imageUrl
