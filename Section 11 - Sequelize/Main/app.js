@@ -6,6 +6,10 @@ const app = express();
 
 const sequelize = require('./util/database');
 
+const Product = require('./models/product');
+const User = require('./models/user');
+const Cart = require('./models/cart');
+
 // Set a template engine global value
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -33,8 +37,11 @@ app.use(shopRoute);
 // 404 catch all route
 app.use(getPageNotFound);
 
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
+
 sequelize
-	.sync()
+	.sync({ force: true })
 	.then(() => {
 		// server setup and port
 		const port = process.env.PORT || 3000;
