@@ -42,17 +42,33 @@ const postCart = async (req, res) => {
 		const cart = await req.user.getCart();
 		const [cartProduct] = await cart.getProducts({ where: { id: prodId } });
 
-		let productToPost;
-		if (cartProduct) {
-			productToPost = cartProduct;
-		}
 		let newQuantity = 1;
-		if (productToPost) {
+
+		// If cart should be updated with an existing product (increment++)
+		if (cartProduct) {
+			const existingProduct = cartProduct;
+
+			if (existingProduct) {
+				const oldQuantity = existingProduct.cartItem.quantity;
+				newQuantity = oldQuantity + 1;
+
+				try {
+					await cart.addProduct(existingProduct, {
+						through: { quantity: newQuantity },
+					});
+					res.redirect('/cart');
+				} catch (error) {
+					console.log(error);
+				}
+				return;
+			}
+
+			// If no previous cart item, create a new one with quantity of 1
+			const newCartProduct = await Product.findByPk(prodId);
+			await cart.addProduct(newCartProduct, {
+				through: { quantity: newQuantity },
+			});
 		}
-
-		const newCartProduct = await Product.findByPk(prodId);
-		cart.addProduct(newCartProduct, { through: { quantity: newQuantity } });
-
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);
