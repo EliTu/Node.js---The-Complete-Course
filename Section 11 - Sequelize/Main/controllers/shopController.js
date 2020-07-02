@@ -18,34 +18,21 @@ const getOrdersPage = (_, res) => {
 	});
 };
 
-const getCartPage = (_, res) => {
-	const fetchCart = (cart) => {
-		Product.fetchAll()
-			.then(([rows]) => {
-				let cartProducts = [];
-				for (product of rows) {
-					const cartProductData = cart.products.find(
-						(prod) => prod.id === product.id
-					);
-					if (cartProductData) {
-						cartProducts.push({
-							productData: product,
-							quantity: cartProductData.quantity,
-						});
-					}
-				}
+const getCartPage = async (req, res) => {
+	try {
+		const userCart = await req.user.getCart();
+		const cartProducts = await userCart.getProducts();
 
-				res.render('shop/cart', {
-					docTitle: 'Cart',
-					pageSubtitle: 'Your Cart',
-					path: '/cart',
-					cartProducts: cartProducts,
-					totalPrice: cart.totalPrice,
-				});
-			})
-			.catch((e) => console.log(e));
-	};
-	Cart.getAllCartProducts(fetchCart);
+		res.render('shop/cart', {
+			docTitle: 'Cart',
+			pageSubtitle: 'Your Cart',
+			path: '/cart',
+			cartProducts: cartProducts,
+			// totalPrice: ,
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const postCart = (req, res) => {
