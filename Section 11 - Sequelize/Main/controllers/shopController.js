@@ -35,14 +35,28 @@ const getCartPage = async (req, res) => {
 	}
 };
 
-const postCart = (req, res) => {
+const postCart = async (req, res) => {
 	const prodId = req.body.productId;
-	const addProductCallback = (product) =>
-		Cart.addProduct(prodId, product.price);
 
-	Product.findProductById(prodId, addProductCallback);
+	try {
+		const cart = await req.user.getCart();
+		const [cartProduct] = await cart.getProducts({ where: { id: prodId } });
 
-	res.redirect('/cart');
+		let productToPost;
+		if (cartProduct) {
+			productToPost = cartProduct;
+		}
+		let newQuantity = 1;
+		if (productToPost) {
+		}
+
+		const newCartProduct = await Product.findByPk(prodId);
+		cart.addProduct(newCartProduct, { through: { quantity: newQuantity } });
+
+		res.redirect('/cart');
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const postCartDeleteProduct = (req, res) => {
