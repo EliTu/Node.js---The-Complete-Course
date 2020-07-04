@@ -9,12 +9,19 @@ const getShopPage = (_, res) => {
 	});
 };
 
-const getOrdersPage = (_, res) => {
-	res.render('shop/orders', {
-		docTitle: 'Orders',
-		pageSubtitle: 'Your Orders',
-		path: '/orders',
-	});
+const getOrdersPage = async (req, res) => {
+	try {
+		const orders = await req.user.getOrders({ include: ['products'] });
+
+		res.render('shop/orders', {
+			docTitle: 'Orders',
+			pageSubtitle: 'Your Orders',
+			path: '/orders',
+			orders: orders,
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const getCartPage = async (req, res) => {
@@ -147,6 +154,9 @@ const postOrder = async (req, res) => {
 				return product;
 			})
 		);
+
+		// Once the order has been made we should empty the cart
+		await userCart.setProducts(null);
 
 		res.redirect('/orders');
 	} catch (error) {
