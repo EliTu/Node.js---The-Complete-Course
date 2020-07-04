@@ -1,5 +1,4 @@
 const Product = require('../models/product.js');
-const Cart = require('../models/cart.js');
 
 //  Specific for shop or '/':
 const getShopPage = (_, res) => {
@@ -62,13 +61,13 @@ const postCart = async (req, res) => {
 				}
 				return;
 			}
-
-			// If no previous cart item, create a new one with quantity of 1
-			const newCartProduct = await Product.findByPk(prodId);
-			await cart.addProduct(newCartProduct, {
-				through: { quantity: newQuantity },
-			});
 		}
+		// If no previous cart item, create a new one with quantity of 1
+		const newCartProduct = await Product.findByPk(prodId);
+		await cart.addProduct(newCartProduct, {
+			through: { quantity: newQuantity },
+		});
+
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);
@@ -135,6 +134,26 @@ const getProductDetailsPage = async (req, res) => {
 	}
 };
 
+const postOrder = async (req, res) => {
+	try {
+		const userCart = await req.user.getCart();
+		const products = await userCart.getProducts();
+
+		const order = await req.user.createOrder();
+
+		await order.addProduct(
+			products.map((product) => {
+				product.orderItem = { quantity: product.cartItem.quantity };
+				return product;
+			})
+		);
+
+		res.redirect('/orders');
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 module.exports = {
 	getAllProducts,
 	getProductDetailsPage,
@@ -144,4 +163,5 @@ module.exports = {
 	getCheckoutPage,
 	postCart,
 	postCartDeleteProduct,
+	postOrder,
 };

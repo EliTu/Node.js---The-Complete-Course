@@ -70,7 +70,7 @@ sequelize
 		}
 		return user;
 	})
-	.then((user) => user.createCart())
+	.then((user) => (!user.getCart() ? user.createCart() : user.getCart()))
 	.then(() => {
 		// server setup and port
 		const port = process.env.PORT || 3000;

@@ -3,7 +3,7 @@ extends ../layouts/main-layout.pug
 block content 
     h2 #{pageSubtitle}
     main
-        if cartProducts.length 
+        if cartProducts.length
             ul
                 each product in cartProducts
                     li
@@ -13,13 +13,15 @@ block content
                                 input(type="hidden" name="cartDeleteId" value=`${product.id}`)
                                 input(type="hidden" name="cartDeletePrice" value=`${product.price * product.quantity}`)
                                 input(type="hidden" name="isDeleteAll" value="true")
-                                button(class="btn" type="submit") X
+                                button(class="btn" type="submit") x
 
                             form(action="/cart-delete-product" method="POST")
                                 input(type="hidden" name="cartDeleteId" value=`${product.id}`)
                                 input(type="hidden" name="cartDeletePrice" value=`${product.price}`)
                                 button(class="btn" type="submit") -
 
-            h2 Total price: $#{totalPrice}
+            h3 Total price: $#{totalPrice}
+            form(action="/create-order" method="POST")
+                button(class="btn" type="submit") Checkout
         else
             h1 No products in cart!
