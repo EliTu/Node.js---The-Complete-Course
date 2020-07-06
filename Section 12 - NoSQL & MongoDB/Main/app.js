@@ -4,6 +4,8 @@ const parser = require('body-parser');
 
 const app = express();
 
+const mongoConnect = require('./util/database');
+
 // Set a template engine global value
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -19,17 +21,19 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes import
-const AdminRoute = require('./routes/admin');
-const shopRoute = require('./routes/shop');
+// const AdminRoute = require('./routes/admin');
+// const shopRoute = require('./routes/shop');
 
 const { getPageNotFound } = require('./controllers/404');
 
 // app routes
-app.use('/admin', AdminRoute);
-app.use(shopRoute);
+// app.use('/admin', AdminRoute);
+// app.use(shopRoute);
 
 // 404 catch all route
 app.use(getPageNotFound);
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Connected on port: ${port}`));
+mongoConnect((client) => {
+	const port = process.env.PORT || 3000;
+	app.listen(port, () => console.log(`Connected on port: ${port}`));
+});
