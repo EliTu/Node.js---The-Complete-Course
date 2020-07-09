@@ -4,7 +4,7 @@ const parser = require('body-parser');
 
 const app = express();
 
-const mongoConnect = require('./util/database');
+const { mongoConnect } = require('./util/database');
 
 // Set a template engine global value
 app.set('view engine', 'pug');
@@ -33,7 +33,7 @@ app.use('/admin', AdminRoute);
 // 404 catch all route
 app.use(getPageNotFound);
 
-mongoConnect((client) => {
+mongoConnect(() => {
 	const port = process.env.PORT || 3000;
 	app.listen(port, () => console.log(`Connected on port: ${port}`));
 });
