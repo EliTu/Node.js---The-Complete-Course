@@ -1,4 +1,4 @@
-// const Product = require('../models/product');
+const Product = require('../models/product');
 const forms = require('../util/forms');
 
 // Specific for '/admin/...':
@@ -58,17 +58,19 @@ const postProduct = async (req, res) => {
 
 	if (!productId) {
 		// Save a new product
+		const product = new Product(title, price, description, imageUrl);
 		try {
-			await req.user.createProduct({
-				title: title,
-				price: price,
-				imageUrl: !imageUrl
-					? `https://loremflickr.com/320/240/taiwan?random=${
-							Math.floor(Math.random() * (45 - 1)) + 1
-					  }`
-					: imageUrl,
-				description: description,
-			});
+			// await req.user.createProduct({
+			// 	title: title,
+			// 	price: price,
+			// 	imageUrl: !imageUrl
+			// 		? `https://loremflickr.com/320/240/taiwan?random=${
+			// 				Math.floor(Math.random() * (45 - 1)) + 1
+			// 		  }`
+			// 		: imageUrl,
+			// 	description: description,
+			// });
+			await product.save();
 			res.redirect('/products');
 		} catch (error) {
 			console.log(error);
