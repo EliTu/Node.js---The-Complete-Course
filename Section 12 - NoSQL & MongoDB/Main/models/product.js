@@ -1,35 +1,25 @@
-const { getDb } = require('../util/database');
+const getDb = require('../util/database');
 class Product {
 	constructor(title, price, description, imageUrl) {
 		(this.title = title),
 			(this.price = price),
 			(this.description = description),
-			(this.imageUrl = imageUrl);
+			(this.imageUrl = !imageUrl
+				? `https://loremflickr.com/320/240/taiwan?random=${
+						Math.floor(Math.random() * (45 - 1)) + 1
+				  }`
+				: imageUrl);
 	}
 
-	save() {}
+	async save() {
+		const db = getDb();
+		try {
+			const res = await db.collection('products').insertOne(this);
+			console.log(res);
+		} catch (error) {
+			console.log(error);
+		}
+	}
 }
-
-// const Product = sequelizePool.define('product', {
-// 	id: {
-// 		type: Sequelize.INTEGER,
-// 		autoIncrement: true,
-// 		allowNull: false,
-// 		primaryKey: true,
-// 	},
-// 	title: Sequelize.STRING,
-// 	price: {
-// 		type: Sequelize.DOUBLE,
-// 		allowNull: false,
-// 	},
-// 	imageUrl: {
-// 		type: Sequelize.STRING,
-// 		allowNull: false,
-// 	},
-// 	description: {
-// 		type: Sequelize.STRING,
-// 		allowNull: false,
-// 	},
-// });
 
 module.exports = Product;
