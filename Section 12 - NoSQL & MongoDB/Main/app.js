@@ -22,13 +22,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes import
 const AdminRoute = require('./routes/admin');
-// const shopRoute = require('./routes/shop');
+const shopRoute = require('./routes/shop');
 
 const { getPageNotFound } = require('./controllers/404');
 
 // app routes
 app.use('/admin', AdminRoute);
-// app.use(shopRoute);
+app.use(shopRoute);
 
 // 404 catch all route
 app.use(getPageNotFound);

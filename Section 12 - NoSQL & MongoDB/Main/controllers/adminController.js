@@ -58,19 +58,10 @@ const postProduct = async (req, res) => {
 
 	if (!productId) {
 		// Save a new product
-		const product = new Product(title, price, description, imageUrl);
 		try {
-			// await req.user.createProduct({
-			// 	title: title,
-			// 	price: price,
-			// 	imageUrl: !imageUrl
-			// 		? `https://loremflickr.com/320/240/taiwan?random=${
-			// 				Math.floor(Math.random() * (45 - 1)) + 1
-			// 		  }`
-			// 		: imageUrl,
-			// 	description: description,
-			// });
+			const product = new Product(title, price, description, imageUrl);
 			await product.save();
+
 			res.redirect('/products');
 		} catch (error) {
 			console.log(error);
@@ -78,15 +69,15 @@ const postProduct = async (req, res) => {
 	} else {
 		// Update an existing product
 		try {
-			const productToUpdate = await Product.findByPk(productId);
-			if (!productToUpdate) res.redirect('/admin/admin-product');
+			// const productToUpdate = await Product.findByPk(productId);
+			// if (!productToUpdate) res.redirect('/admin/admin-product');
 
-			productToUpdate.update({
-				title: title,
-				imageUrl: imageUrl,
-				price: price,
-				description: description,
-			});
+			// productToUpdate.update({
+			// 	title: title,
+			// 	imageUrl: imageUrl,
+			// 	price: price,
+			// 	description: description,
+			// });
 			res.redirect('/admin/admin-products');
 		} catch (error) {
 			console.log(error);
