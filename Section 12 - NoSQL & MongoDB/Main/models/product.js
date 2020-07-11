@@ -10,7 +10,7 @@ class Product {
 						Math.floor(Math.random() * (45 - 1)) + 1
 				  }`
 				: imageUrl);
-		this._id = id ? new mongodb.ObjectId(id) : undefined;
+		this._id = id ? new mongodb.ObjectId(id) : null;
 	}
 
 	async save() {
