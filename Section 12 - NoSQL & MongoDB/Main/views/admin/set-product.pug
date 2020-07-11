@@ -16,7 +16,7 @@ block content
                         else
                             input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` step="0.01" value=`${isEditingProduct ? product[form.name] : ''}`)
                 if isEditingProduct
-                    input(type="hidden" name="productId" value=`${product.id}`)
+                    input(type="hidden" name="productId" value=`${product._id}`)
                 button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}
         else
             h1 Nothing to see here!

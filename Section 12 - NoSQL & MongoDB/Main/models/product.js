@@ -1,7 +1,7 @@
 const { getDb } = require('../util/database');
 const mongodb = require('mongodb');
 class Product {
-	constructor(title, price, description, imageUrl) {
+	constructor(title, price, description, imageUrl, id) {
 		(this.title = title),
 			(this.price = price),
 			(this.description = description),
@@ -10,15 +10,32 @@ class Product {
 						Math.floor(Math.random() * (45 - 1)) + 1
 				  }`
 				: imageUrl);
+		this._id = id;
 	}
 
 	async save() {
 		const db = getDb();
-		try {
-			const res = await db.collection('products').insertOne(this);
-			return res;
-		} catch (error) {
-			console.log(error);
+		if (!this._id) {
+			// Insert (create a new one)
+			try {
+				const res = await db.collection('products').insertOne(this);
+				return res;
+			} catch (error) {
+				console.log(error);
+			}
+		} else {
+			// Update
+			try {
+				const res = await db.collection('products').updateOne(
+					{ _id: new mongodb.ObjectId(this._id) },
+					{
+						$set: this,
+					}
+				);
+				return res;
+			} catch (error) {
+				console.log(error);
+			}
 		}
 	}
 
