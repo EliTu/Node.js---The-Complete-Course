@@ -1,8 +1,5 @@
-const mongodb = require('mongodb');
 const Product = require('../models/product');
 const forms = require('../util/forms');
-
-const objectId = mongodb.ObjectId;
 
 // Specific for '/admin/...':
 const getAddProduct = (_, res) => {
@@ -58,13 +55,7 @@ const getAdminProduct = async (req, res) => {
 const postProduct = async (req, res) => {
 	const productId = req.body.productId && req.body.productId;
 	const { title, description, price, imageUrl } = req.body;
-	const product = new Product(
-		title,
-		price,
-		description,
-		imageUrl,
-		new objectId(productId)
-	);
+	const product = new Product(title, price, description, imageUrl, productId);
 
 	if (!productId) {
 		// Save a new product

@@ -10,7 +10,7 @@ class Product {
 						Math.floor(Math.random() * (45 - 1)) + 1
 				  }`
 				: imageUrl);
-		this._id = id;
+		this._id = new mongodb.ObjectId(id);
 	}
 
 	async save() {
@@ -27,7 +27,7 @@ class Product {
 			// Update
 			try {
 				const res = await db.collection('products').updateOne(
-					{ _id: new mongodb.ObjectId(this._id) },
+					{ _id: this._id },
 					{
 						$set: this,
 					}
