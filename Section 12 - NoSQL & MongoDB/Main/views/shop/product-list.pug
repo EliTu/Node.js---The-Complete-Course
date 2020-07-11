@@ -20,7 +20,7 @@ block content
                             p.product__description #{product.description}
 
                         .card__actions
-                            a(class="link" href=`/products/${product.id}`) Details
+                            a(class="link" href=`/products/${product._id}`) Details
                             include ../layouts/addToCart.pug
         else 
             h1 No products

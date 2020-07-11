@@ -126,10 +126,10 @@ const getAllProducts = async (_, res) => {
 
 const getProductDetailsPage = async (req, res) => {
 	const productId = req.params.productId;
-
 	try {
-		// const product = await Product.findAll({where: {id: productId}})
-		const product = await Product.findByPk(productId);
+		const product = await Product.findProductById(productId);
+		console.log(product);
+
 		res.render('shop/product-details', {
 			docTitle: `Product: ${product.title}`,
 			pageSubtitle: 'Product Details',

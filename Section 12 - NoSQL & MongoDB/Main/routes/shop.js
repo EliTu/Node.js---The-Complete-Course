@@ -16,7 +16,7 @@ const {
 
 router.get('/', getShopPage);
 router.get('/products', getAllProducts);
-// router.get('/products/:productId', getProductDetailsPage);
+router.get('/products/:productId', getProductDetailsPage);
 // router.get('/cart', getCartPage);
 // router.get('/orders', getOrdersPage);
 // router.get('/checkout', getCheckoutPage);

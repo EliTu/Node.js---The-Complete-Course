@@ -20,9 +20,9 @@ block content
                             p.product__description #{product.description}
 
                         .card__actions
-                            a(class="link" href=`/admin/edit-product/${product.id}?edit=true`) Edit
+                            a(class="link" href=`/admin/edit-product/${product._id}?edit=true`) Edit
                             form(action="/admin/delete-product" method="POST")
-                                input(type="hidden" name="deletedProductId" value=`${product.id}`)
+                                input(type="hidden" name="deletedProductId" value=`${product._id}`)
                                 button(class='btn' type="submit") Delete
         else 
             h1 No products
