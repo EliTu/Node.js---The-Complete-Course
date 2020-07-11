@@ -80,24 +80,20 @@ const postProduct = async (req, res) => {
 	}
 };
 
-// const postDeleteProduct = async (req, res) => {
-// 	const productId = req.body.deletedProductId;
-// 	try {
-// 		await Product.destroy({
-// 			where: {
-// 				id: productId,
-// 			},
-// 		});
-// 		res.redirect('/admin/admin-products');
-// 	} catch (error) {
-// 		console.log(error);
-// 	}
-// };
+const postDeleteProduct = async (req, res) => {
+	const productId = req.body.deletedProductId;
+	try {
+		await Product.deleteById(productId);
+		res.redirect('/admin/admin-products');
+	} catch (error) {
+		console.log(error);
+	}
+};
 
 module.exports = {
 	getAddProduct,
 	getEditProduct,
 	getAdminProduct,
 	postProduct,
-	// postDeleteProduct,
+	postDeleteProduct,
 };
