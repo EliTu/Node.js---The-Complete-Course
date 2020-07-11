@@ -13,65 +13,48 @@ class Product {
 		this._id = id ? new mongodb.ObjectId(id) : null;
 	}
 
-	async save() {
+	save() {
 		const db = getDb();
 		if (!this._id) {
 			// Insert (create a new one)
-			try {
-				const res = await db.collection('products').insertOne(this);
-				return res;
-			} catch (error) {
-				console.log(error);
-			}
+			const res = db.collection('products').insertOne(this);
+			return res;
 		} else {
 			// Update
-			try {
-				const res = await db.collection('products').updateOne(
-					{ _id: this._id },
-					{
-						$set: this,
-					}
-				);
-				return res;
-			} catch (error) {
-				console.log(error);
-			}
+			const res = db.collection('products').updateOne(
+				{ _id: this._id },
+				{
+					$set: this,
+				}
+			);
+			return res;
 		}
 	}
 
-	static async fetchAllProducts() {
+	static fetchAllProducts() {
 		const db = getDb();
-		try {
-			const product = await db.collection('products').find().toArray();
-			return product;
-		} catch (error) {
-			console.log(error);
-		}
+
+		const product = db.collection('products').find().toArray();
+		return product;
 	}
 
 	static async findProductById(prodId) {
 		const db = getDb();
-		try {
-			const res = await db
-				.collection('products')
-				.find({ _id: new mongodb.ObjectId(prodId) })
-				.next();
-			return res;
-		} catch (error) {
-			console.log(error);
-		}
+
+		const res = db
+			.collection('products')
+			.find({ _id: new mongodb.ObjectId(prodId) })
+			.next();
+		return res;
 	}
 
-	static async deleteById(prodId) {
+	static deleteById(prodId) {
 		const db = getDb();
-		try {
-			const res = await db
-				.collection('products')
-				.deleteOne({ _id: new mongodb.ObjectId(prodId) });
-			return res;
-		} catch (error) {
-			console.log(error);
-		}
+
+		const res = db
+			.collection('products')
+			.deleteOne({ _id: new mongodb.ObjectId(prodId) });
+		return res;
 	}
 }
 
