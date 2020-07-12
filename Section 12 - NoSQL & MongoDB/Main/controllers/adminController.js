@@ -54,8 +54,16 @@ const getAdminProduct = async (req, res) => {
 
 const postProduct = async (req, res) => {
 	const productId = req.body.productId && req.body.productId;
+	const userId = req.user._id;
 	const { title, description, price, imageUrl } = req.body;
-	const product = new Product(title, price, description, imageUrl, productId);
+	const product = new Product(
+		title,
+		price,
+		description,
+		imageUrl,
+		productId,
+		userId
+	);
 
 	if (!productId) {
 		// Save a new product

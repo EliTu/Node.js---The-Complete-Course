@@ -1,7 +1,7 @@
 const { getDb } = require('../util/database');
 const mongodb = require('mongodb');
 class Product {
-	constructor(title, price, description, imageUrl, id) {
+	constructor(title, price, description, imageUrl, productId, userId) {
 		(this.title = title),
 			(this.price = price),
 			(this.description = description),
@@ -10,7 +10,8 @@ class Product {
 						Math.floor(Math.random() * (45 - 1)) + 1
 				  }`
 				: imageUrl);
-		this._id = id ? new mongodb.ObjectId(id) : null;
+		this._id = productId ? new mongodb.ObjectId(productId) : null;
+		this.userId = userId ? new mongodb.ObjectId(userId) : null;
 	}
 
 	save() {
