@@ -27,13 +27,17 @@ class User {
 		const cartProduct = this.cart.items.findIndex(
 			(el) => el._id === product._id
 		);
-		if (!cartProduct) {
-			const updatedCart = { items: [{ ...product, quantity: 1 }] };
+
+		if (!cartProduct !== -1) {
+			const updatedCart = {
+				items: [{ productId: new mongodb.ObjectId(product._id), quantity: 1 }],
+			};
 			const db = getDb();
 
 			const res = db
 				.collection('users')
 				.updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
+
 			return res;
 		}
 	}

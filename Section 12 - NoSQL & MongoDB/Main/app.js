@@ -29,8 +29,9 @@ const shopRoute = require('./routes/shop');
 const { getPageNotFound } = require('./controllers/404');
 
 app.use(async (req, res, next) => {
-	const user = await User.findUserById('5f09ca60527a25f80bc834ab');
-	req.user = user;
+	const user = await User.findUserById('5f0cb0900778562c35d71825');
+
+	req.user = new User(user.username, user.email, user.cart, user._id);
 	next();
 });
 
@@ -43,7 +44,7 @@ app.use(getPageNotFound);
 
 mongoConnect(async () => {
 	try {
-		const user = await User.findUserById('5f09ca60527a25f80bc834ab');
+		const user = await User.findUserById('5f0cb0900778562c35d71825');
 		if (user) {
 			const port = process.env.PORT || 3000;
 			app.listen(port, () => console.log(`Connected on port: ${port}`));

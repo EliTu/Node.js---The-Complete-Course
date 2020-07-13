@@ -25,60 +25,67 @@ const getOrdersPage = async (req, res) => {
 };
 
 const getCartPage = async (req, res) => {
-	try {
-		const userCart = await req.user.getCart();
-		const cartProducts = await userCart.getProducts();
-
-		res.render('shop/cart', {
-			docTitle: 'Cart',
-			pageSubtitle: 'Your Cart',
-			path: '/cart',
-			cartProducts: cartProducts,
-			// totalPrice: ,
-		});
-	} catch (error) {
-		console.log(error);
-	}
+	// try {
+	// 	const userCart = await req.user.getCart();
+	// 	const cartProducts = await userCart.getProducts();
+	// 	res.render('shop/cart', {
+	// 		docTitle: 'Cart',
+	// 		pageSubtitle: 'Your Cart',
+	// 		path: '/cart',
+	// 		cartProducts: cartProducts,
+	// 		// totalPrice: ,
+	// 	});
+	// } catch (error) {
+	// 	console.log(error);
+	// }
 };
 
 const postCart = async (req, res) => {
 	const prodId = req.body.productId;
 
 	try {
-		const cart = await req.user.getCart();
-		const [cartProduct] = await cart.getProducts({ where: { id: prodId } });
-
-		let newQuantity = 1;
-
-		// If cart should be updated with an existing product (increment++)
-		if (cartProduct) {
-			const existingProduct = cartProduct;
-
-			if (existingProduct) {
-				const oldQuantity = existingProduct.cartItem.quantity;
-				newQuantity = oldQuantity + 1;
-
-				try {
-					await cart.addProduct(existingProduct, {
-						through: { quantity: newQuantity },
-					});
-					res.redirect('/cart');
-				} catch (error) {
-					console.log(error);
-				}
-				return;
-			}
-		}
-		// If no previous cart item, create a new one with quantity of 1
-		const newCartProduct = await Product.findByPk(prodId);
-		await cart.addProduct(newCartProduct, {
-			through: { quantity: newQuantity },
-		});
+		const product = await Product.findProductById(prodId);
+		await req.user.addToCart(product);
 
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);
 	}
+	// 	try {
+	// 		const cart = await req.user.getCart();
+	// 		const [cartProduct] = await cart.getProducts({ where: { id: prodId } });
+
+	// 		let newQuantity = 1;
+
+	// 		// If cart should be updated with an existing product (increment++)
+	// 		if (cartProduct) {
+	// 			const existingProduct = cartProduct;
+
+	// 			if (existingProduct) {
+	// 				const oldQuantity = existingProduct.cartItem.quantity;
+	// 				newQuantity = oldQuantity + 1;
+
+	// 				try {
+	// 					await cart.addProduct(existingProduct, {
+	// 						through: { quantity: newQuantity },
+	// 					});
+	// 					res.redirect('/cart');
+	// 				} catch (error) {
+	// 					console.log(error);
+	// 				}
+	// 				return;
+	// 			}
+	// 		}
+	// 		// If no previous cart item, create a new one with quantity of 1
+	// 		const newCartProduct = await Product.findByPk(prodId);
+	// 		await cart.addProduct(newCartProduct, {
+	// 			through: { quantity: newQuantity },
+	// 		});
+
+	// 		res.redirect('/cart');
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
 };
 
 const postCartDeleteProduct = async (req, res) => {
