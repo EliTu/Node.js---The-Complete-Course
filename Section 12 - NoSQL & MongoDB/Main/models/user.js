@@ -23,6 +23,24 @@ class User {
 		return res;
 	}
 
+	async getCart() {
+		const db = getDb();
+		const productIds = this.cart.items.map((item) => item.productId);
+		const cartProducts = await db
+			.collection('products')
+			.find({ _id: { $in: productIds } })
+			.toArray();
+
+		return cartProducts.map((product) => {
+			return {
+				...product,
+				quantity: this.cart.items.find(
+					(item) => item.productId.toString() === product._id.toString()
+				).quantity,
+			};
+		});
+	}
+
 	addToCart(product) {
 		const cartProductIndex = this.cart.items.findIndex(
 			(el) => el.productId.toString() === product._id.toString()

@@ -25,19 +25,23 @@ const getOrdersPage = async (req, res) => {
 };
 
 const getCartPage = async (req, res) => {
-	// try {
-	// 	const userCart = await req.user.getCart();
-	// 	const cartProducts = await userCart.getProducts();
-	// 	res.render('shop/cart', {
-	// 		docTitle: 'Cart',
-	// 		pageSubtitle: 'Your Cart',
-	// 		path: '/cart',
-	// 		cartProducts: cartProducts,
-	// 		// totalPrice: ,
-	// 	});
-	// } catch (error) {
-	// 	console.log(error);
-	// }
+	try {
+		const cartProducts = await req.user.getCart();
+
+		const priceCalc = +cartProducts
+			.reduce((a, c) => a + +c.price * +c.quantity, 0)
+			.toFixed(2);
+
+		res.render('shop/cart', {
+			docTitle: 'Cart',
+			pageSubtitle: 'Your Cart',
+			path: '/cart',
+			cartProducts: cartProducts,
+			totalPrice: priceCalc,
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 const postCart = async (req, res) => {
