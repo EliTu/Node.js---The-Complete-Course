@@ -42,8 +42,8 @@ class User {
 	}
 
 	addToCart(product) {
-		const cartProductIndex = this.cart.items.findIndex(
-			(el) => el.productId.toString() === product._id.toString()
+		const cartProductIndex = this.cart.items.findIndex((el) =>
+			el.productId ? el.productId.toString() === product._id.toString() : null
 		);
 		let newQuantity = 1;
 		const updatedCartItems = [...this.cart.items];
@@ -70,6 +70,30 @@ class User {
 			.updateOne({ _id: this._id }, { $set: { cart: updatedCart } });
 
 		return res;
+	}
+
+	deleteCartItem(productId, isDeleteAll) {
+		let updatedCartItems;
+
+		if (isDeleteAll) {
+			updatedCartItems = this.cart.items.filter(
+				(item) => item.productId.toString() !== productId.toString()
+			);
+		} else {
+			updatedCartItems = this.cart.items.map((item) =>
+				item.productId.toString() === productId.toString()
+					? { ...item, quantity: item.quantity - 1 }
+					: item
+			);
+		}
+
+		const db = getDb();
+		return db
+			.collection('users')
+			.updateOne(
+				{ _id: new mongodb.ObjectId(this._id) },
+				{ $set: { cart: { items: updatedCartItems } } }
+			);
 	}
 }
 

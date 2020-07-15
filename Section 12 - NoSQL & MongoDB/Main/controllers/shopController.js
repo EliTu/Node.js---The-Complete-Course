@@ -58,17 +58,10 @@ const postCart = async (req, res) => {
 };
 
 const postCartDeleteProduct = async (req, res) => {
-	const {
-		cartDeleteId: id,
-		cartDeletePrice: price,
-		isDeleteAll: isDeleteAll,
-	} = req.body;
+	const { cartDeleteId: id, isDeleteAll: isDeleteAll } = req.body;
 
 	try {
-		const cart = await req.user.getCart();
-		const [product] = await cart.getProducts({ where: { id: id } });
-
-		await product.cartItem.destroy();
+		await req.user.deleteCartItem(id, isDeleteAll);
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);

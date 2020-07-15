@@ -22,7 +22,7 @@ router.get('/cart', getCartPage);
 // router.get('/checkout', getCheckoutPage);
 
 router.post('/cart', postCart);
-// router.post('/cart-delete-product', postCartDeleteProduct);
+router.post('/cart-delete-product', postCartDeleteProduct);
 // router.post('/create-order', postOrder);
 
 module.exports = router;
