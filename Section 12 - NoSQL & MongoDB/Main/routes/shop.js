@@ -18,11 +18,11 @@ router.get('/', getShopPage);
 router.get('/products', getAllProducts);
 router.get('/products/:productId', getProductDetailsPage);
 router.get('/cart', getCartPage);
-// router.get('/orders', getOrdersPage);
+router.get('/orders', getOrdersPage);
 // router.get('/checkout', getCheckoutPage);
 
 router.post('/cart', postCart);
 router.post('/cart-delete-product', postCartDeleteProduct);
-// router.post('/create-order', postOrder);
+router.post('/create-order', postOrder);
 
 module.exports = router;

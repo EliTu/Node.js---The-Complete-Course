@@ -95,6 +95,22 @@ class User {
 				{ $set: { cart: { items: updatedCartItems } } }
 			);
 	}
+
+	async addOrder() {
+		const db = getDb();
+		try {
+			await db.collection('orders').insertOne(this.cart);
+
+			// Empty the cart in the user local state and DB
+			this.cart = { items: [] };
+			db.collection('users').updateOne(
+				{ _id: new mongodb.ObjectId(this._id) },
+				{ $set: { cart: { items: [] } } }
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	}
 }
 
 module.exports = User;
