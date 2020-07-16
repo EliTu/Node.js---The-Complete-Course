@@ -1,0 +1,25 @@
+extends ../layouts/main-layout.pug
+
+block content 
+    h2 #{pageSubtitle}
+    main
+        if cartProducts.length
+            ul
+                each product in cartProducts
+                    li
+                        p #{product.title} x #{product.quantity}
+                        div(style="display: flex;")
+                            form(action="/cart-delete-product" method="POST")
+                                input(type="hidden" name="cartDeleteId" value=`${product._id}`)
+                                input(type="hidden" name="isDeleteAll" value="true")
+                                button(class="btn" type="submit") x
+
+                            form(action="/cart-delete-product" method="POST")
+                                input(type="hidden" name="cartDeleteId" value=`${product._id}`)
+                                button(class="btn" type="submit") -
+
+            h3 Total price: $#{totalPrice}
+            form(action="/create-order" method="POST")
+                button(class="btn" type="submit") Checkout
+        else
+            h1 No products in cart!
