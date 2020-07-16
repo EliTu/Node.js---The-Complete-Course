@@ -96,10 +96,27 @@ class User {
 			);
 	}
 
+	getOrders() {
+		const db = getDb();
+		return db.collection('orders');
+	}
+
 	async addOrder() {
 		const db = getDb();
 		try {
-			await db.collection('orders').insertOne(this.cart);
+			// First get the product information of all the products in the cart
+			const cartProducts = await this.getCart();
+
+			// Store the cart products info along with the user info as the order object
+			const order = {
+				items: cartProducts,
+				user: {
+					_id: new mongodb.ObjectId(this._id),
+					username: this.username,
+					email: this.email,
+				},
+			};
+			await db.collection('orders').insertOne(order);
 
 			// Empty the cart in the user local state and DB
 			this.cart = { items: [] };

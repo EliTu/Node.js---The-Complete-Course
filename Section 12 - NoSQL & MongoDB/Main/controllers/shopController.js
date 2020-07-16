@@ -111,6 +111,8 @@ const getProductDetailsPage = async (req, res) => {
 	}
 };
 
+
+
 const postOrder = async (req, res) => {
 	try {
 		await req.user.addOrder();
