@@ -12,7 +12,7 @@ const getShopPage = (_, res) => {
 
 const getOrdersPage = async (req, res) => {
 	try {
-		const orders = await req.user.getOrders({ include: ['products'] });
+		const orders = await req.user.getOrders();
 
 		res.render('shop/orders', {
 			docTitle: 'Orders',
@@ -110,8 +110,6 @@ const getProductDetailsPage = async (req, res) => {
 		console.log(error);
 	}
 };
-
-
 
 const postOrder = async (req, res) => {
 	try {
