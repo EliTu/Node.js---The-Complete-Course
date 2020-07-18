@@ -20,7 +20,7 @@ const getEditProduct = async (req, res) => {
 	const prodId = req.params.productId;
 
 	try {
-		const product = await Product.findProductById(prodId);
+		const product = await Product.findById(prodId);
 		if (!product) return res.redirect('/');
 
 		res.render('admin/set-product', {
@@ -40,7 +40,7 @@ const getEditProduct = async (req, res) => {
 
 const getAdminProduct = async (req, res) => {
 	try {
-		const products = await Product.fetchAllProducts();
+		const products = await Product.find();
 		res.render('admin/admin-products', {
 			docTitle: 'Admin Products',
 			pageSubtitle: 'Products in store',
@@ -53,8 +53,7 @@ const getAdminProduct = async (req, res) => {
 };
 
 const postProduct = async (req, res) => {
-	// const productId = req.body.productId && req.body.productId;
-	const productId = undefined;
+	const productId = req.body.productId && req.body.productId;
 	// const userId = req.user._id;
 	const { title, description, price, imageUrl } = req.body;
 	const product = new Product({
@@ -82,10 +81,15 @@ const postProduct = async (req, res) => {
 	} else {
 		// Update an existing product
 		try {
-			const productToUpdate = await Product.findProductById(productId);
+			const productToUpdate = await Product.findById(productId);
 			if (!productToUpdate) res.redirect('/admin/admin-product');
 
-			await product.save();
+			await Product.findByIdAndUpdate(productToUpdate._id, {
+				title: title,
+				price: price,
+				description: description,
+				imageUrl: imageUrl,
+			});
 			res.redirect('/admin/admin-products');
 		} catch (error) {
 			console.log(error);
