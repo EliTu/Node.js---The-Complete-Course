@@ -42,7 +42,8 @@ app.use(shopRoute);
 app.use(getPageNotFound);
 mongoose
 	.connect(
-		'mongodb+srv://eliad91:eliad1991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority'
+		'mongodb+srv://eliad91:eliad1991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority',
+		{ useUnifiedTopology: true, useNewUrlParser: true }
 	)
 	.then(() => {
 		const port = process.env.PORT || 3000;

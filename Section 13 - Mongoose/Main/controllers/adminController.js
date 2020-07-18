@@ -53,17 +53,22 @@ const getAdminProduct = async (req, res) => {
 };
 
 const postProduct = async (req, res) => {
-	const productId = req.body.productId && req.body.productId;
-	const userId = req.user._id;
+	// const productId = req.body.productId && req.body.productId;
+	const productId = undefined;
+	// const userId = req.user._id;
 	const { title, description, price, imageUrl } = req.body;
-	const product = new Product(
-		title,
-		price,
-		description,
-		imageUrl,
-		productId,
-		userId
-	);
+	const product = new Product({
+		title: title,
+		price: price,
+		description: description,
+		imageUrl: !imageUrl
+			? `https://loremflickr.com/320/240/taiwan?random=${
+					Math.floor(Math.random() * (45 - 1)) + 1
+			  }`
+			: imageUrl,
+		// productId,
+		// userId,
+	});
 
 	if (!productId) {
 		// Save a new product

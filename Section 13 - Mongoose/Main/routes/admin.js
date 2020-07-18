@@ -11,12 +11,12 @@ const {
 } = require('../controllers/adminController');
 
 // /admin/add-product => GET
-// router.get('/add-product', getAddProduct);
+router.get('/add-product', getAddProduct);
 // router.get('/admin-products', getAdminProduct);
 // router.get('/edit-product/:productId', getEditProduct);
 
 // /admin/add-product => POST
-// router.post('/add-product', postProduct);
+router.post('/add-product', postProduct);
 // router.post('/edit-product', postProduct);
 // router.post('/delete-product', postDeleteProduct);
 
