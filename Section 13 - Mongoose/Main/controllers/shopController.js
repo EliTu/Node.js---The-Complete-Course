@@ -97,8 +97,7 @@ const getAllProducts = async (_, res) => {
 const getProductDetailsPage = async (req, res) => {
 	const productId = req.params.productId;
 	try {
-		const product = await Product.findProductById(productId);
-		console.log(product);
+		const product = await Product.findById(productId);
 
 		res.render('shop/product-details', {
 			docTitle: `Product: ${product.title}`,
