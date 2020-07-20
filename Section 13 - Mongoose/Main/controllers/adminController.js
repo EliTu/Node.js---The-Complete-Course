@@ -100,7 +100,7 @@ const postProduct = async (req, res) => {
 const postDeleteProduct = async (req, res) => {
 	const productId = req.body.deletedProductId;
 	try {
-		await Product.deleteById(productId);
+		await Product.findByIdAndRemove(productId);
 		res.redirect('/admin/admin-products');
 	} catch (error) {
 		console.log(error);
