@@ -28,9 +28,9 @@ const shopRoute = require('./routes/shop');
 const { getPageNotFound } = require('./controllers/404');
 
 app.use(async (req, res, next) => {
-	// const user = await User.findUserById('5f0cb0900778562c35d71825');
+	const user = await User.findById('5f15f27574eaee3599a8d0de');
 
-	// req.user = new User(user.username, user.email, user.cart, user._id);
+	req.user = user;
 	next();
 });
 
@@ -45,7 +45,18 @@ mongoose
 		'mongodb+srv://eliad91:eliad1991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority',
 		{ useUnifiedTopology: true, useNewUrlParser: true }
 	)
-	.then(() => {
+	.then(async () => {
+		let user = await User.findOne();
+		if (!user) {
+			user = new User({
+				name: 'Eliad',
+				email: 'e@e.com',
+				cart: {
+					items: [],
+				},
+			});
+			user.save();
+		}
 		const port = process.env.PORT || 3000;
 		app.listen(port, () => console.log(`Connected on port: ${port}`));
 	})
