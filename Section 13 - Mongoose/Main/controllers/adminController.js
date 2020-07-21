@@ -54,7 +54,6 @@ const getAdminProduct = async (req, res) => {
 
 const postProduct = async (req, res) => {
 	const productId = req.body.productId && req.body.productId;
-	// const userId = req.user._id;
 	const { title, description, price, imageUrl } = req.body;
 	const product = new Product({
 		title: title,
@@ -65,8 +64,8 @@ const postProduct = async (req, res) => {
 					Math.floor(Math.random() * (45 - 1)) + 1
 			  }`
 			: imageUrl,
+		userId: req.user._id,
 		// productId,
-		// userId,
 	});
 
 	if (!productId) {
