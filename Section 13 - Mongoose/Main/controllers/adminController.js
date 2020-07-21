@@ -41,6 +41,8 @@ const getEditProduct = async (req, res) => {
 const getAdminProduct = async (req, res) => {
 	try {
 		const products = await Product.find();
+		// .select('title price -_id')
+		// .populate('userId');
 		res.render('admin/admin-products', {
 			docTitle: 'Admin Products',
 			pageSubtitle: 'Products in store',

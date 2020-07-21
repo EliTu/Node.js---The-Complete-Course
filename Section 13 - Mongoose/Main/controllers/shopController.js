@@ -49,7 +49,7 @@ const postCart = async (req, res) => {
 	const prodId = req.body.productId;
 
 	try {
-		const product = await Product.findProductById(prodId);
+		const product = await Product.findById(prodId);
 		await req.user.addToCart(product);
 
 		res.redirect('/cart');
