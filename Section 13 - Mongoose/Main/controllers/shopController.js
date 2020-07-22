@@ -27,10 +27,13 @@ const getOrdersPage = async (req, res) => {
 
 const getCartPage = async (req, res) => {
 	try {
-		const cartProducts = await req.user.getCart();
-
+		const userCart = await req.user
+			.populate('cart.items.productId')
+			.execPopulate();
+		const cartProducts = [...userCart.cart.items];
+		
 		const priceCalc = +cartProducts
-			.reduce((a, c) => a + +c.price * +c.quantity, 0)
+			.reduce((a, c) => a + +c.productId.price * +c.quantity, 0)
 			.toFixed(2);
 
 		res.render('shop/cart', {
