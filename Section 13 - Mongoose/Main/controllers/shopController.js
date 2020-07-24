@@ -31,11 +31,10 @@ const getCartPage = async (req, res) => {
 			.populate('cart.items.productId')
 			.execPopulate();
 		const cartProducts = [...userCart.cart.items];
-		
+
 		const priceCalc = +cartProducts
 			.reduce((a, c) => a + +c.productId.price * +c.quantity, 0)
 			.toFixed(2);
-
 		res.render('shop/cart', {
 			docTitle: 'Cart',
 			pageSubtitle: 'Your Cart',
@@ -65,7 +64,7 @@ const postCartDeleteProduct = async (req, res) => {
 	const { cartDeleteId: id, isDeleteAll: isDeleteAll } = req.body;
 
 	try {
-		await req.user.deleteCartItem(id, isDeleteAll);
+		await req.user.removeFromCart(id, isDeleteAll);
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);

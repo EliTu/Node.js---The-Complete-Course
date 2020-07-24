@@ -52,4 +52,24 @@ userSchema.methods.addToCart = function (product) {
 	return this.save();
 };
 
+userSchema.methods.removeFromCart = function (productId, isDeleteAll) {
+	let updatedCartItems;
+
+	if (isDeleteAll) {
+		updatedCartItems = this.cart.items.filter(
+			(item) => item.productId.toString() !== productId.toString()
+		);
+	} else {
+		updatedCartItems = this.cart.items.map((item) =>
+			item.productId.toString() === productId.toString()
+				? { productId: item.productId, quantity: item.quantity - 1 }
+				: item
+		);
+	}
+
+	this.cart.items = updatedCartItems;
+
+	return this.save();
+};
+
 module.exports = mongoose.model('User', userSchema);
