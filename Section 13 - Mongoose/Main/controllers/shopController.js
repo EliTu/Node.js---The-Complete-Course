@@ -1,5 +1,6 @@
 const Product = require('../models/product.js');
 const User = require('../models/user.js');
+const Order = require('../models/order');
 
 //  Specific for shop or '/':
 const getShopPage = (_, res) => {
@@ -114,7 +115,22 @@ const getProductDetailsPage = async (req, res) => {
 
 const postOrder = async (req, res) => {
 	try {
-		await req.user.addOrder();
+		const cartProductsData = await req.user
+			.populate('cart.items.productId')
+			.execPopulate();
+
+		const products = [...cartProductsData.cart.items].map((item) => {
+			return { quantity: item.quantity, product: { ...item.productId._doc } };
+		});
+
+		const order = new Order({
+			products: products,
+			user: {
+				name: req.user.name,
+				userId: req.user,
+			},
+		});
+		await order.save();
 
 		res.redirect('/orders');
 	} catch (error) {
