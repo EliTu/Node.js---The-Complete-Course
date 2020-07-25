@@ -13,8 +13,7 @@ const getShopPage = (_, res) => {
 
 const getOrdersPage = async (req, res) => {
 	try {
-		const orders = await req.user.getOrders();
-
+		const orders = await Order.find({ 'user.userId': req.user._id });
 		res.render('shop/orders', {
 			docTitle: 'Orders',
 			pageSubtitle: 'Your Orders',

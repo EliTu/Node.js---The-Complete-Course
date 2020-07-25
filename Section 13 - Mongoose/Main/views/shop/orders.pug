@@ -7,8 +7,8 @@ block content
             for order in orders
                 div Order id: #{order._id}
                     ul
-                        for item in order.items
+                        for product in order.products
                             li
-                                p  #{item.title} x #{item.quantity}
+                                p  #{product.product.title} x #{product.quantity}
         else 
             h2 No orders to Display!
