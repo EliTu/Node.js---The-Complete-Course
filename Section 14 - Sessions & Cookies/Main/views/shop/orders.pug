@@ -1,0 +1,14 @@
+extends ../layouts/main-layout.pug
+
+block content 
+    h2 #{pageSubtitle}
+    main
+        if orders.length
+            for order in orders
+                div Order id: #{order._id}
+                    ul
+                        for product in order.products
+                            li
+                                p  #{product.product.title} x #{product.quantity}
+        else 
+            h2 No orders to Display!
