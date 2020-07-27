@@ -25,7 +25,20 @@ const appForms = {
 			placeholder: 'Enter a brief description of the product',
 		},
 	],
-	authForm: [],
+	authForm: [
+		{
+			name: 'email',
+			type: 'email',
+			title: 'Email',
+			placeholder: 'Please enter the your email',
+		},
+		{
+			name: 'password',
+			type: 'password',
+			title: 'Password',
+			placeholder: 'Please enter your password',
+		},
+	],
 };
 
 module.exports = appForms;
