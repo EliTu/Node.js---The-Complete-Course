@@ -1,12 +1,12 @@
 const Product = require('../models/product');
-const forms = require('../util/forms');
+const { setProductForm } = require('../util/forms');
 
 // Specific for '/admin/...':
 const getAddProduct = (_, res) => {
 	res.render('admin/set-product', {
 		docTitle: 'Add Product',
 		pageSubtitle: 'Add a product',
-		forms: forms,
+		forms: setProductForm,
 		path: '/admin/add-product',
 		formsActive: true,
 		formsCSS: true,
@@ -26,7 +26,7 @@ const getEditProduct = async (req, res) => {
 		res.render('admin/set-product', {
 			docTitle: 'Edit Product',
 			pageSubtitle: 'Edit Product',
-			forms: forms,
+			forms: setProductForm,
 			path: '/admin/edit-product',
 			formsActive: true,
 			formsCSS: true,
