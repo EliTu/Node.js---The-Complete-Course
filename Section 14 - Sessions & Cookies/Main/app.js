@@ -22,6 +22,7 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes import
+const authRoutes = require('./routes/auth');
 const AdminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
 
@@ -35,6 +36,7 @@ app.use(async (req, res, next) => {
 });
 
 // app routes
+app.use(authRoutes);
 app.use('/admin', AdminRoute);
 app.use(shopRoute);
 
