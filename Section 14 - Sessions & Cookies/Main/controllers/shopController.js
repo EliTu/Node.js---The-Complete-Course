@@ -1,13 +1,13 @@
 const Product = require('../models/product.js');
-const User = require('../models/user.js');
 const Order = require('../models/order');
 
 //  Specific for shop or '/':
-const getShopPage = (_, res) => {
+const getShopPage = (req, res) => {
 	res.render('shop/index', {
 		docTitle: 'Shop Main Page',
 		pageSubtitle: 'Welcome to the shop',
 		path: '/',
+		isLoggedIn: req.isLoggedIn,
 	});
 };
 
@@ -19,6 +19,7 @@ const getOrdersPage = async (req, res) => {
 			pageSubtitle: 'Your Orders',
 			path: '/orders',
 			orders: orders,
+			isLoggedIn: req.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -41,6 +42,7 @@ const getCartPage = async (req, res) => {
 			path: '/cart',
 			cartProducts: cartProducts,
 			totalPrice: priceCalc,
+			isLoggedIn: req.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -71,15 +73,16 @@ const postCartDeleteProduct = async (req, res) => {
 	}
 };
 
-const getCheckoutPage = (_, res) => {
+const getCheckoutPage = (req, res) => {
 	res.render('shop/checkout', {
 		docTitle: 'Checkout',
 		pageSubtitle: 'Checkout',
 		path: '/checkout',
+		isLoggedIn: req.isLoggedIn,
 	});
 };
 
-const getAllProducts = async (_, res) => {
+const getAllProducts = async (req, res) => {
 	try {
 		const products = await Product.find();
 		res.render('shop/product-list', {
@@ -90,6 +93,7 @@ const getAllProducts = async (_, res) => {
 			hasProducts: products.length,
 			productsActive: true,
 			productCSS: true,
+			isLoggedIn: req.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -106,6 +110,7 @@ const getProductDetailsPage = async (req, res) => {
 			pageSubtitle: 'Product Details',
 			product: product,
 			path: '/products',
+			isLoggedIn: req.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);

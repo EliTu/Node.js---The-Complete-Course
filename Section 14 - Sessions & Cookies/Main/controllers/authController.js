@@ -6,7 +6,13 @@ const getLoginPage = (req, res) => {
 		pageSubtitle: 'Enter details to log in',
 		forms: authForm,
 		path: '/login',
+		isLoggedIn: req.isLoggedIn,
 	});
 };
 
-module.exports = { getLoginPage };
+const postLogin = (req, res) => {
+	req.isLoggedIn = true;
+	res.redirect('/');
+};
+
+module.exports = { getLoginPage, postLogin };

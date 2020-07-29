@@ -2,12 +2,13 @@ const Product = require('../models/product');
 const { setProductForm } = require('../util/forms');
 
 // Specific for '/admin/...':
-const getAddProduct = (_, res) => {
+const getAddProduct = (req, res) => {
 	res.render('admin/set-product', {
 		docTitle: 'Add Product',
 		pageSubtitle: 'Add a product',
 		forms: setProductForm,
 		path: '/admin/add-product',
+		isLoggedIn: req.isLoggedIn,
 		formsActive: true,
 		formsCSS: true,
 	});
@@ -32,6 +33,7 @@ const getEditProduct = async (req, res) => {
 			formsCSS: true,
 			isEditingProduct: editMode,
 			product: product,
+			isLoggedIn: req.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -48,6 +50,7 @@ const getAdminProduct = async (req, res) => {
 			pageSubtitle: 'Products in store',
 			path: '/admin/admin-products',
 			products: products,
+			isLoggedIn: req.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -67,7 +70,6 @@ const postProduct = async (req, res) => {
 			  }`
 			: imageUrl,
 		userId: req.user._id,
-		// productId,
 	});
 
 	if (!productId) {
