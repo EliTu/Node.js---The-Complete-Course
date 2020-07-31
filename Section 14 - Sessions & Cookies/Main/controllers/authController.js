@@ -1,7 +1,6 @@
 const { authForm } = require('../util/forms');
 
 const getLoginPage = (req, res) => {
-	console.log(req.get('Cookie'));
 	const isLoggedIn =
 		req.get('Cookie') && Boolean(req.get('Cookie').split('=')[1]);
 	res.render('auth/login', {

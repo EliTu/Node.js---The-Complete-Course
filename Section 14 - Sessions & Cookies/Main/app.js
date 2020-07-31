@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const parser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const app = express();
 
@@ -17,7 +18,14 @@ app.use(
 		extended: false,
 	})
 );
-
+// Register a session middleware
+app.use(
+	session({
+		secret: 'this is a secret',
+		resave: false,
+		saveUninitialized: false,
+	})
+);
 // Serve CSS files statically from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
