@@ -1,8 +1,8 @@
 const { authForm } = require('../util/forms');
 
 const getLoginPage = (req, res) => {
-	const isLoggedIn =
-		req.get('Cookie') && Boolean(req.get('Cookie').split('=')[1]);
+	const isLoggedIn = req.session.isLoggedIn;
+	console.log(isLoggedIn);
 	res.render('auth/login', {
 		docTitle: 'Login',
 		pageSubtitle: 'Enter details to log in',
@@ -13,7 +13,7 @@ const getLoginPage = (req, res) => {
 };
 
 const postLogin = (req, res) => {
-	res.setHeader('Set-Cookie', 'loggedIn=true');
+	req.session.isLoggedIn = true;
 	res.redirect('/');
 };
 
