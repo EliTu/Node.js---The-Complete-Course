@@ -3,8 +3,16 @@ const path = require('path');
 const parser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const mongodbSessionStore = require('connect-mongodb-session')(session);
+
+const MONGODB_URI =
+	'mongodb+srv://eliad91:eliad1991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority';
 
 const app = express();
+const store = new mongodbSessionStore({
+	uri: MONGODB_URI,
+	collection: 'sessions',
+});
 
 const User = require('./models/user');
 
@@ -24,6 +32,7 @@ app.use(
 		secret: 'this is a secret',
 		resave: false,
 		saveUninitialized: false,
+		store: store,
 	})
 );
 // Serve CSS files statically from the public folder
@@ -51,10 +60,7 @@ app.use(shopRoute);
 // 404 catch all route
 app.use(getPageNotFound);
 mongoose
-	.connect(
-		'mongodb+srv://eliad91:eliad1991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority',
-		{ useUnifiedTopology: true, useNewUrlParser: true }
-	)
+	.connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
 	.then(async () => {
 		let user = await User.findOne();
 		if (!user) {
