@@ -45,12 +45,12 @@ const shopRoute = require('./routes/shop');
 
 const { getPageNotFound } = require('./controllers/404');
 
-app.use(async (req, res, next) => {
-	const user = await User.findById('5f15f27574eaee3599a8d0de');
+// app.use(async (req, res, next) => {
+// 	const user = await User.findById('5f15f27574eaee3599a8d0de');
 
-	req.user = user;
-	next();
-});
+// 	req.user = user;
+// 	next();
+// });
 
 // app routes
 app.use(authRoutes);
@@ -76,4 +76,4 @@ mongoose
 		const port = process.env.PORT || 3000;
 		app.listen(port, () => console.log(`Connected on port: ${port}`));
 	})
-	.catch((err) => console.log(error));
+	.catch((err) => console.log(err));
