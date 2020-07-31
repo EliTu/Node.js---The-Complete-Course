@@ -11,7 +11,7 @@ html(lang="en")
         header.main-header
             button#side-menu-toggle Menu  
             nav.main-header__nav
-                ul.main-header__item-list
+                .main-header__item-list
                     .main-routes
                         li.main-header__item 
                             a(href="/" , class=(path === '/' ? 'active' : '')) Shop
@@ -33,7 +33,7 @@ html(lang="en")
                             a(href="/login" , class=(path === '/login' ? 'active' : '')) Login
 
         nav.mobile-nav
-            ul.mobile-nav__item-list
+            .mobile-nav__item-list
                 li.mobile-nav__item
                     a(class=(path === '/' ? 'active' : '') href="/") Shop
                 li.mobile-nav__item

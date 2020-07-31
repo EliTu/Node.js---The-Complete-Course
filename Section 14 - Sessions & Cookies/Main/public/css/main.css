@@ -47,11 +47,11 @@ body > h2 {
 	display: flex;
 	justify-content: flex-end;
 	height: 100%;
-	width: 65%;
+	width: 60%;
 }
 
 .auth-routes {
-	width: 15%;
+	width: 35%;
 }
 
 .main-header__item {
