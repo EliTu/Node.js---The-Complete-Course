@@ -1,22 +1,21 @@
 const Product = require('../models/product');
+const User = require('../models/user');
 const { setProductForm } = require('../util/forms');
 
 // Specific for '/admin/...':
 const getAddProduct = (req, res) => {
-	const { isLoggedIn } = req.session.loginData;
 	res.render('admin/set-product', {
 		docTitle: 'Add Product',
 		pageSubtitle: 'Add a product',
 		forms: setProductForm,
 		path: '/admin/add-product',
-		isLoggedIn: isLoggedIn && isLoggedIn,
+		isLoggedIn: req.session.isLoggedIn,
 		formsActive: true,
 		formsCSS: true,
 	});
 };
 
 const getEditProduct = async (req, res) => {
-	const { isLoggedIn } = req.session.loginData;
 	const editMode = req.query.edit;
 	if (!editMode) return res.redirect('/');
 
@@ -35,7 +34,7 @@ const getEditProduct = async (req, res) => {
 			formsCSS: true,
 			isEditingProduct: editMode,
 			product: product,
-			isLoggedIn: isLoggedIn && isLoggedIn,
+			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -43,7 +42,6 @@ const getEditProduct = async (req, res) => {
 };
 
 const getAdminProduct = async (req, res) => {
-	const { isLoggedIn } = req.session.loginData;
 	try {
 		const products = await Product.find();
 		// .select('title price -_id')
@@ -53,7 +51,7 @@ const getAdminProduct = async (req, res) => {
 			pageSubtitle: 'Products in store',
 			path: '/admin/admin-products',
 			products: products,
-			isLoggedIn: isLoggedIn && isLoggedIn,
+			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -61,9 +59,9 @@ const getAdminProduct = async (req, res) => {
 };
 
 const postProduct = async (req, res) => {
-	const { userData } = req.session.loginData;
 	const productId = req.body.productId && req.body.productId;
 	const { title, description, price, imageUrl } = req.body;
+	const user = new User().init(req.session.user);
 	const product = new Product({
 		title: title,
 		price: price,
@@ -73,7 +71,7 @@ const postProduct = async (req, res) => {
 					Math.floor(Math.random() * (45 - 1)) + 1
 			  }`
 			: imageUrl,
-		userId: userData._id,
+		userId: user,
 	});
 
 	if (!productId) {
