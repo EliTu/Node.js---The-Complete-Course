@@ -1,5 +1,6 @@
 const Product = require('../models/product.js');
 const Order = require('../models/order');
+const User = require('../models/user');
 
 //  Specific for shop or '/':
 const getShopPage = (req, res) => {
@@ -27,10 +28,9 @@ const getOrdersPage = async (req, res) => {
 };
 
 const getCartPage = async (req, res) => {
+	const user = new User().init(req.session.user);
 	try {
-		const userCart = await req.session.user
-			.populate('cart.items.productId')
-			.execPopulate();
+		const userCart = await user.populate('cart.items.productId').execPopulate();
 		const cartProducts = [...userCart.cart.items];
 
 		const priceCalc = +cartProducts
@@ -50,11 +50,12 @@ const getCartPage = async (req, res) => {
 };
 
 const postCart = async (req, res) => {
+	const user = new User().init(req.session.user);
 	const prodId = req.body.productId;
 
 	try {
 		const product = await Product.findById(prodId);
-		await req.session.user.addToCart(product);
+		await user.addToCart(product);
 
 		res.redirect('/cart');
 	} catch (error) {
@@ -63,10 +64,11 @@ const postCart = async (req, res) => {
 };
 
 const postCartDeleteProduct = async (req, res) => {
+	const user = new User().init(req.session.user);
 	const { cartDeleteId: id, isDeleteAll: isDeleteAll } = req.body;
 
 	try {
-		await req.user.removeFromCart(id, isDeleteAll);
+		await user.removeFromCart(id, isDeleteAll);
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);
@@ -118,8 +120,9 @@ const getProductDetailsPage = async (req, res) => {
 };
 
 const postOrder = async (req, res) => {
+	const user = new User().init(req.session.user);
 	try {
-		const cartProductsData = await req.session.user
+		const cartProductsData = await user
 			.populate('cart.items.productId')
 			.execPopulate();
 
@@ -130,12 +133,12 @@ const postOrder = async (req, res) => {
 		const order = new Order({
 			products: products,
 			user: {
-				name: req.session.user.name,
-				userId: req.session.user,
+				name: user.name,
+				userId: user,
 			},
 		});
 		await order.save();
-		await req.user.clearCart();
+		await user.clearCart();
 
 		res.redirect('/orders');
 	} catch (error) {
