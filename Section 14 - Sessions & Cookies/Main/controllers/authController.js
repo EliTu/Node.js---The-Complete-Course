@@ -16,7 +16,10 @@ const postLogin = async (req, res) => {
 		if (user) {
 			req.session.isLoggedIn = true;
 			req.session.user = user;
-			res.redirect('/');
+			req.session.save((err) => {
+				if (err) console.log(err);
+				res.redirect('/');
+			});
 		}
 	} catch (error) {
 		console.log(error);
