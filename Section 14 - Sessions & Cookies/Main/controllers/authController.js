@@ -23,4 +23,12 @@ const postLogin = async (req, res) => {
 	}
 };
 
-module.exports = { getLoginPage, postLogin };
+const postLogout = async (req, res) => {
+	try {
+		req.session.destroy(() => res.redirect('/'));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports = { getLoginPage, postLogin, postLogout };
