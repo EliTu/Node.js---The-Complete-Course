@@ -7,12 +7,9 @@ block styles
 block content
     h2 #{pageSubtitle}
     main 
-    if forms.length > 0
         form.login-form(action="/login", method="POST")
             each form in forms 
                 .form-control
                     label(for=`${form.name}`) #{form.title}:
                     input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`)
             button(type="submit") Sign In
-    else
-        h1 Nothing to see here!
