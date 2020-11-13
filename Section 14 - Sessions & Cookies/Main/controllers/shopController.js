@@ -14,7 +14,7 @@ const getShopPage = (req, res) => {
 
 const getOrdersPage = async (req, res) => {
 	try {
-		const orders = await Order.find({ 'user.userId': userData._id });
+		const orders = await Order.find({ 'user.userId': req.session.user._id });
 		res.render('shop/orders', {
 			docTitle: 'Orders',
 			pageSubtitle: 'Your Orders',
@@ -36,6 +36,7 @@ const getCartPage = async (req, res) => {
 		const priceCalc = +cartProducts
 			.reduce((a, c) => a + +c.productId.price * +c.quantity, 0)
 			.toFixed(2);
+
 		res.render('shop/cart', {
 			docTitle: 'Cart',
 			pageSubtitle: 'Your Cart',
