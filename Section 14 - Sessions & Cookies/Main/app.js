@@ -6,7 +6,7 @@ const session = require('express-session');
 const mongodbSessionStore = require('connect-mongodb-session')(session);
 
 const MONGODB_URI =
-	'mongodb+srv://eliad91:eliad1991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority';
+	'mongodb+srv://eliad91:Et@081991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority';
 
 const app = express();
 const store = new mongodbSessionStore({
