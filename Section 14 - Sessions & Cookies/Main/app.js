@@ -63,7 +63,8 @@ app.use('/admin', AdminRoute);
 app.use(shopRoute);
 
 // 404 catch all route
-// app.use(getPageNotFound);
+app.use(getPageNotFound);
+
 mongoose
 	.connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
 	.then(async () => {

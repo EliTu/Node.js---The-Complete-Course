@@ -18,10 +18,16 @@ body > h2 {
 	color: rgba(0, 0, 0, 0.801);
 }
 
+li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
 .main-header {
 	width: 100%;
 	height: 3.5rem;
-	background-color: #7894f1d8;
+	background-color: #0b2477d0;
 	display: flex;
 }
 
@@ -45,13 +51,15 @@ body > h2 {
 	padding: 0;
 	list-style: none;
 	display: flex;
-	justify-content: flex-end;
+	justify-content: left;
 	height: 100%;
-	width: 60%;
+	width: 70%;
 }
 
 .auth-routes {
-	width: 35%;
+	width: 30%;
+	display: flex;
+	justify-content: flex-end;
 }
 
 .main-header__item {
@@ -104,12 +112,14 @@ main {
 .grid {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-around;
+	justify-content: space-between;
 	align-items: stretch;
+	width: 93%;
 }
 
 .card {
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+	margin: 0.8rem 0.3rem;
 }
 
 .card__header,
@@ -125,11 +135,13 @@ main {
 }
 
 .card__image {
+	display: flex;
+	justify-content: center;
 	width: 100%;
 }
 
 .card__image img {
-	width: 100%;
+	width: 90%;
 }
 
 .card__actions {
