@@ -32,6 +32,7 @@ const getCartPage = async (req, res) => {
 	try {
 		const userCart = await user.populate('cart.items.productId').execPopulate();
 		const cartProducts = [...userCart.cart.items];
+		console.log(userCart);
 
 		const priceCalc = +cartProducts
 			.reduce((a, c) => a + +c.productId.price * +c.quantity, 0)

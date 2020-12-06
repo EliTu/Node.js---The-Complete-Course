@@ -12,7 +12,7 @@ const getLoginPage = (req, res) => {
 
 const postLogin = async (req, res) => {
 	try {
-		const user = await User.findById('5f15f27574eaee3599a8d0de');
+		const user = await User.findById('5fcc61335688aa30eab2fe6d');
 		if (user) {
 			req.session.isLoggedIn = true;
 			req.session.user = user;

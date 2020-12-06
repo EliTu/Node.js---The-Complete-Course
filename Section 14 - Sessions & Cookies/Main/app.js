@@ -45,17 +45,17 @@ const shopRoute = require('./routes/shop');
 
 const { getPageNotFound } = require('./controllers/404');
 
-// app.use(async (req, res, next) => {
-// 	if (!req.session.user) return next();
-// 	try {
-// 		const user = await User.findById(req.session.user);
-// 		req.user = user;
+app.use(async (req, res, next) => {
+	if (!req.session.user) return next();
+	try {
+		const user = await User.findById(req.session.user);
+		req.user = user;
 
-// 		next();
-// 	} catch (error) {
-// 		console.log(error);
-// 	}
-// });
+		return next();
+	} catch (error) {
+		console.log(error);
+	}
+});
 
 // app routes
 app.use(authRoutes);
