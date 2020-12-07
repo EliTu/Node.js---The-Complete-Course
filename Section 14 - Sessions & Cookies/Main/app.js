@@ -35,15 +35,6 @@ app.use(
 		store: store,
 	})
 );
-// Serve CSS files statically from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Routes import
-const authRoutes = require('./routes/auth');
-const AdminRoute = require('./routes/admin');
-const shopRoute = require('./routes/shop');
-
-const { getPageNotFound } = require('./controllers/404');
 
 app.use(async (req, res, next) => {
 	if (!req.session.user) return next();
@@ -56,6 +47,16 @@ app.use(async (req, res, next) => {
 		console.log(error);
 	}
 });
+
+// Serve CSS files statically from the public folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Routes import
+const authRoutes = require('./routes/auth');
+const AdminRoute = require('./routes/admin');
+const shopRoute = require('./routes/shop');
+
+const { getPageNotFound } = require('./controllers/404');
 
 // app routes
 app.use(authRoutes);

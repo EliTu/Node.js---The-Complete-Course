@@ -1,5 +1,4 @@
 const Product = require('../models/product');
-const User = require('../models/user');
 const { setProductForm } = require('../util/forms');
 
 // Specific for '/admin/...':
@@ -61,17 +60,17 @@ const getAdminProduct = async (req, res) => {
 const postProduct = async (req, res) => {
 	const productId = req.body.productId && req.body.productId;
 	const { title, description, price, imageUrl } = req.body;
-	const user = new User().init(req.session.user);
+
 	const product = new Product({
 		title: title,
 		price: price,
 		description: description,
 		imageUrl: !imageUrl
-			? `https://loremflickr.com/320/240/taipei?random=${
+			? `https://loremflickr.com/320/240/products?random=${
 					Math.floor(Math.random() * (45 - 1)) + 1
 			  }`
 			: imageUrl,
-		userId: user,
+		userId: req.user._id,
 	});
 
 	if (!productId) {

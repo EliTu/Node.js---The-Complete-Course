@@ -28,12 +28,11 @@ const getOrdersPage = async (req, res) => {
 };
 
 const getCartPage = async (req, res) => {
-	const user = new User().init(req.session.user);
 	try {
-		const userCart = await user.populate('cart.items.productId').execPopulate();
+		const userCart = await req.user
+			.populate('cart.items.productId')
+			.execPopulate();
 		const cartProducts = [...userCart.cart.items];
-		console.log(userCart);
-
 		const priceCalc = +cartProducts
 			.reduce((a, c) => a + +c.productId.price * +c.quantity, 0)
 			.toFixed(2);
@@ -52,12 +51,11 @@ const getCartPage = async (req, res) => {
 };
 
 const postCart = async (req, res) => {
-	const user = new User().init(req.session.user);
 	const prodId = req.body.productId;
 
 	try {
 		const product = await Product.findById(prodId);
-		await user.addToCart(product);
+		await req.user.addToCart(product);
 
 		res.redirect('/cart');
 	} catch (error) {
@@ -66,11 +64,10 @@ const postCart = async (req, res) => {
 };
 
 const postCartDeleteProduct = async (req, res) => {
-	const user = new User().init(req.session.user);
 	const { cartDeleteId: id, isDeleteAll: isDeleteAll } = req.body;
 
 	try {
-		await user.removeFromCart(id, isDeleteAll);
+		await req.user.removeFromCart(id, isDeleteAll);
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);
@@ -122,9 +119,8 @@ const getProductDetailsPage = async (req, res) => {
 };
 
 const postOrder = async (req, res) => {
-	const user = new User().init(req.session.user);
 	try {
-		const cartProductsData = await user
+		const cartProductsData = await req.user
 			.populate('cart.items.productId')
 			.execPopulate();
 

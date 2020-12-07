@@ -1,6 +1,7 @@
 ul {
 	width: 90%;
 	display: flex;
+	justify-content: space-evenly;
 }
 
 .cart_item {
@@ -70,7 +71,7 @@ ul {
 
 .cart_item_controls button,
 .cart_item_controls a {
-	font-size: 20px;
+	font-size: 18px;
 	width: 11rem;
 	height: 1.9rem;
 	display: flex;
@@ -89,7 +90,7 @@ ul {
 .checkout_details {
 	border-top: 2px solid rgba(0, 0, 0, 0.822);
 	width: 90%;
-	margin: 5.5rem;
+	margin: 6.5rem 0;
 	padding: 0 2rem;
 	display: flex;
 	flex-direction: column;
@@ -97,12 +98,12 @@ ul {
 }
 
 .total {
-	font-size: 30px;
+	font-size: 28px;
 	margin-right: 2rem;
 }
 
 .checkout_btn {
-	font-size: 34px;
-	height: 5rem;
-	width: 18rem;
+	font-size: 28px;
+	height: 4rem;
+	width: 15rem;
 }
