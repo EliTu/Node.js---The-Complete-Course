@@ -1,4 +1,4 @@
-const { authForm } = require('../util/forms');
+const { authForm, signupForm } = require('../util/forms');
 const User = require('../models/user');
 
 const getLoginPage = (req, res) => {
@@ -7,6 +7,15 @@ const getLoginPage = (req, res) => {
 		pageSubtitle: 'Enter details to log in',
 		forms: authForm,
 		path: '/login',
+	});
+};
+
+const getSignupPage = (req, res) => {
+	res.render('auth/signup', {
+		docTitle: 'Signup',
+		pageSubtitle: 'Signup for our shop to view and buy products',
+		forms: signupForm,
+		path: '/signup',
 	});
 };
 
@@ -26,6 +35,8 @@ const postLogin = async (req, res) => {
 	}
 };
 
+const postSignup = async (req, res) => {};
+
 const postLogout = async (req, res) => {
 	try {
 		req.session.destroy(() => res.redirect('/'));
@@ -34,4 +45,10 @@ const postLogout = async (req, res) => {
 	}
 };
 
-module.exports = { getLoginPage, postLogin, postLogout };
+module.exports = {
+	getLoginPage,
+	getSignupPage,
+	postLogin,
+	postLogout,
+	postSignup,
+};

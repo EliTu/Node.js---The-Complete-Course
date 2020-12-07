@@ -39,6 +39,26 @@ const appForms = {
 			placeholder: 'Please enter your password',
 		},
 	],
+	signupForm: [
+		{
+			name: 'email',
+			type: 'email',
+			title: 'Email',
+			placeholder: 'Please enter the your email',
+		},
+		{
+			name: 'password',
+			type: 'password',
+			title: 'Password',
+			placeholder: '',
+		},
+		{
+			name: 'confirm',
+			type: 'password',
+			title: 'Confirm Password',
+			placeholder: '',
+		},
+	],
 };
 
 module.exports = appForms;
