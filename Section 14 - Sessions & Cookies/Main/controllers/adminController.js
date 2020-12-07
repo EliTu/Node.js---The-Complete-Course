@@ -66,7 +66,7 @@ const postProduct = async (req, res) => {
 		price: price,
 		description: description,
 		imageUrl: !imageUrl
-			? `https://loremflickr.com/320/240/products?random=${
+			? `https://loremflickr.com/320/240/kaohsiung?random=${
 					Math.floor(Math.random() * (45 - 1)) + 1
 			  }`
 			: imageUrl,
