@@ -12,7 +12,6 @@ const userSchema = new Schema({
 		required: true,
 		trim: true,
 		minlength: 4,
-		maxlength: 10,
 	},
 	cart: {
 		items: [

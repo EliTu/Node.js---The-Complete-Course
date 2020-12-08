@@ -1,5 +1,6 @@
 const { authForm, signupForm } = require('../util/forms');
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 
 const getLoginPage = (req, res) => {
 	res.render('auth/login', {
@@ -40,16 +41,25 @@ const postSignup = async (req, res) => {
 
 	if (email && password && confirm) {
 		try {
-			// First look if the email is already registered in the DB
+			// first look if the email is already registered in the DB
 			const isEmailAlreadyUsed = await User.findOne({ email: email });
 
 			if (isEmailAlreadyUsed) {
 				console.error('Email already used!');
+
 				res.redirect('/signup');
 			} else {
 				try {
-					const newUser = new User({ email, password, cart: { items: [] } });
+					// encrypt the password to a hashed string form before storing
+					const hashedPassword = await bcrypt.hash(password, 12);
+
+					const newUser = new User({
+						email,
+						password: hashedPassword,
+						cart: { items: [] },
+					});
 					await newUser.save();
+
 					res.redirect('/');
 				} catch (error) {
 					console.log(error);

@@ -5,6 +5,8 @@ const appForms = {
 			type: 'text',
 			title: 'Title',
 			placeholder: "Enter the product's title",
+			min: 4,
+			max: 25,
 		},
 		{
 			name: 'imageUrl',
@@ -23,6 +25,8 @@ const appForms = {
 			type: 'textarea',
 			title: 'Description',
 			placeholder: 'Enter a brief description of the product',
+			min: 0,
+			max: 500,
 		},
 	],
 	authForm: [
@@ -37,6 +41,8 @@ const appForms = {
 			type: 'password',
 			title: 'Password',
 			placeholder: 'Please enter your password',
+			min: 4,
+			max: 12,
 		},
 	],
 	signupForm: [
@@ -51,12 +57,16 @@ const appForms = {
 			type: 'password',
 			title: 'Password',
 			placeholder: '',
+			min: 4,
+			max: 12,
 		},
 		{
 			name: 'confirm',
 			type: 'password',
 			title: 'Confirm Password',
 			placeholder: '',
+			min: 4,
+			max: 12,
 		},
 	],
 };
