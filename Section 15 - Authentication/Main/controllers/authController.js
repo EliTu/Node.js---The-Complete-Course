@@ -1,6 +1,14 @@
 const { authForm, signupForm } = require('../util/forms');
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
+
+const setLoginUserSession = (user, session) => {
+	session.isLoggedIn = true;
+	// save the mongoDB user to the session
+	session.user = user;
+
+	return session;
+};
 
 const getLoginPage = (req, res) => {
 	res.render('auth/login', {
@@ -21,16 +29,24 @@ const getSignupPage = (req, res) => {
 };
 
 const postLogin = async (req, res) => {
+	const { email, password } = req.body;
 	try {
-		const user = await User.findById('5fcc61335688aa30eab2fe6d');
-		if (user) {
-			req.session.isLoggedIn = true;
-			req.session.user = user;
-			req.session.save((err) => {
-				if (err) console.log(err);
-				res.redirect('/');
-			});
+		const user = await User.findOne({ email: email });
+		if (!user) {
+			console.error('This email does not exist!');
+			return res.redirect('/login');
 		}
+		// validate the password with bcrypt by comparing the raw password to the hash
+		const isPasswordValid = await bcrypt.compare(password, user.password);
+		if (!isPasswordValid) {
+			console.error('Password is incorrect!');
+			return res.redirect('/login');
+		}
+
+		return setLoginUserSession(user, req.session).save((err) => {
+			if (err) console.log(err);
+			return res.redirect('/');
+		});
 	} catch (error) {
 		console.log(error);
 	}
@@ -47,23 +63,22 @@ const postSignup = async (req, res) => {
 			if (isEmailAlreadyUsed) {
 				console.error('Email already used!');
 
-				res.redirect('/signup');
+				return res.redirect('/signup');
 			} else {
-				try {
-					// encrypt the password to a hashed string form before storing
-					const hashedPassword = await bcrypt.hash(password, 12);
+				// encrypt the password to a hashed string form before storing
+				const hashedPassword = await bcrypt.hash(password, 12);
 
-					const newUser = new User({
-						email,
-						password: hashedPassword,
-						cart: { items: [] },
-					});
-					await newUser.save();
+				const newUser = new User({
+					email,
+					password: hashedPassword,
+					cart: { items: [] },
+				});
+				await newUser.save();
 
-					res.redirect('/');
-				} catch (error) {
-					console.log(error);
-				}
+				return setLoginUserSession(newUser, req.session).save((err) => {
+					if (err) console.log(err);
+					return res.redirect('/');
+				});
 			}
 		} catch (error) {
 			console.log(error);
