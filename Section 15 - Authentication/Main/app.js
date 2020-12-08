@@ -68,18 +68,7 @@ app.use(getPageNotFound);
 
 mongoose
 	.connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
-	.then(async () => {
-		let user = await User.findOne();
-		if (!user) {
-			user = new User({
-				name: 'Eliad',
-				email: 'e@e.com',
-				cart: {
-					items: [],
-				},
-			});
-			user.save();
-		}
+	.then(() => {
 		const port = process.env.PORT || 3000;
 		app.listen(port, () => console.log(`Connected on port: ${port}`));
 	})

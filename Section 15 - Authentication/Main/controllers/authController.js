@@ -35,7 +35,31 @@ const postLogin = async (req, res) => {
 	}
 };
 
-const postSignup = async (req, res) => {};
+const postSignup = async (req, res) => {
+	const { email, password, confirm } = req.body;
+
+	if (email && password && confirm) {
+		try {
+			// First look if the email is already registered in the DB
+			const isEmailAlreadyUsed = await User.findOne({ email: email });
+
+			if (isEmailAlreadyUsed) {
+				console.error('Email already used!');
+				res.redirect('/signup');
+			} else {
+				try {
+					const newUser = new User({ email, password, cart: { items: [] } });
+					await newUser.save();
+					res.redirect('/');
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+};
 
 const postLogout = async (req, res) => {
 	try {
