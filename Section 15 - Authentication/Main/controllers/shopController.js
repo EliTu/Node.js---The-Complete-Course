@@ -77,7 +77,6 @@ const getCheckoutPage = (req, res) => {
 		docTitle: 'Checkout',
 		pageSubtitle: 'Checkout',
 		path: '/checkout',
-		isLoggedIn: req.session.isLoggedIn,
 	});
 };
 
@@ -92,7 +91,6 @@ const getAllProducts = async (req, res) => {
 			hasProducts: products.length,
 			productsActive: true,
 			productCSS: true,
-			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -109,7 +107,6 @@ const getProductDetailsPage = async (req, res) => {
 			pageSubtitle: 'Product Details',
 			product: product,
 			path: '/products',
-			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -129,12 +126,12 @@ const postOrder = async (req, res) => {
 		const order = new Order({
 			products: products,
 			user: {
-				name: user.name,
-				userId: user,
+				email: req.user.email,
+				userId: req.user,
 			},
 		});
 		await order.save();
-		await user.clearCart();
+		await req.user.clearCart();
 
 		res.redirect('/orders');
 	} catch (error) {
