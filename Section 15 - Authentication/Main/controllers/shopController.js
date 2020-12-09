@@ -1,6 +1,5 @@
 const Product = require('../models/product.js');
 const Order = require('../models/order');
-const User = require('../models/user');
 
 //  Specific for shop or '/':
 const getShopPage = (req, res) => {
@@ -9,6 +8,7 @@ const getShopPage = (req, res) => {
 		pageSubtitle: 'Welcome to the shop',
 		path: '/',
 		isLoggedIn: req.session.isLoggedIn,
+		csrfToken: req.csrfToken(),
 	});
 };
 
