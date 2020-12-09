@@ -11,4 +11,5 @@ block content
                 .form-control
                     label(for=`${form.name}`) #{form.title}:
                     input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`  minLength=`${form.min}` maxLength=`${form.max}`)
+            input(type="hidden" name="_csrf" value=`${csrfToken}`)  
             button(type="submit") Sign In

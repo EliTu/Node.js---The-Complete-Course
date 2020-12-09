@@ -31,8 +31,10 @@ html(lang="en")
                     .auth-routes
                         if !isLoggedIn
                             li.main-header__item 
+                                input(type="hidden" name="_csrf" value=`${csrfToken}`) 
                                 a(href="/login" , class=(path === '/login' ? 'active' : '')) Login
                             li.main-header__item
+                                input(type="hidden" name="_csrf" value=`${csrfToken}`) 
                                 a(href="/signup", class=(path === '/signup' ? 'active' : '')) Signup
                         else
                             form(class="main-header__item" action="/logout" method="POST")

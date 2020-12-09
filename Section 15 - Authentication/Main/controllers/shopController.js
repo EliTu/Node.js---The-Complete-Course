@@ -7,8 +7,6 @@ const getShopPage = (req, res) => {
 		docTitle: 'Shop Main Page',
 		pageSubtitle: 'Welcome to the shop',
 		path: '/',
-		isLoggedIn: req.session.isLoggedIn,
-		csrfToken: req.csrfToken(),
 	});
 };
 

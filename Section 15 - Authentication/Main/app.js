@@ -66,6 +66,14 @@ app.use(async (req, res, next) => {
 // Serve CSS files statically from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// set a middleware that will declare common local variables that will be available for every view that is being rendered
+app.use((req, res, next) => {
+	res.locals.isLoggedIn = req.session.isLoggedIn;
+	res.locals.csrfToken = req.csrfToken(); // register a valid csrf token for every POST request
+
+	next();
+});
+
 // app routes
 app.use(authRoutes);
 app.use('/admin', AdminRoute);
