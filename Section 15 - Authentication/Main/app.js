@@ -51,7 +51,7 @@ app.use(
 // register the CSRF protection as a middleware
 app.use(csrfProtection);
 
-// init the connect-flash as a middleware to flash data in sessions (must be init only after init the session)
+// init the connect-flash as a middleware to flash (store and then remove) data in sessions (must be init only after init the session)
 app.use(flash());
 
 // set the mongoose user document found in the DB by looking up the userId in the session
