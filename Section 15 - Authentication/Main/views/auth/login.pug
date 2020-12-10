@@ -7,13 +7,13 @@ block styles
 block content
     h2 #{pageSubtitle}
     main 
-        if error.length
+        if error
             include ../layouts/user-message.pug
         
         form.login-form(action="/login", method="POST")
             each form in forms 
                 .form-control
                     label(for=`${form.name}`) #{form.title}:
-                    input(class=(`${error.length ? 'input-error' : ''}`) type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`  minLength=`${form.min}` maxLength=`${form.max}`)
+                    input(class=(`${error ? 'input-error' : ''}`) type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`  minLength=`${form.min}` maxLength=`${form.max}`)
             input(type="hidden" name="_csrf" value=`${csrfToken}`)  
             button(type="submit") Sign In

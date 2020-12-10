@@ -1,4 +1,5 @@
 const { authForm, signupForm } = require('../util/forms');
+const setUserMessage = require('../util/setUserMessage');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
@@ -16,7 +17,7 @@ const getLoginPage = (req, res) => {
 		pageSubtitle: 'Enter details to log in',
 		forms: authForm,
 		path: '/login',
-		error: req.flash('error'),
+		error: setUserMessage(req.flash('error')),
 	});
 };
 
@@ -26,6 +27,7 @@ const getSignupPage = (req, res) => {
 		pageSubtitle: 'Signup for our shop to view and buy products',
 		forms: signupForm,
 		path: '/signup',
+		error: setUserMessage(req.flash('error')),
 	});
 };
 
@@ -41,7 +43,7 @@ const postLogin = async (req, res) => {
 		// validate the password with bcrypt by comparing the raw password to the hash
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 		if (!isPasswordValid) {
-			console.error('Password is incorrect!');
+			req.flash('error', 'Invalid email or password!');
 			return res.redirect('/login');
 		}
 
@@ -63,8 +65,7 @@ const postSignup = async (req, res) => {
 			const isEmailAlreadyUsed = await User.findOne({ email: email });
 
 			if (isEmailAlreadyUsed) {
-				console.error('Email already used!');
-
+				req.flash('error', 'Email has been already used!');
 				return res.redirect('/signup');
 			} else {
 				// encrypt the password to a hashed string form before storing
