@@ -1,79 +1,83 @@
 .product-form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .form-control {
-    display: flex;
-    flex-direction: column;
-    margin-top: 2rem;
+	display: flex;
+	flex-direction: column;
+	margin-top: 2rem;
 }
 
 .form-control label {
-    font-size: 20px;
-    font-family: inherit;
-    margin: 0 1px;
-    color: rgba(0, 0, 0, 0.801);
+	font-size: 20px;
+	font-family: inherit;
+	margin: 0 1px;
+	color: rgba(0, 0, 0, 0.801);
 }
 
 .form-control input {
-    border: 2px solid #123fd39f;
-    border-radius: 6px;
-    font: inherit;
-    width: 600px;
-    height: 32px;
-    padding: 0 10px;
+	border: 2px solid #123fd39f;
+	border-radius: 6px;
+	font: inherit;
+	width: 600px;
+	height: 32px;
+	padding: 0 10px;
+}
+
+.form-control .input-error {
+	border-color: #f05454a1 !important;
 }
 
 .form-control textarea {
-    border: 2px solid #123fd39f;
-    border-radius: 6px;
-    font: inherit;
-    width: 600px;
-    height: 75px;
-    padding: 5px 10px;
+	border: 2px solid #123fd39f;
+	border-radius: 6px;
+	font: inherit;
+	width: 600px;
+	height: 75px;
+	padding: 5px 10px;
 }
 
 .form-control textarea::placeholder,
 .form-control input::placeholder {
-    color: rgba(143, 143, 143, 0.945);
-    font-size: 14px;
-    font-family: inherit;
+	color: rgba(143, 143, 143, 0.945);
+	font-size: 14px;
+	font-family: inherit;
 }
 
 .form-control textarea:focus,
 .form-control textarea:active,
 .form-control input:focus,
 .form-control input:active {
-    outline-color: #662fbee8;
-    border-color: #2807bec9;
+	outline-color: #662fbee8;
+	border-color: #2807bec9;
 }
 
 button {
-    margin-top: 10px;
-    width: 25%;
-    height: 40px;
-    background-color: #123fd39f;
-    color: white;
-    font-size: 16px;
-    box-shadow: initial;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease-in;
+	margin-top: 10px;
+	width: 25%;
+	height: 40px;
+	background-color: #123fd39f;
+	color: white;
+	font-size: 16px;
+	box-shadow: initial;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s ease-in;
 }
 
 button:hover {
-    background-color: #0b2a91e7;
+	background-color: #0b2a91e7;
 }
 
 @media only screen and (max-width: 500px) {
-    main {
-        width: fit-content;
-    }
+	main {
+		width: fit-content;
+	}
 
-    .form-control input {
-        width: 100%;
-    }
+	.form-control input {
+		width: 100%;
+	}
 }

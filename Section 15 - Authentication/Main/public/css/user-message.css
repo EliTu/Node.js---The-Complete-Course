@@ -1,0 +1,16 @@
+.success-message {
+	font-size: 16px;
+	width: 30%;
+	padding: 0.8rem 0.5em;
+	color: rgb(0 0 0 / 62%);
+	background-color: rgb(54 204 6 / 68%);
+	display: flex;
+	justify-content: center;
+	border: 2px solid rgb(54 204 6 / 68%);
+	border-radius: 4px;
+}
+
+.error-message {
+	background-color: rgb(236 52 52 / 43%);
+	border: 2px solid rgb(248 39 39 / 35%);
+}
