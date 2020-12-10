@@ -16,6 +16,7 @@ const getLoginPage = (req, res) => {
 		pageSubtitle: 'Enter details to log in',
 		forms: authForm,
 		path: '/login',
+		error: req.flash('error'),
 	});
 };
 
@@ -33,7 +34,8 @@ const postLogin = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: email });
 		if (!user) {
-			console.error('This email does not exist!');
+			req.flash('error', 'Invalid email or password!'); // flash an error message onto the session with the flash middleware
+
 			return res.redirect('/login');
 		}
 		// validate the password with bcrypt by comparing the raw password to the hash

@@ -8,7 +8,6 @@ const getAddProduct = (req, res) => {
 		pageSubtitle: 'Add a product',
 		forms: setProductForm,
 		path: '/admin/add-product',
-		isLoggedIn: req.session.isLoggedIn,
 		formsActive: true,
 		formsCSS: true,
 	});
@@ -33,7 +32,6 @@ const getEditProduct = async (req, res) => {
 			formsCSS: true,
 			isEditingProduct: editMode,
 			product: product,
-			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -50,7 +48,6 @@ const getAdminProduct = async (req, res) => {
 			pageSubtitle: 'Products in store',
 			path: '/admin/admin-products',
 			products: products,
-			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);

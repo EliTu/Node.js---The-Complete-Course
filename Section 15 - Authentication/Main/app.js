@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const mongodbSessionStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
+const flash = require('connect-flash');
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -49,6 +50,9 @@ app.use(
 
 // register the CSRF protection as a middleware
 app.use(csrfProtection);
+
+// init the connect-flash as a middleware to flash data in sessions (must be init only after init the session)
+app.use(flash());
 
 // set the mongoose user document found in the DB by looking up the userId in the session
 app.use(async (req, res, next) => {

@@ -18,7 +18,6 @@ const getOrdersPage = async (req, res) => {
 			pageSubtitle: 'Your Orders',
 			path: '/orders',
 			orders: orders,
-			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
@@ -41,7 +40,6 @@ const getCartPage = async (req, res) => {
 			path: '/cart',
 			cartProducts: cartProducts,
 			totalPrice: priceCalc,
-			isLoggedIn: req.session.isLoggedIn,
 		});
 	} catch (error) {
 		console.log(error);
