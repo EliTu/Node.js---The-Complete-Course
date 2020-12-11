@@ -1,14 +1,17 @@
-.success-message {
+.message {
 	font-size: 16px;
 	width: 30%;
 	padding: 0.8rem 0.5em;
 	color: rgb(0 0 0 / 75%);
-	background-color: rgb(54 204 6 / 68%);
 	display: flex;
 	justify-content: center;
-	border: 2px solid rgb(54 204 6 / 68%);
 	border-radius: 4px;
 	text-align: center;
+}
+
+.success-message {
+	background-color: rgb(54 204 6 / 68%);
+	border: 2px solid rgb(54 204 6 / 68%);
 }
 
 .error-message {
