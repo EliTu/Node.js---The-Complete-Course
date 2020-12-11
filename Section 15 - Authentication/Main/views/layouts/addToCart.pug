@@ -2,4 +2,4 @@ form(action="/cart" method="POST")
     if isLoggedIn
         input(type="hidden" name="_csrf" value=`${csrfToken}`) 
         button(class='btn' type="submit") Add to cart
-    input(type="hidden" name="productId" value=`${product._id}`)
+    input(type="hidden" name="cartAddId" value=`${product._id}`)

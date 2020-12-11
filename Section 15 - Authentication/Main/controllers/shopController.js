@@ -51,7 +51,7 @@ const getCartPage = async (req, res) => {
 };
 
 const postCart = async (req, res) => {
-	const prodId = req.body.productId;
+	const prodId = req.body.cartAddId;
 
 	try {
 		const product = await Product.findById(prodId);
