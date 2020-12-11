@@ -1,1 +1,1 @@
-.success-message.error-message #{error.length ? error : message}
+div(class=`success-message ${error && error.length ? 'error-message' : ''}`) #{error && error.length ? error : success} 

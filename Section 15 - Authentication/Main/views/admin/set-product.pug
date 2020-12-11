@@ -6,6 +6,8 @@ block styles
 block content 
     h2 #{pageSubtitle} 
     main 
+        if success
+            include ../layouts/user-message.pug
         if forms.length > 0
             form.product-form(action=`/admin${isEditingProduct ? '/edit-product' : '/add-product'}`, method="POST" id="set-product-form")
                 each form in forms 

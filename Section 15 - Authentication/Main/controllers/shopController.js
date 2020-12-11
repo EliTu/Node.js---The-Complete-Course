@@ -1,5 +1,6 @@
 const Product = require('../models/product.js');
 const Order = require('../models/order');
+const setUserMessage = require('../util/setUserMessage');
 
 //  Specific for shop or '/':
 const getShopPage = (req, res) => {
@@ -7,6 +8,7 @@ const getShopPage = (req, res) => {
 		docTitle: 'Shop Main Page',
 		pageSubtitle: 'Welcome to the shop',
 		path: '/',
+		success: setUserMessage(req.flash('success')),
 	});
 };
 
@@ -18,6 +20,7 @@ const getOrdersPage = async (req, res) => {
 			pageSubtitle: 'Your Orders',
 			path: '/orders',
 			orders: orders,
+			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
 		console.log(error);
@@ -40,6 +43,7 @@ const getCartPage = async (req, res) => {
 			path: '/cart',
 			cartProducts: cartProducts,
 			totalPrice: priceCalc,
+			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
 		console.log(error);
@@ -53,6 +57,7 @@ const postCart = async (req, res) => {
 		const product = await Product.findById(prodId);
 		await req.user.addToCart(product);
 
+		req.flash('success', `${product.title} has been added to the cart`);
 		res.redirect('/cart');
 	} catch (error) {
 		console.log(error);
@@ -60,13 +65,24 @@ const postCart = async (req, res) => {
 };
 
 const postCartDeleteProduct = async (req, res) => {
-	const { cartDeleteId: id, isDeleteAll: isDeleteAll } = req.body;
+	const {
+		cartDeleteId: id,
+		isDeleteAll,
+		cardDeleteProductName: productTitle,
+	} = req.body;
 
 	try {
 		await req.user.removeFromCart(id, isDeleteAll);
-		res.redirect('/cart');
+
+		req.flash('success', `${productTitle} has been removed from the cart`);
 	} catch (error) {
+		req.flash(
+			'error',
+			`Something went wrong! ${productTitle} wasn't removed successfully`
+		);
 		console.log(error);
+	} finally {
+		res.redirect('/cart');
 	}
 };
 
@@ -89,6 +105,7 @@ const getAllProducts = async (req, res) => {
 			hasProducts: products.length,
 			productsActive: true,
 			productCSS: true,
+			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
 		console.log(error);
@@ -131,6 +148,7 @@ const postOrder = async (req, res) => {
 		await order.save();
 		await req.user.clearCart();
 
+		req.flash('success', `Order ${order._id} has been made successfully`);
 		res.redirect('/orders');
 	} catch (error) {
 		console.log(error);

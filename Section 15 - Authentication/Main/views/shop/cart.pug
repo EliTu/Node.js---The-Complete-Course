@@ -6,6 +6,8 @@ block styles
 block content 
     h2 #{pageSubtitle}
     main
+        if success
+            include ../layouts/user-message.pug
         if cartProducts.length
             ul
                 each product in cartProducts
@@ -31,6 +33,7 @@ block content
                             form(action="/cart-delete-product" method="POST")
                                 input(type="hidden" name="_csrf" value=`${csrfToken}`)                           
                                 input(type="hidden" name="cartDeleteId" value=`${product.productId._id}`)
+                                input(type="hidden" name="cardDeleteProductName" value=`${product.productId.title}`)
                                 input(type="hidden" name="isDeleteAll" value="true")
                                 button(class="btn remove_btn" type="submit") Remove 
             div(class="checkout_details")

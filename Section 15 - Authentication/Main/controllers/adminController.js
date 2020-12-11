@@ -1,5 +1,6 @@
 const Product = require('../models/product');
 const { setProductForm } = require('../util/forms');
+const setUserMessage = require('../util/setUserMessage');
 
 // Specific for '/admin/...':
 const getAddProduct = (req, res) => {
@@ -48,6 +49,7 @@ const getAdminProduct = async (req, res) => {
 			pageSubtitle: 'Products in store',
 			path: '/admin/admin-products',
 			products: products,
+			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
 		console.log(error);
@@ -75,6 +77,7 @@ const postProduct = async (req, res) => {
 		try {
 			await product.save();
 
+			req.flash('success', `${title} has been successfully added`);
 			res.redirect('/products');
 		} catch (error) {
 			console.log(error);
@@ -91,6 +94,8 @@ const postProduct = async (req, res) => {
 				description: description,
 				imageUrl: imageUrl,
 			});
+
+			req.flash('success', `${title} has been successfully edited`);
 			res.redirect('/admin/admin-products');
 		} catch (error) {
 			console.log(error);
@@ -99,9 +104,11 @@ const postProduct = async (req, res) => {
 };
 
 const postDeleteProduct = async (req, res) => {
-	const productId = req.body.deletedProductId;
+	const { deletedProductId: productId, deletedProductTitle: title } = req.body;
 	try {
 		await Product.findByIdAndRemove(productId);
+
+		req.flash('success', `${title} has been successfully deleted`);
 		res.redirect('/admin/admin-products');
 	} catch (error) {
 		console.log(error);

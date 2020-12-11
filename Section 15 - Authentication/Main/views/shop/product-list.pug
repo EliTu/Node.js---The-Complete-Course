@@ -6,6 +6,8 @@ block styles
 block content
     h2 #{pageSubtitle}
     main
+        if success
+            include ../layouts/user-message.pug
         if products.length > 0
             .grid
                 each product in products

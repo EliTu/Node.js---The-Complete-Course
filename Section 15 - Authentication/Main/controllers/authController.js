@@ -11,6 +11,8 @@ const setLoginUserSession = (user, session) => {
 	return session;
 };
 
+const setUserInitialName = (user) => user.email.split('@')[0];
+
 const getLoginPage = (req, res) => {
 	res.render('auth/login', {
 		docTitle: 'Login',
@@ -49,6 +51,9 @@ const postLogin = async (req, res) => {
 
 		return setLoginUserSession(user, req.session).save((err) => {
 			if (err) console.log(err);
+
+			const userInitialName = setUserInitialName(user);
+			req.flash('success', `Welcome, ${userInitialName}!`);
 			return res.redirect('/');
 		});
 	} catch (error) {
@@ -80,6 +85,9 @@ const postSignup = async (req, res) => {
 
 				return setLoginUserSession(newUser, req.session).save((err) => {
 					if (err) console.log(err);
+
+					const userInitialName = setUserInitialName(newUser);
+					req.flash('success', `Welcome, ${userInitialName}!`);
 					return res.redirect('/');
 				});
 			}
@@ -91,7 +99,9 @@ const postSignup = async (req, res) => {
 
 const postLogout = async (req, res) => {
 	try {
-		req.session.destroy(() => res.redirect('/'));
+		req.session.destroy(() => {
+			res.redirect('/');
+		});
 	} catch (error) {
 		console.log(error);
 	}
