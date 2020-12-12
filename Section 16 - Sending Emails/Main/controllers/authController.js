@@ -1,4 +1,5 @@
 const { authForm, signupForm } = require('../util/forms');
+const { confirmation } = require('../util/email-templates');
 const setUserMessage = require('../util/setUserMessage');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
@@ -109,13 +110,14 @@ const postSignup = async (req, res) => {
 						to: email,
 						from: 'shop@nodecomplete.com',
 						subject: 'Signup succeeded!',
-						html: '<h1>You have successfully signed up to the shop!</h1>',
+						html: confirmation,
 					};
 
 					// use the transporter to send an email async
 					return transporter.sendMail(emailOptions, (err, info) => {
 						if (err) {
 							console.error(err);
+							res.redirect('/');
 						} else {
 							console.log(
 								`Email has been successfully sent with the id ${info.messageId}`
