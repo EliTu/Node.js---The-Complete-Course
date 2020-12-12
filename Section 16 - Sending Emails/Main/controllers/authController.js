@@ -2,6 +2,27 @@ const { authForm, signupForm } = require('../util/forms');
 const setUserMessage = require('../util/setUserMessage');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const sendgridTransporter = require('nodemailer-sendgrid-transport');
+
+// instantiate the transporter with the sendgrid key and use it to send mails
+const transporter = nodemailer.createTransport(
+	{
+		host: 'smtp.mailtrap.io',
+		port: 2525,
+		auth: {
+			user: '948e8cb96b7e8a',
+			pass: 'd133b389eaa602',
+		},
+	}
+	// sendgridTransporter({
+	// 	auth: {
+	// 		api_key:
+	// 			// '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',
+	// 			'b98c1c2fef6ec669930cb7e9138a4b95',
+	// 	},
+	// })
+);
 
 const setLoginUserSession = (user, session) => {
 	session.isLoggedIn = true;
@@ -53,7 +74,7 @@ const postLogin = async (req, res) => {
 			if (err) console.log(err);
 
 			const userInitialName = setUserInitialName(user);
-			req.flash('success', `Welcome, ${userInitialName}!`);
+			req.flash('success', `Welcome back, ${userInitialName}!`);
 			return res.redirect('/');
 		});
 	} catch (error) {
@@ -84,10 +105,32 @@ const postSignup = async (req, res) => {
 				await newUser.save();
 
 				return setLoginUserSession(newUser, req.session).save((err) => {
-					if (err) console.log(err);
+					if (err) throw new Error(err);
+
+					// set the email options and content
+					const emailOptions = {
+						to: email,
+						from: 'shop@nodecomplete.com',
+						subject: 'Signup succeeded!',
+						html: '<h1>You have successfully signed up to the shop!</h1>',
+					};
+
+					// use the transporter to send an email async
+					transporter.sendMail(emailOptions, (err, info) => {
+						if (err) {
+							console.error(err);
+						} else {
+							console.log(
+								`Email has been successfully sent with the id ${info.messageId}`
+							);
+						}
+					});
 
 					const userInitialName = setUserInitialName(newUser);
-					req.flash('success', `Welcome, ${userInitialName}!`);
+					req.flash(
+						'success',
+						`Welcome, ${userInitialName}! a confirmation mail has been sent to ${email}`
+					);
 					return res.redirect('/');
 				});
 			}
