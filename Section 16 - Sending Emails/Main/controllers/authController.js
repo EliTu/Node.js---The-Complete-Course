@@ -114,9 +114,15 @@ const postSignup = async (req, res) => {
 						subject: 'Signup succeeded!',
 						html: '<h1>You have successfully signed up to the shop!</h1>',
 					};
+					const userInitialName = setUserInitialName(newUser);
+					req.flash(
+						'success',
+						`Welcome, ${userInitialName}! a confirmation mail has been sent to ${email}`
+					);
+					res.redirect('/');
 
 					// use the transporter to send an email async
-					transporter.sendMail(emailOptions, (err, info) => {
+					return transporter.sendMail(emailOptions, (err, info) => {
 						if (err) {
 							console.error(err);
 						} else {
@@ -125,13 +131,6 @@ const postSignup = async (req, res) => {
 							);
 						}
 					});
-
-					const userInitialName = setUserInitialName(newUser);
-					req.flash(
-						'success',
-						`Welcome, ${userInitialName}! a confirmation mail has been sent to ${email}`
-					);
-					return res.redirect('/');
 				});
 			}
 		} catch (error) {
