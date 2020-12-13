@@ -1,9 +1,15 @@
+const crypto = require('crypto'); // node-core module that can help generate random token
 const { authForm, signupForm, passwordReset } = require('../util/forms');
-const { confirmation } = require('../util/email-templates');
+const {
+	confirmationMail,
+	passwordResetMail,
+} = require('../util/email-templates');
 const setUserMessage = require('../util/setUserMessage');
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
+
+/* AUTH UTILS */
 
 // instantiate a MailTrap transporter with the MailTrap settings use it to send mails
 const transporter = nodemailer.createTransport({
@@ -24,6 +30,20 @@ const setLoginUserSession = (user, session) => {
 };
 
 const setUserInitialName = (user) => user.email.split('@')[0];
+
+const sendMail = (options) =>
+	transporter.sendMail(options, (err, info) => {
+		if (err) {
+			console.error(err);
+			res.redirect('/');
+		} else {
+			console.log(
+				`Email has been successfully sent with the id ${info.messageId}`
+			);
+		}
+	});
+
+/* GET Controls */
 
 const getLoginPage = (req, res) => {
 	res.render('auth/login', {
@@ -54,6 +74,8 @@ const getPasswordResetPage = (req, res) => {
 		error: setUserMessage(req.flash('error')),
 	});
 };
+
+/* POST CONTROLS */
 
 const postLogin = async (req, res) => {
 	const { email, password } = req.body;
@@ -120,20 +142,11 @@ const postSignup = async (req, res) => {
 						to: email,
 						from: 'shop@nodecomplete.com',
 						subject: 'Signup succeeded!',
-						html: confirmation,
+						html: confirmationMail,
 					};
 
 					// use the transporter to send an email async
-					return transporter.sendMail(emailOptions, (err, info) => {
-						if (err) {
-							console.error(err);
-							res.redirect('/');
-						} else {
-							console.log(
-								`Email has been successfully sent with the id ${info.messageId}`
-							);
-						}
-					});
+					return sendMail(emailOptions);
 				});
 			}
 		} catch (error) {
@@ -153,8 +166,51 @@ const postLogout = async (req, res) => {
 };
 
 const postPasswordReset = async (req, res) => {
-	try {
-	} catch (error) {}
+	const { email: userEmail } = req.body;
+
+	// use the crypto module to generate random string with 32 bytes
+	crypto.randomBytes(32, async (err, buffer) => {
+		if (err) {
+			console.error(err);
+			req.flash('error', 'Something went wrong!');
+			res.redirect('/reset-password');
+		}
+		// generate a token from the buffer by converting it to string and passing hex to convert hexadecimal values
+		const token = buffer.toString('hex');
+
+		try {
+			const user = await User.findOne({ email: userEmail });
+			if (!user) {
+				req.flash(
+					'error',
+					`No user found for ${userEmail}, please check your email`
+				);
+				res.redirect('/reset-password');
+			}
+
+			user.resetPasswordToken = token;
+			user.resetPasswordTokenExpiration = Date.now() + 3_600_000;
+
+			await user.save();
+
+			// After updating the user with the security token send the reset password email
+			const emailOptions = {
+				to: userEmail,
+				from: 'shop@nodecomplete.com',
+				subject: 'Reset password',
+				html: passwordResetMail(token),
+			};
+
+			req.flash(
+				'success',
+				`a password reset email has been sent to ${userEmail}`
+			);
+			res.redirect('/');
+			return sendMail(emailOptions);
+		} catch (error) {
+			console.log(error);
+		}
+	});
 };
 
 module.exports = {
@@ -164,4 +220,5 @@ module.exports = {
 	postLogin,
 	postLogout,
 	postSignup,
+	postPasswordReset,
 };
