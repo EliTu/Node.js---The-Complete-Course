@@ -69,6 +69,14 @@ const appForms = {
 			max: 12,
 		},
 	],
+	passwordReset: [
+		{
+			name: 'email',
+			type: 'email',
+			title: 'Email',
+			placeholder: 'Please enter the your email',
+		},
+	],
 };
 
 module.exports = appForms;

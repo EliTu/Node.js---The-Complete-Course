@@ -16,4 +16,5 @@ block content
                     label(for=`${form.name}`) #{form.title}:
                     input(class=(`${error ? 'input-error' : ''}`) type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`  minLength=`${form.min}` maxLength=`${form.max}`)
             input(type="hidden" name="_csrf" value=`${csrfToken}`)  
-            button(type="submit") Sign In
+            button(type="submit") Sign in
+        a(class="text-link" href="/reset-password") Forgot your password?

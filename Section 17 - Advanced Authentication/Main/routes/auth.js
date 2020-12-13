@@ -4,6 +4,7 @@ const router = express.Router();
 const {
 	getLoginPage,
 	getSignupPage,
+	getPasswordResetPage,
 	postLogin,
 	postLogout,
 	postSignup,
@@ -11,6 +12,7 @@ const {
 
 router.get('/login', getLoginPage);
 router.get('/signup', getSignupPage);
+router.get('/reset-password', getPasswordResetPage);
 
 router.post('/login', postLogin);
 router.post('/logout', postLogout);

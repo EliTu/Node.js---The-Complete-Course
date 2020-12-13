@@ -8,11 +8,11 @@
 .form-control {
 	display: flex;
 	flex-direction: column;
-	margin-top: 2rem;
+	margin-bottom: 0.5rem;
 }
 
 .form-control label {
-	font-size: 20px;
+	font-size: 17px;
 	font-family: inherit;
 	margin: 0 1px;
 	color: rgba(0, 0, 0, 0.801);
@@ -22,7 +22,7 @@
 	border: 2px solid #123fd39f;
 	border-radius: 6px;
 	font: inherit;
-	width: 600px;
+	width: 400px;
 	height: 32px;
 	padding: 0 10px;
 }
@@ -57,18 +57,20 @@
 
 button {
 	margin-top: 10px;
-	width: 25%;
-	height: 40px;
-	background-color: #123fd39f;
-	color: white;
+	width: 35%;
+	height: 30px;
+	background-color: white;
+	color: #123fd39f;
+	border-color: #123fd39f;
 	font-size: 16px;
 	box-shadow: initial;
-	border-radius: 8px;
+	border-radius: 6px;
 	cursor: pointer;
 	transition: all 0.2s ease-in;
 }
 
 button:hover {
+	color: white;
 	background-color: #0b2a91e7;
 }
 

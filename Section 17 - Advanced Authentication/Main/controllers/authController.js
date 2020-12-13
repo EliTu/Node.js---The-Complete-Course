@@ -1,4 +1,4 @@
-const { authForm, signupForm } = require('../util/forms');
+const { authForm, signupForm, passwordReset } = require('../util/forms');
 const { confirmation } = require('../util/email-templates');
 const setUserMessage = require('../util/setUserMessage');
 const User = require('../models/user');
@@ -41,6 +41,16 @@ const getSignupPage = (req, res) => {
 		pageSubtitle: 'Signup for our shop to view and buy products',
 		forms: signupForm,
 		path: '/signup',
+		error: setUserMessage(req.flash('error')),
+	});
+};
+
+const getPasswordResetPage = (req, res) => {
+	res.render('auth/reset-password', {
+		docTitle: 'Password reset',
+		pageSubtitle: 'Enter your email to reset your password',
+		forms: passwordReset,
+		path: '/reset-password',
 		error: setUserMessage(req.flash('error')),
 	});
 };
@@ -142,9 +152,15 @@ const postLogout = async (req, res) => {
 	}
 };
 
+const postPasswordReset = async (req, res) => {
+	try {
+	} catch (error) {}
+};
+
 module.exports = {
 	getLoginPage,
 	getSignupPage,
+	getPasswordResetPage,
 	postLogin,
 	postLogout,
 	postSignup,
