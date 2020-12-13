@@ -173,19 +173,24 @@ const postPasswordReset = async (req, res) => {
 		if (err) {
 			console.error(err);
 			req.flash('error', 'Something went wrong!');
-			res.redirect('/reset-password');
+			return res.redirect('/reset-password');
 		}
 		// generate a token from the buffer by converting it to string and passing hex to convert hexadecimal values
 		const token = buffer.toString('hex');
 
 		try {
+			if (!userEmail) {
+				req.flash('error', `Please enter a valid email into the email field!`);
+				return res.redirect('/reset-password');
+			}
+
 			const user = await User.findOne({ email: userEmail });
 			if (!user) {
 				req.flash(
 					'error',
 					`No user found for ${userEmail}, please check your email`
 				);
-				res.redirect('/reset-password');
+				return res.redirect('/reset-password');
 			}
 
 			user.resetPasswordToken = token;
