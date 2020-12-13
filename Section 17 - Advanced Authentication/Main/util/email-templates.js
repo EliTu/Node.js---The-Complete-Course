@@ -7,10 +7,10 @@ const emailTemplates = {
     </main>
     `,
 	passwordResetMail(token) {
-		`
+		return `
      <main style="text-align: center">
         <h2 style="color: blue; margin-bottom: 15px;">Please reset your password here</h2>
-        <p style="color: dodgerblue;">Your password reset link is available here, please click on it to create a new password.</p>
+        <p style="color: dodgerblue;">Your password reset link is available below, please click on it to navigate to the password reset page and create a new password.</p>
         <a href="http://localhost:3000/password-reset/${token}" style="text-decoration: none;">To the password reset</a>
     </main>
     `;
