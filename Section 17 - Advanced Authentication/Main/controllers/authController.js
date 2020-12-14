@@ -1,5 +1,10 @@
 const crypto = require('crypto'); // node-core module that can help generate random token
-const { authForm, signupForm, passwordReset } = require('../util/forms');
+const {
+	authForm,
+	signupForm,
+	passwordResetForm,
+	newPasswordForm,
+} = require('../util/forms');
 const {
 	confirmationMail,
 	passwordResetMail,
@@ -69,10 +74,39 @@ const getPasswordResetPage = (req, res) => {
 	res.render('auth/reset-password', {
 		docTitle: 'Password reset',
 		pageSubtitle: 'Enter your email to reset your password',
-		forms: passwordReset,
+		forms: passwordResetForm,
 		path: '/reset-password',
 		error: setUserMessage(req.flash('error')),
 	});
+};
+
+const getNewPasswordPage = async (req, res) => {
+	const token = req.params.resetPasswordToken;
+	try {
+		const user = await User.findOne({
+			resetPasswordToken: token,
+			resetPasswordTokenExpiration: { $gt: Date.now() }, // Also check the expiration token on the DB if its still valid with $gt operation
+		});
+
+		if (!user) {
+			req.flash(
+				'error',
+				'Invalid password reset request. Please reset the password by following the link in the password reset email'
+			);
+			return res.redirect('/');
+		}
+
+		res.render('auth/new-password', {
+			docTitle: 'Password reset',
+			pageSubtitle: 'Enter your email to reset your password',
+			forms: newPasswordForm,
+			path: '/new-password',
+			error: setUserMessage(req.flash('error')),
+			userId: user._id.toString(),
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 /* POST CONTROLS */
@@ -218,12 +252,16 @@ const postPasswordReset = async (req, res) => {
 	});
 };
 
+const postNewPassword = async (req, res) => {};
+
 module.exports = {
 	getLoginPage,
 	getSignupPage,
 	getPasswordResetPage,
+	getNewPasswordPage,
 	postLogin,
 	postLogout,
 	postSignup,
 	postPasswordReset,
+	postNewPassword,
 };

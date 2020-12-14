@@ -69,12 +69,30 @@ const appForms = {
 			max: 12,
 		},
 	],
-	passwordReset: [
+	passwordResetForm: [
 		{
 			name: 'email',
 			type: 'email',
 			title: 'Email',
 			placeholder: 'Please enter the your email',
+		},
+	],
+	newPasswordForm: [
+		{
+			name: 'password',
+			type: 'password',
+			title: 'Password',
+			placeholder: '',
+			min: 4,
+			max: 12,
+		},
+		{
+			name: 'confirm',
+			type: 'password',
+			title: 'Confirm Password',
+			placeholder: '',
+			min: 4,
+			max: 12,
 		},
 	],
 };

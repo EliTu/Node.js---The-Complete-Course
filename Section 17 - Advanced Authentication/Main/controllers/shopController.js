@@ -9,6 +9,7 @@ const getShopPage = (req, res) => {
 		pageSubtitle: 'Welcome to the shop',
 		path: '/',
 		success: setUserMessage(req.flash('success')),
+		error: setUserMessage(req.flash('error')),
 	});
 };
 
