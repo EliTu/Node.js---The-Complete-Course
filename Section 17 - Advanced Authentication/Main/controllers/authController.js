@@ -8,6 +8,7 @@ const {
 const {
 	confirmationMail,
 	passwordResetMail,
+	passwordResetSuccess,
 } = require('../util/email-templates');
 const setUserMessage = require('../util/setUserMessage');
 const User = require('../models/user');
@@ -36,17 +37,23 @@ const setLoginUserSession = (user, session) => {
 
 const setUserInitialName = (user) => user.email.split('@')[0];
 
-const sendMail = (options) =>
-	transporter.sendMail(options, (err, info) => {
-		if (err) {
-			console.error(err);
-			res.redirect('/');
-		} else {
-			console.log(
-				`Email has been successfully sent with the id ${info.messageId}`
-			);
+const sendMail = (options) => {
+	const { to, subject, html } = options;
+	console.log(html);
+	transporter.sendMail(
+		{ to, from: 'shop@nodecomplete.com', subject, html, date: Date.now() },
+		(err, info) => {
+			if (err) {
+				console.error(err);
+				res.redirect('/');
+			} else {
+				console.log(
+					`Email has been successfully sent with the id ${info.messageId}`
+				);
+			}
 		}
-	});
+	);
+};
 
 /* GET Controls */
 
@@ -85,7 +92,7 @@ const getNewPasswordPage = async (req, res) => {
 	try {
 		const user = await User.findOne({
 			resetPasswordToken: token,
-			resetPasswordTokenExpiration: { $gt: Date.now() }, // Also check the expiration token on the DB if its still valid with $gt operation
+			// resetPasswordTokenExpiration: { $gt: Date.now() }, // Also check the expiration token on the DB if its still valid with $gt operation
 		});
 
 		if (!user) {
@@ -103,6 +110,7 @@ const getNewPasswordPage = async (req, res) => {
 			path: '/new-password',
 			error: setUserMessage(req.flash('error')),
 			userId: user._id.toString(),
+			passwordToken: token,
 		});
 	} catch (error) {
 		console.log(error);
@@ -171,16 +179,12 @@ const postSignup = async (req, res) => {
 					);
 					res.redirect('/'); // Redirect before sending the confirmation mail
 
-					// set the email options and content
-					const emailOptions = {
+					// use the transporter to send an email async
+					return sendMail({
 						to: email,
-						from: 'shop@nodecomplete.com',
 						subject: 'Signup succeeded!',
 						html: confirmationMail,
-					};
-
-					// use the transporter to send an email async
-					return sendMail(emailOptions);
+					});
 				});
 			}
 		} catch (error) {
@@ -228,31 +232,58 @@ const postPasswordReset = async (req, res) => {
 			}
 
 			user.resetPasswordToken = token;
-			user.resetPasswordTokenExpiration = Date.now() + 3_600_000;
-
+			user.resetPasswordTokenExpiration = Date.now() + 3600000;
 			await user.save();
-
-			// After updating the user with the security token send the reset password email
-			const emailOptions = {
-				to: userEmail,
-				from: 'shop@nodecomplete.com',
-				subject: 'Reset password',
-				html: passwordResetMail(token),
-			};
 
 			req.flash(
 				'success',
 				`a password reset email has been sent to ${userEmail}`
 			);
 			res.redirect('/');
-			return sendMail(emailOptions);
+
+			return sendMail({
+				to: userEmail,
+				subject: 'Reset password',
+				html: passwordResetMail(token),
+			});
 		} catch (error) {
 			console.log(error);
 		}
 	});
 };
 
-const postNewPassword = async (req, res) => {};
+const postNewPassword = async (req, res) => {
+	const { password: newPassword, userId, passwordToken } = req.body;
+
+	try {
+		const user = await User.findOne({
+			_id: userId,
+			resetPasswordToken: passwordToken,
+			// resetPasswordTokenExpiration: { $gt: Date.now() },
+		});
+		if (!user) {
+			req.flash('error', 'Something went wrong, no user found!');
+			return res.redirect('/');
+		}
+		const hashedPassword = bcrypt.hash(newPassword, 12);
+
+		user.password = hashedPassword;
+		user.resetPasswordToken = undefined;
+		user.resetPasswordTokenExpiration = undefined;
+		await user.save();
+
+		req.flash('success', `Password reset successfully`);
+		res.redirect('/login');
+
+		return sendMail({
+			to: user.email,
+			subject: 'Password reset success',
+			html: passwordResetSuccess,
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
 
 module.exports = {
 	getLoginPage,
