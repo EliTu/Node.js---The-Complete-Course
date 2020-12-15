@@ -9,6 +9,8 @@ block content
     main 
         if error
             include ../layouts/user-message.pug
+        else if success
+            include ../layouts/user-message.pug
         
         form.login-form(action="/login", method="POST")
             each form in forms 

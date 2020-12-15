@@ -39,7 +39,6 @@ const setUserInitialName = (user) => user.email.split('@')[0];
 
 const sendMail = (options) => {
 	const { to, subject, html } = options;
-	console.log(html);
 	transporter.sendMail(
 		{ to, from: 'shop@nodecomplete.com', subject, html, date: Date.now() },
 		(err, info) => {
@@ -64,6 +63,7 @@ const getLoginPage = (req, res) => {
 		forms: authForm,
 		path: '/login',
 		error: setUserMessage(req.flash('error')),
+		success: setUserMessage(req.flash('success')),
 	});
 };
 
@@ -88,13 +88,13 @@ const getPasswordResetPage = (req, res) => {
 };
 
 const getNewPasswordPage = async (req, res) => {
-	const token = req.params.resetPasswordToken;
+	const token = req.params.token;
 	try {
 		const user = await User.findOne({
 			resetPasswordToken: token,
-			// resetPasswordTokenExpiration: { $gt: Date.now() }, // Also check the expiration token on the DB if its still valid with $gt operation
+			resetPasswordTokenExpiration: { $gt: Date.now() }, // Also check the expiration token on the DB if its still valid with $gt operation
 		});
-
+		console.log(user);
 		if (!user) {
 			req.flash(
 				'error',
@@ -105,7 +105,7 @@ const getNewPasswordPage = async (req, res) => {
 
 		res.render('auth/new-password', {
 			docTitle: 'Password reset',
-			pageSubtitle: 'Enter your email to reset your password',
+			pageSubtitle: 'Enter your your new password',
 			forms: newPasswordForm,
 			path: '/new-password',
 			error: setUserMessage(req.flash('error')),
@@ -230,9 +230,8 @@ const postPasswordReset = async (req, res) => {
 				);
 				return res.redirect('/reset-password');
 			}
-
 			user.resetPasswordToken = token;
-			user.resetPasswordTokenExpiration = Date.now() + 3600000;
+			user.resetPasswordTokenExpiration = Date.now() + 8.64e7;
 			await user.save();
 
 			req.flash(
@@ -259,13 +258,13 @@ const postNewPassword = async (req, res) => {
 		const user = await User.findOne({
 			_id: userId,
 			resetPasswordToken: passwordToken,
-			// resetPasswordTokenExpiration: { $gt: Date.now() },
+			resetPasswordTokenExpiration: { $gt: Date.now() },
 		});
 		if (!user) {
 			req.flash('error', 'Something went wrong, no user found!');
 			return res.redirect('/');
 		}
-		const hashedPassword = bcrypt.hash(newPassword, 12);
+		const hashedPassword = await bcrypt.hash(newPassword, 12);
 
 		user.password = hashedPassword;
 		user.resetPasswordToken = undefined;
