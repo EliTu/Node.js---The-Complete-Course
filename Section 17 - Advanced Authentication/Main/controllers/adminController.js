@@ -6,7 +6,7 @@ const setUserMessage = require('../util/setUserMessage');
 
 const getAdminProduct = async (req, res) => {
 	try {
-		const products = await Product.find({userId: req.user._id});
+		const products = await Product.find({ userId: req.user._id });
 		// .select('title price -_id')
 		// .populate('userId');
 		res.render('admin/admin-products', {
@@ -64,25 +64,25 @@ const postProduct = async (req, res) => {
 	const productId = req.body.productId && req.body.productId;
 	const { title, description, price, imageUrl } = req.body;
 
-	const product = new Product({
-		title: title,
-		price: price,
-		description: description,
-		imageUrl: !imageUrl
-			? `https://loremflickr.com/320/240/kaohsiung?random=${
-					Math.floor(Math.random() * (45 - 1)) + 1
-			  }`
-			: imageUrl,
-		userId: req.user._id,
-	});
-
 	if (!productId) {
 		// Save a new product
+		const product = new Product({
+			title: title,
+			price: price,
+			description: description,
+			imageUrl: !imageUrl
+				? `https://loremflickr.com/320/240/kaohsiung?random=${
+						Math.floor(Math.random() * (45 - 1)) + 1
+				  }`
+				: imageUrl,
+			userId: req.user._id,
+		});
+
 		try {
 			await product.save();
 
 			req.flash('success', `${title} has been successfully added`);
-			res.redirect('/products');
+			return res.redirect('/products');
 		} catch (error) {
 			console.log(error);
 		}
@@ -90,7 +90,15 @@ const postProduct = async (req, res) => {
 		// Update an existing product
 		try {
 			const productToUpdate = await Product.findById(productId);
-			if (!productToUpdate) res.redirect('/admin/admin-product');
+
+			if (!productToUpdate) {
+				req.flash('error', 'No product to update');
+				return res.redirect('/admin/admin-product');
+			}
+			if (productToUpdate.userId.toString() !== req.user._id.toString()) {
+				req.flash('error', 'Could not edit products of other users');
+				return res.redirect('/'); // Authorization guard - only the user who created the product can edit it
+			}
 
 			await Product.findByIdAndUpdate(productToUpdate._id, {
 				title: title,
@@ -100,7 +108,7 @@ const postProduct = async (req, res) => {
 			});
 
 			req.flash('success', `${title} has been successfully edited`);
-			res.redirect('/admin/admin-products');
+			return res.redirect('/admin/admin-products');
 		} catch (error) {
 			console.log(error);
 		}
@@ -110,10 +118,15 @@ const postProduct = async (req, res) => {
 const postDeleteProduct = async (req, res) => {
 	const { deletedProductId: productId, deletedProductTitle: title } = req.body;
 	try {
-		await Product.findByIdAndRemove(productId);
+		const { deletedCount } = await Product.deleteOne({
+			_id: productId,
+			userId: req.user._id,
+		});
+
+		if (deletedCount === 0) req.flash('error', 'Could not delete product');
 
 		req.flash('success', `${title} has been successfully deleted`);
-		res.redirect('/admin/admin-products');
+		return res.redirect('/admin/admin-products');
 	} catch (error) {
 		console.log(error);
 	}

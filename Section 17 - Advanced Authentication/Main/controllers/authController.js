@@ -196,7 +196,7 @@ const postSignup = async (req, res) => {
 const postLogout = async (req, res) => {
 	try {
 		req.session.destroy(() => {
-			res.redirect('/');
+			res.redirect('/login');
 		});
 	} catch (error) {
 		console.log(error);

@@ -87,7 +87,11 @@ app.use(shopRoute);
 app.use(getPageNotFound);
 
 mongoose
-	.connect(MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true })
+	.connect(MONGODB_URI, {
+		useUnifiedTopology: true,
+		useNewUrlParser: true,
+		useFindAndModify: false,
+	})
 	.then(() => {
 		const port = process.env.PORT || 3000;
 		app.listen(port, () => console.log(`Connected on port: ${port}`));
