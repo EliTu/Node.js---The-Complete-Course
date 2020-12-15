@@ -2,6 +2,25 @@ const Product = require('../models/product');
 const { setProductForm } = require('../util/forms');
 const setUserMessage = require('../util/setUserMessage');
 
+/* GET CONTROLS */
+
+const getAdminProduct = async (req, res) => {
+	try {
+		const products = await Product.find({userId: req.user._id});
+		// .select('title price -_id')
+		// .populate('userId');
+		res.render('admin/admin-products', {
+			docTitle: 'Admin Products',
+			pageSubtitle: 'Products in store',
+			path: '/admin/admin-products',
+			products: products,
+			success: setUserMessage(req.flash('success')),
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 // Specific for '/admin/...':
 const getAddProduct = (req, res) => {
 	res.render('admin/set-product', {
@@ -39,22 +58,7 @@ const getEditProduct = async (req, res) => {
 	}
 };
 
-const getAdminProduct = async (req, res) => {
-	try {
-		const products = await Product.find();
-		// .select('title price -_id')
-		// .populate('userId');
-		res.render('admin/admin-products', {
-			docTitle: 'Admin Products',
-			pageSubtitle: 'Products in store',
-			path: '/admin/admin-products',
-			products: products,
-			success: setUserMessage(req.flash('success')),
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
+/* POST CONTROLS */
 
 const postProduct = async (req, res) => {
 	const productId = req.body.productId && req.body.productId;
