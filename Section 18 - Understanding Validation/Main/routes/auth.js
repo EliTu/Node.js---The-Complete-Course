@@ -21,7 +21,11 @@ router.get('/new-password/:token', getNewPasswordPage);
 
 router.post('/login', postLogin);
 router.post('/logout', postLogout);
-router.post('/signup', check('email').isEmail(), postSignup);
+router.post(
+	'/signup',
+	check('email').isEmail().withMessage('Invalid email'),
+	postSignup
+);
 router.post('/reset-password', postPasswordReset);
 router.post('/new-password', postNewPassword);
 

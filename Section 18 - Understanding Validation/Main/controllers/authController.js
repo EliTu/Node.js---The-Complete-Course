@@ -152,6 +152,7 @@ const postSignup = async (req, res) => {
 	const { email, password, confirm } = req.body;
 	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
 
+	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
 	if (!validationErrors.isEmpty()) {
 		console.log(validationErrors.array());
 		const { msg, param } = validationErrors.array()[0];
