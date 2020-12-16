@@ -1,4 +1,5 @@
 const express = require('express');
+const { check } = require('express-validator');
 const router = express.Router();
 
 const {
@@ -20,7 +21,7 @@ router.get('/new-password/:token', getNewPasswordPage);
 
 router.post('/login', postLogin);
 router.post('/logout', postLogout);
-router.post('/signup', postSignup);
+router.post('/signup', check('email').isEmail(), postSignup);
 router.post('/reset-password', postPasswordReset);
 router.post('/new-password', postNewPassword);
 

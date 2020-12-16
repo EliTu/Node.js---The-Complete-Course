@@ -1,4 +1,5 @@
 const crypto = require('crypto'); // node-core module that can help generate random token
+const { validationResult } = require('express-validator');
 const {
 	authForm,
 	signupForm,
@@ -149,6 +150,20 @@ const postLogin = async (req, res) => {
 
 const postSignup = async (req, res) => {
 	const { email, password, confirm } = req.body;
+	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
+
+	if (!validationErrors.isEmpty()) {
+		console.log(validationErrors.array());
+		const { msg, param } = validationErrors.array()[0];
+		const validationErrorMessage = `There's an issue with the ${param}: ${msg} `;
+		return res.status(422).render('auth/signup', {
+			docTitle: 'Signup',
+			pageSubtitle: 'Signup for our shop to view and buy products',
+			forms: signupForm,
+			path: '/signup',
+			error: validationErrorMessage,
+		});
+	}
 
 	if (email && password && confirm) {
 		try {

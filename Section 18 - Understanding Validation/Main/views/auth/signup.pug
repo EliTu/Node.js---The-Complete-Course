@@ -10,7 +10,7 @@ block content
         if error
             include ../layouts/user-message.pug
         
-        form.signup-form(action="/signup" method="POST")
+        form.signup-form(action="/signup" method="POST" novalidate)
             each form in forms
                 .form-control
                     label(for=`${form.name}`) #{form.title}:
