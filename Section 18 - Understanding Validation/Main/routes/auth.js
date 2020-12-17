@@ -1,5 +1,7 @@
 const express = require('express');
 const { check, body } = require('express-validator');
+const User = require('../models/user');
+
 const router = express.Router();
 
 const {
@@ -27,12 +29,12 @@ router.post(
 		check('email') // checks the entire field for errors (body, params, cookies etc)
 			.isEmail()
 			.withMessage('Invalid email')
-			.custom((value, { req }) => {
-				// custom validation field to check if the emails end with .com, if not it'll fail
-				if (!value.endsWith('.com')) {
-					throw new Error(`Email must end with a '.com'`);
+			.custom(async (value) => {
+				// custom validation async function to check if the emails is already taken (instead of checking in the controller)
+				const isEmailAlreadyUsed = await User.findOne({ email: value });
+				if (isEmailAlreadyUsed) {
+					return Promise.reject('Email has been already used!'); // Reject the promise to show the async result fail
 				}
-				return true;
 			}),
 		body(
 			// checks only the body of the field

@@ -149,7 +149,7 @@ const postLogin = async (req, res) => {
 };
 
 const postSignup = async (req, res) => {
-	const { email, password, confirm } = req.body;
+	const { email, password } = req.body;
 	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
 
 	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
@@ -166,46 +166,36 @@ const postSignup = async (req, res) => {
 		});
 	}
 
-	if (email && password && confirm) {
-		try {
-			// first look if the email is already registered in the DB
-			const isEmailAlreadyUsed = await User.findOne({ email: email });
+	try {
+		// encrypt the password to a hashed string form before storing
+		const hashedPassword = await bcrypt.hash(password, 12);
 
-			if (isEmailAlreadyUsed) {
-				req.flash('error', 'Email has been already used!');
-				return res.redirect('/signup');
-			} else {
-				// encrypt the password to a hashed string form before storing
-				const hashedPassword = await bcrypt.hash(password, 12);
+		const newUser = new User({
+			email,
+			password: hashedPassword,
+			cart: { items: [] },
+		});
+		await newUser.save();
 
-				const newUser = new User({
-					email,
-					password: hashedPassword,
-					cart: { items: [] },
-				});
-				await newUser.save();
+		return setLoginUserSession(newUser, req.session).save((err) => {
+			if (err) throw new Error(err);
 
-				return setLoginUserSession(newUser, req.session).save((err) => {
-					if (err) throw new Error(err);
+			const userInitialName = setUserInitialName(newUser);
+			req.flash(
+				'success',
+				`Welcome, ${userInitialName}! a confirmation mail has been sent to ${email}`
+			);
+			res.redirect('/'); // Redirect before sending the confirmation mail
 
-					const userInitialName = setUserInitialName(newUser);
-					req.flash(
-						'success',
-						`Welcome, ${userInitialName}! a confirmation mail has been sent to ${email}`
-					);
-					res.redirect('/'); // Redirect before sending the confirmation mail
-
-					// use the transporter to send an email async
-					return sendMail({
-						to: email,
-						subject: 'Signup succeeded!',
-						html: confirmationMail,
-					});
-				});
-			}
-		} catch (error) {
-			console.log(error);
-		}
+			// use the transporter to send an email async
+			return sendMail({
+				to: email,
+				subject: 'Signup succeeded!',
+				html: confirmationMail,
+			});
+		});
+	} catch (error) {
+		console.log(error);
 	}
 };
 
