@@ -28,6 +28,7 @@ router.post(
 			.isEmail()
 			.withMessage('Invalid email')
 			.custom((value, { req }) => {
+				// custom validation field to check if the emails end with .com, if not it'll fail
 				if (!value.endsWith('.com')) {
 					throw new Error(`Email must end with a '.com'`);
 				}
@@ -40,7 +41,13 @@ router.post(
 		)
 			.isLength({ min: 4, max: 12 })
 			.isAlphanumeric(),
-		body('confirm').isLength({ min: 4, max: 12 }).isAlphanumeric(),
+		body('confirm').custom((value, { req }) => {
+			// custom validation field to check for password equality, also implicitly applies the validation rules passed on 'password'
+			if (value !== req.body.password) {
+				throw new Error('Passwords do not match.');
+			}
+			return true;
+		}),
 	],
 	postSignup
 );
