@@ -55,6 +55,9 @@ const sendMail = (options) => {
 	);
 };
 
+const setValidationErrorMessage = (param, msg) =>
+	`Something is not right with the ${param}: ${msg} `;
+
 /* GET Controls */
 
 const getLoginPage = (req, res) => {
@@ -100,7 +103,7 @@ const getNewPasswordPage = async (req, res) => {
 			req.flash(
 				'error',
 				'Invalid password reset request. Please reset the password by following the link in the password reset email'
-			);
+			); // flash an error message onto the session with the flash middleware
 			return res.redirect('/');
 		}
 
@@ -121,21 +124,25 @@ const getNewPasswordPage = async (req, res) => {
 /* POST CONTROLS */
 
 const postLogin = async (req, res) => {
-	const { email, password } = req.body;
+	const { email } = req.body;
+	const validationErrors = validationResult(req);
+
+	if (!validationErrors.isEmpty()) {
+		const { msg, param } = validationErrors.array()[0];
+		const errorMessage = setValidationErrorMessage(param, msg);
+
+		return res.status(418).render('auth/login', {
+			docTitle: 'Login',
+			pageSubtitle: 'Enter details to log in',
+			forms: authForm,
+			path: '/login',
+			error: errorMessage,
+			success: setUserMessage(req.flash('success')),
+		});
+	}
+
 	try {
 		const user = await User.findOne({ email: email });
-		if (!user) {
-			req.flash('error', 'Invalid email or password!'); // flash an error message onto the session with the flash middleware
-
-			return res.redirect('/login');
-		}
-		// validate the password with bcrypt by comparing the raw password to the hash
-		const isPasswordValid = await bcrypt.compare(password, user.password);
-		if (!isPasswordValid) {
-			req.flash('error', 'Invalid email or password!');
-			return res.redirect('/login');
-		}
-
 		return setLoginUserSession(user, req.session).save((err) => {
 			if (err) console.log(err);
 
@@ -156,7 +163,7 @@ const postSignup = async (req, res) => {
 	if (!validationErrors.isEmpty()) {
 		// console.log(validationErrors.array());
 		const { msg, param } = validationErrors.array()[0]; // TODO: the error-message format output and handle array of errors
-		const validationErrorMessage = `There's an issue with the ${param}: ${msg} `;
+		const validationErrorMessage = setValidationErrorMessage(param, msg);
 		return res.status(422).render('auth/signup', {
 			docTitle: 'Signup',
 			pageSubtitle: 'Signup for our shop to view and buy products',
