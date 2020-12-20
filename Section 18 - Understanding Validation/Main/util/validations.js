@@ -26,13 +26,15 @@ const signupValidations = [
 	)
 		.isLength({ min: 4, max: 12 })
 		.matches(/\d/g),
-	body('confirm').custom((value, { req }) => {
-		// custom validation field to check for password equality, also implicitly applies the validation rules passed on 'password'
-		if (value !== req.body.password) {
-			throw new Error('Passwords do not match.');
-		}
-		return true;
-	}),
+	body('confirm')
+		.isLength({ min: 4, max: 12 })
+		.custom((value, { req }) => {
+			// custom validation field to check for password equality, also implicitly applies the validation rules passed on 'password'
+			if (value !== req.body.password) {
+				throw new Error('Passwords do not match.');
+			}
+			return true;
+		}),
 ];
 
 const loginValidations = [

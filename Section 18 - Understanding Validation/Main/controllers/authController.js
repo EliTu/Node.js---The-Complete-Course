@@ -163,12 +163,14 @@ const postSignup = async (req, res) => {
 	if (!validationErrors.isEmpty()) {
 		const { msg, param } = validationErrors.array()[0]; // TODO: the error-message format output and handle array of errors
 		const validationErrorMessage = setValidationErrorMessage(param, msg);
+		console.log(validationErrors.array());
 		return res.status(422).render('auth/signup', {
 			docTitle: 'Signup',
 			pageSubtitle: 'Signup for our shop to view and buy products',
 			forms: signupForm,
 			path: '/signup',
 			error: validationErrorMessage,
+			errorsArray: validationErrors.array(),
 			prevData: { email, password, confirm: req.body.confirm },
 		});
 	}
