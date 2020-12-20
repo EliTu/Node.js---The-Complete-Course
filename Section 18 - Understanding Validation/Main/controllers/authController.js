@@ -137,6 +137,8 @@ const postLogin = async (req, res) => {
 			forms: authForm,
 			path: '/login',
 			error: errorMessage,
+			errorsArray: validationErrors.array(),
+			prevData: { email, password: '' },
 			success: setUserMessage(req.flash('success')),
 		});
 	}

@@ -16,7 +16,14 @@ block content
             each form in forms 
                 .form-control
                     label(for=`${form.name}`) #{form.title}:
-                    input(class=(`${error ? 'input-error' : ''}`) type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}`  minLength=`${form.min}` maxLength=`${form.max}`)
+                    input(
+                        type=`${form.type}` 
+                        name=`${form.name}` 
+                        placeholder=`${form.placeholder}`  
+                        minLength=`${form.min}` 
+                        maxLength=`${form.max}`
+                        value=`${error && Object.values(prevData).length ? prevData[form.name] : ''}`
+                        class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
             input(type="hidden" name="_csrf" value=`${csrfToken}`)  
             button(type="submit") Sign in
         a(class="text-link" href="/reset-password") Forgot your password?

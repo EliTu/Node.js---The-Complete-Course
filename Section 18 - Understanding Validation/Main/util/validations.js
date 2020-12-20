@@ -57,7 +57,7 @@ const loginValidations = [
 		'Password is empty, should be at least 4 characters of text and numbers'
 	)
 		.isLength({ min: 4, max: 12 })
-		.matches(/\d/g)
+		// .matches(/\d/g) //TODO: think about this thingy
 		.custom(async (value, { req }) => {
 			try {
 				const user = await User.findOne({ email: req.body.email });
