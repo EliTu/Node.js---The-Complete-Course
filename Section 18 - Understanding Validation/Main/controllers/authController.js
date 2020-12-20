@@ -161,7 +161,6 @@ const postSignup = async (req, res) => {
 
 	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
 	if (!validationErrors.isEmpty()) {
-		// console.log(validationErrors.array());
 		const { msg, param } = validationErrors.array()[0]; // TODO: the error-message format output and handle array of errors
 		const validationErrorMessage = setValidationErrorMessage(param, msg);
 		return res.status(422).render('auth/signup', {
@@ -170,6 +169,7 @@ const postSignup = async (req, res) => {
 			forms: signupForm,
 			path: '/signup',
 			error: validationErrorMessage,
+			prevData: { email, password, confirm: req.body.confirm },
 		});
 	}
 

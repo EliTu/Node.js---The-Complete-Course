@@ -10,10 +10,10 @@ block content
         if error
             include ../layouts/user-message.pug
         
-        form.signup-form(action="/signup" method="POST" novalidate)
+        form.signup-form(action="/signup" method="POST")
             each form in forms
                 .form-control
                     label(for=`${form.name}`) #{form.title}:
-                    input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` minLength=`${form.min}` maxLength=`${form.max}`)        
+                    input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` minLength=`${form.min}` maxLength=`${form.max}` value=`${error && Object.keys(prevData).length ? prevData[form.name] : ''}`)        
             input(type="hidden" name="_csrf" value=`${csrfToken}`)  
             button(type="submit") Signup
