@@ -6,6 +6,7 @@ const signupValidations = [
 	check('email') // checks the entire field for errors (body, params, cookies etc)
 		.isEmail()
 		.withMessage('Invalid or missing email')
+		.normalizeEmail() // data sanitization - ensure that the email is in the correct format (no capital letters etc)
 		.custom(async (value) => {
 			try {
 				// custom validation async function to check if the emails is already taken (instead of checking in the controller)
@@ -25,9 +26,11 @@ const signupValidations = [
 		'Password should be 4-12 characters long and contain numbers' // general message for all errors in this check
 	)
 		.isLength({ min: 4, max: 12 })
+		.trim() // data sanitization - remove whitespace
 		.matches(/\d/g),
 	body('confirm')
 		.isLength({ min: 4, max: 12 })
+		.trim()
 		.custom((value, { req }) => {
 			// custom validation field to check for password equality, also implicitly applies the validation rules passed on 'password'
 			if (value !== req.body.password) {
@@ -40,6 +43,7 @@ const signupValidations = [
 const loginValidations = [
 	body('email', 'Email is invalid or missing')
 		.isEmail()
+		.normalizeEmail()
 		.custom(async (value) => {
 			try {
 				const user = await User.findOne({ email: value });
@@ -58,6 +62,7 @@ const loginValidations = [
 	)
 		.isLength({ min: 4, max: 12 })
 		// .matches(/\d/g) //TODO: think about this thingy
+		.trim()
 		.custom(async (value, { req }) => {
 			try {
 				const user = await User.findOne({ email: req.body.email });

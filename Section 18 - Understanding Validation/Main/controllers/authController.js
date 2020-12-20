@@ -172,8 +172,8 @@ const postSignup = async (req, res) => {
 			forms: signupForm,
 			path: '/signup',
 			error: validationErrorMessage,
-			errorsArray: validationErrors.array(),
-			prevData: { email, password, confirm: req.body.confirm },
+			errorsArray: validationErrors.array(), // insert the entire error array to use it in the view to dynamically show input error styles
+			prevData: { email, password, confirm: req.body.confirm }, // pass prev data to value fields in order to better the UX
 		});
 	}
 
