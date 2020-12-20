@@ -2,6 +2,8 @@ const { check, body } = require('express-validator');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
+/* AUTH VALIDATIONS */
+
 const signupValidations = [
 	check('email') // checks the entire field for errors (body, params, cookies etc)
 		.isEmail()
@@ -78,4 +80,36 @@ const loginValidations = [
 		}),
 ];
 
-module.exports = { signupValidations, loginValidations };
+/* PRODUCT VALIDATIONS */
+const postProductValidation = [
+	body('title')
+		.isLength({ min: 4, max: 25 })
+		.trim()
+		.withMessage('Title is empty or invalid'),
+	body('imageUrl')
+		.isEmpty()
+		.isURL()
+		.trim()
+		.withMessage('Image URL field is empty or invalid'),
+	body('price')
+		.isEmpty()
+		.isNumeric()
+		.custom((value) => {
+			if (value === 0) {
+				throw new Error('Price cannot be 0');
+			}
+			return true;
+		}),
+	body('description').isLength({ min: 0, max: 500 }).trim(),
+];
+
+/* UTILS */
+const setValidationErrorMessage = (param, msg) =>
+	`Something is not right with the ${param}: ${msg} `;
+
+module.exports = {
+	setValidationErrorMessage,
+	signupValidations,
+	loginValidations,
+	postProductValidation,
+};

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const isAuthenticated = require('../middleware/isAuthenticated');
+const { postProductValidation } = require('../util/validations');
 
 // Controller import
 const {
@@ -19,7 +20,12 @@ router.get('/admin-products', isAuthenticated, getAdminProduct);
 router.get('/edit-product/:productId', isAuthenticated, getEditProduct);
 
 // /admin/add-product => POST
-router.post('/add-product', isAuthenticated, postProduct);
+router.post(
+	'/add-product',
+	isAuthenticated,
+	postProductValidation,
+	postProduct
+);
 router.post('/edit-product', isAuthenticated, postProduct);
 router.post('/delete-product', isAuthenticated, postDeleteProduct);
 

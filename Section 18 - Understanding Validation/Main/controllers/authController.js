@@ -7,6 +7,7 @@ const {
 	newPasswordForm,
 } = require('../util/forms');
 const {
+	setValidationErrorMessage,
 	confirmationMail,
 	passwordResetMail,
 	passwordResetSuccess,
@@ -54,9 +55,6 @@ const sendMail = (options) => {
 		}
 	);
 };
-
-const setValidationErrorMessage = (param, msg) =>
-	`Something is not right with the ${param}: ${msg} `;
 
 /* GET Controls */
 

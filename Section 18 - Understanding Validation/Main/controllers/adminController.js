@@ -1,7 +1,8 @@
+const { validationResult } = require('express-validator');
 const Product = require('../models/product');
 const { setProductForm } = require('../util/forms');
+const { setValidationErrorMessage } = require('../util/validations');
 const setUserMessage = require('../util/setUserMessage');
-
 /* GET CONTROLS */
 
 const getAdminProduct = async (req, res) => {
@@ -61,8 +62,26 @@ const getEditProduct = async (req, res) => {
 /* POST CONTROLS */
 
 const postProduct = async (req, res) => {
+	const validationErrors = validationResult(req);
 	const productId = req.body.productId && req.body.productId;
 	const { title, description, price, imageUrl } = req.body;
+
+	if (!validationErrors.isEmpty()) {
+		const { msg, param } = validationErrors.array()[0];
+		const errorMessage = setValidationErrorMessage(param, msg);
+
+		return res.status(422).render('admin/set-product', {
+			docTitle: 'Add Product',
+			pageSubtitle: 'Add a product',
+			forms: setProductForm,
+			path: '/admin/add-product',
+			formsActive: true,
+			formsCSS: true,
+			error: errorMessage,
+			errorsArray: validationErrors.array(),
+			prevData: { title, description, price, imageUrl },
+		});
+	}
 
 	if (!productId) {
 		// Save a new product

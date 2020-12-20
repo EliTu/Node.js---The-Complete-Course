@@ -2,21 +2,39 @@ extends ../layouts/main-layout.pug
 
 block styles
     link(rel="stylesheet", href="/css/form.css")
+    link(rel="stylesheet", href="/css/user-message.css")
 
 block content 
     h2 #{pageSubtitle} 
     main 
         if success
             include ../layouts/user-message.pug
+        if error
+            include ../layouts/user-message.pug
+
         if forms.length > 0
             form.product-form(action=`/admin${isEditingProduct ? '/edit-product' : '/add-product'}`, method="POST" id="set-product-form")
                 each form in forms 
                     .form-control
                         label(for=`${form.name}`) #{form.title}:
                         if form.type === 'textarea'
-                            textarea(name=`${form.name}` form="set-product-form" placeholder=`${form.placeholder}` minLength=`${form.min}` maxLength=`${form.max}`) #{isEditingProduct ? product[form.name] : ''}
+                            textarea(
+                                name=`${form.name}` 
+                                form="set-product-form" 
+                                placeholder=`${form.placeholder}` 
+                                minLength=`${form.min}` 
+                                maxLength=`${form.max}`
+                            ) #{isEditingProduct ? product[form.name] : ''}
                         else
-                            input(type=`${form.type}`, name=`${form.name}` placeholder=`${form.placeholder}` step="0.01" value=`${isEditingProduct ? product[form.name] : ''}` minLength=`${form.min}` maxLength=`${form.max}`)
+                            input(
+                                type=`${form.type}` 
+                                name=`${form.name}` 
+                                placeholder=`${form.placeholder}`
+                                step="0.01" 
+                                minLength=`${form.min}` 
+                                maxLength=`${form.max}`
+                                value=`${error && Object.values(prevData).length && !isEditingProduct ? prevData[form.name] : ''}`
+                                class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
                 if isEditingProduct
                     input(type="hidden" name="productId" value=`${product._id}`) 
                 button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}
