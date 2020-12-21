@@ -63,23 +63,25 @@ const getEditProduct = async (req, res) => {
 
 const postProduct = async (req, res) => {
 	const validationErrors = validationResult(req);
-	const productId = req.body.productId && req.body.productId;
-	const { title, description, price, imageUrl } = req.body;
+	const { title, description, price, imageUrl, productId } = req.body;
+	const { path } = req.route;
 
 	if (!validationErrors.isEmpty()) {
 		const { msg, param } = validationErrors.array()[0];
 		const errorMessage = setValidationErrorMessage(param, msg);
 
-		return res.status(422).render('admin/set-product', {
-			docTitle: 'Add Product',
-			pageSubtitle: 'Add a product',
+		return res.status(422).render(`admin/set-product`, {
+			docTitle: path.includes('edit') ? 'Edit Product' : 'Add Product',
+			pageSubtitle: path.includes('edit') ? 'Edit Product' : 'Add a product',
 			forms: setProductForm,
-			path: '/admin/add-product',
+			path: `/admin${path}`,
 			formsActive: true,
 			formsCSS: true,
 			error: errorMessage,
 			errorsArray: validationErrors.array(),
-			prevData: { title, description, price, imageUrl },
+			// prevData: { title, description, price, imageUrl },
+			product: { title, description, price, imageUrl },
+			isEditingProduct: path.includes('edit'),
 		});
 	}
 

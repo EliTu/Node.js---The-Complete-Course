@@ -26,7 +26,12 @@ router.post(
 	postProductValidation,
 	postProduct
 );
-router.post('/edit-product', isAuthenticated, postProduct);
+router.post(
+	'/edit-product',
+	isAuthenticated,
+	postProductValidation,
+	postProduct
+);
 router.post('/delete-product', isAuthenticated, postDeleteProduct);
 
 module.exports = router;

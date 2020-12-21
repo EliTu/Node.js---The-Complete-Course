@@ -85,6 +85,7 @@ const postProductValidation = [
 	body('title')
 		.isLength({ min: 4, max: 25 })
 		.trim()
+		.isAlphanumeric()
 		.withMessage('Title is empty or invalid'),
 	body('imageUrl')
 		.isEmpty()
@@ -100,7 +101,7 @@ const postProductValidation = [
 			}
 			return true;
 		}),
-	body('description').isLength({ min: 0, max: 500 }).trim(),
+	body('description').isEmpty().isLength({ min: 4, max: 500 }).trim(),
 ];
 
 /* UTILS */
