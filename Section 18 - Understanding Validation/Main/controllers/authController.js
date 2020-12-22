@@ -125,7 +125,7 @@ const getNewPasswordPage = async (req, res) => {
 const postLogin = async (req, res) => {
 	const { email } = req.body;
 
-	const { isFormInvalid } = checkForValidationErrors(req, res, 'auth/login', {
+	const isFormInvalid = checkForValidationErrors(req, res, 'auth/login', {
 		docTitle: 'Login',
 		pageSubtitle: 'Enter details to log in',
 		forms: authForm,
@@ -152,7 +152,7 @@ const postLogin = async (req, res) => {
 const postSignup = async (req, res) => {
 	const { email, password } = req.body;
 
-	const { isFormInvalid } = checkForValidationErrors(req, res, 'auth/signup', {
+	const isFormInvalid = checkForValidationErrors(req, res, 'auth/signup', {
 		docTitle: 'Signup',
 		pageSubtitle: 'Signup for our shop to view and buy products',
 		forms: signupForm,

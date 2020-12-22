@@ -85,6 +85,7 @@ const loginValidations = [
 /* PRODUCT VALIDATIONS */
 const postProductValidation = [
 	body('title')
+		.isString()
 		.isLength({ min: 4, max: 25 })
 		.trim()
 		.withMessage('Title field is empty or invalid'),
@@ -115,7 +116,7 @@ const setValidationErrorMessage = (param, msg) =>
 	`Something is not right with the ${param}: ${msg} `;
 
 const checkForValidationErrors = (req, res, path, renderOptions) => {
-	let isFormInvalid;
+	let isFormInvalid = false;
 	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
 
 	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
@@ -128,10 +129,9 @@ const checkForValidationErrors = (req, res, path, renderOptions) => {
 			error: validationErrorMessage,
 			errorsArray: validationErrors.array(), // insert the entire error array to use it in the view to dynamically show input error styles
 		});
+
 		isFormInvalid = true;
 	}
-	isFormInvalid = false;
-
 	return isFormInvalid;
 };
 

@@ -51,7 +51,7 @@ const getEditProduct = async (req, res) => {
 			formsActive: true,
 			formsCSS: true,
 			isEditingProduct: editMode,
-			product: product,
+			productData: product,
 		});
 	} catch (error) {
 		console.log(error);
@@ -64,7 +64,7 @@ const postProduct = async (req, res) => {
 	const { title, description, price, imageUrl, productId } = req.body;
 	const { path } = req.route;
 
-	const { isFormInvalid } = checkForValidationErrors(
+	const isFormInvalid = checkForValidationErrors(
 		req,
 		res,
 		'admin/set-product',
@@ -75,7 +75,7 @@ const postProduct = async (req, res) => {
 			path: `/admin${path}`,
 			formsActive: true,
 			formsCSS: true,
-			productData: { title, description, price, imageUrl },
+			productData: { title, description, price, imageUrl, _id: productId },
 			isEditingProduct: path.includes('edit'),
 		}
 	);

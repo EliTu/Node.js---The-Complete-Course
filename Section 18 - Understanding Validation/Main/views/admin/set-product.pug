@@ -24,6 +24,7 @@ block content
                                 placeholder=`${form.placeholder}` 
                                 minLength=`${form.min}` 
                                 maxLength=`${form.max}`
+                                class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`
                             ) #{isEditingProduct || (error && Object.values(productData).length) ? productData[form.name] : ''}
                         else
                             input(
@@ -38,7 +39,7 @@ block content
                                 : ''}`
                                 class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
                 if isEditingProduct
-                    input(type="hidden" name="productId" value=`${product._id}`) 
+                    input(type="hidden" name="productId" value=`${productData._id}`) 
                 button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}
                 input(type="hidden" name="_csrf" value=`${csrfToken}`)  
         else
