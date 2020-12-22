@@ -24,7 +24,7 @@ block content
                                 placeholder=`${form.placeholder}` 
                                 minLength=`${form.min}` 
                                 maxLength=`${form.max}`
-                            ) #{isEditingProduct || (error && Object.values(product).length) ? product[form.name] : ''}
+                            ) #{isEditingProduct || (error && Object.values(productData).length) ? productData[form.name] : ''}
                         else
                             input(
                                 type=`${form.type}` 
@@ -33,8 +33,8 @@ block content
                                 step="0.01" 
                                 minLength=`${form.min}` 
                                 maxLength=`${form.max}`
-                                value=`${isEditingProduct || (error && Object.values(product).length)
-                                ? product[form.name] 
+                                value=`${isEditingProduct || (error && Object.values(productData).length)
+                                ? productData[form.name] 
                                 : ''}`
                                 class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
                 if isEditingProduct

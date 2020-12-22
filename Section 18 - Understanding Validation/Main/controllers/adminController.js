@@ -1,7 +1,6 @@
-const { validationResult } = require('express-validator');
 const Product = require('../models/product');
 const { setProductForm } = require('../util/forms');
-const { setValidationErrorMessage } = require('../util/validations');
+const { checkForValidationErrors } = require('../util/validations');
 const setUserMessage = require('../util/setUserMessage');
 /* GET CONTROLS */
 
@@ -62,28 +61,25 @@ const getEditProduct = async (req, res) => {
 /* POST CONTROLS */
 
 const postProduct = async (req, res) => {
-	const validationErrors = validationResult(req);
 	const { title, description, price, imageUrl, productId } = req.body;
 	const { path } = req.route;
 
-	if (!validationErrors.isEmpty()) {
-		const { msg, param } = validationErrors.array()[0];
-		const errorMessage = setValidationErrorMessage(param, msg);
-
-		return res.status(422).render(`admin/set-product`, {
+	const { isFormInvalid } = checkForValidationErrors(
+		req,
+		res,
+		'admin/set-product',
+		{
 			docTitle: path.includes('edit') ? 'Edit Product' : 'Add Product',
 			pageSubtitle: path.includes('edit') ? 'Edit Product' : 'Add a product',
 			forms: setProductForm,
 			path: `/admin${path}`,
 			formsActive: true,
 			formsCSS: true,
-			error: errorMessage,
-			errorsArray: validationErrors.array(),
-			// prevData: { title, description, price, imageUrl },
-			product: { title, description, price, imageUrl },
+			productData: { title, description, price, imageUrl },
 			isEditingProduct: path.includes('edit'),
-		});
-	}
+		}
+	);
+	if (isFormInvalid) return;
 
 	if (!productId) {
 		// Save a new product

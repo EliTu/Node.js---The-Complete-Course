@@ -1,5 +1,6 @@
 const crypto = require('crypto'); // node-core module that can help generate random token
 const { validationResult } = require('express-validator');
+const { checkForValidationErrors } = require('../util/validations');
 const {
 	authForm,
 	signupForm,
@@ -123,23 +124,16 @@ const getNewPasswordPage = async (req, res) => {
 
 const postLogin = async (req, res) => {
 	const { email } = req.body;
-	const validationErrors = validationResult(req);
 
-	if (!validationErrors.isEmpty()) {
-		const { msg, param } = validationErrors.array()[0];
-		const errorMessage = setValidationErrorMessage(param, msg);
-
-		return res.status(418).render('auth/login', {
-			docTitle: 'Login',
-			pageSubtitle: 'Enter details to log in',
-			forms: authForm,
-			path: '/login',
-			error: errorMessage,
-			errorsArray: validationErrors.array(),
-			prevData: { email, password: '' },
-			success: setUserMessage(req.flash('success')),
-		});
-	}
+	const { isFormInvalid } = checkForValidationErrors(req, res, 'auth/login', {
+		docTitle: 'Login',
+		pageSubtitle: 'Enter details to log in',
+		forms: authForm,
+		path: '/login',
+		prevData: { email, password: '' },
+		success: setUserMessage(req.flash('success')),
+	});
+	if (isFormInvalid) return;
 
 	try {
 		const user = await User.findOne({ email: email });
@@ -157,23 +151,15 @@ const postLogin = async (req, res) => {
 
 const postSignup = async (req, res) => {
 	const { email, password } = req.body;
-	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
 
-	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
-	if (!validationErrors.isEmpty()) {
-		const { msg, param } = validationErrors.array()[0]; // TODO: the error-message format output and handle array of errors
-		const validationErrorMessage = setValidationErrorMessage(param, msg);
-		console.log(validationErrors.array());
-		return res.status(422).render('auth/signup', {
-			docTitle: 'Signup',
-			pageSubtitle: 'Signup for our shop to view and buy products',
-			forms: signupForm,
-			path: '/signup',
-			error: validationErrorMessage,
-			errorsArray: validationErrors.array(), // insert the entire error array to use it in the view to dynamically show input error styles
-			prevData: { email, password, confirm: req.body.confirm }, // pass prev data to value fields in order to better the UX
-		});
-	}
+	const { isFormInvalid } = checkForValidationErrors(req, res, 'auth/signup', {
+		docTitle: 'Signup',
+		pageSubtitle: 'Signup for our shop to view and buy products',
+		forms: signupForm,
+		path: '/signup',
+		prevData: { email, password, confirm: req.body.confirm }, // pass prev data to value fields in order to better the UX
+	});
+	if (isFormInvalid) return;
 
 	try {
 		// encrypt the password to a hashed string form before storing

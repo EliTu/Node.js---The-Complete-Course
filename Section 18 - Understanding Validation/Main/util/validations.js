@@ -1,4 +1,4 @@
-const { check, body } = require('express-validator');
+const { check, body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 
@@ -8,6 +8,7 @@ const signupValidations = [
 	check('email') // checks the entire field for errors (body, params, cookies etc)
 		.isEmail()
 		.withMessage('Invalid or missing email')
+		.bail() // stop the validation chain if the previous validation failed
 		.normalizeEmail() // data sanitization - ensure that the email is in the correct format (no capital letters etc)
 		.custom(async (value) => {
 			try {
@@ -45,6 +46,7 @@ const signupValidations = [
 const loginValidations = [
 	body('email', 'Email is invalid or missing')
 		.isEmail()
+		.bail()
 		.normalizeEmail()
 		.custom(async (value) => {
 			try {
@@ -85,15 +87,15 @@ const postProductValidation = [
 	body('title')
 		.isLength({ min: 4, max: 25 })
 		.trim()
-		.isAlphanumeric()
-		.withMessage('Title is empty or invalid'),
+		.withMessage('Title field is empty or invalid'),
 	body('imageUrl')
-		.isEmpty()
+		.optional({ checkFalsy: true })
 		.isURL()
 		.trim()
 		.withMessage('Image URL field is empty or invalid'),
 	body('price')
-		.isEmpty()
+		.notEmpty()
+		.withMessage('Price field is empty')
 		.isNumeric()
 		.custom((value) => {
 			if (value === 0) {
@@ -101,16 +103,41 @@ const postProductValidation = [
 			}
 			return true;
 		}),
-	body('description').isEmpty().isLength({ min: 4, max: 500 }).trim(),
+	body('description')
+		.notEmpty()
+		.isLength({ min: 2, max: 500 })
+		.withMessage('Description field must be between 2 to 500 characters long')
+		.trim(),
 ];
 
 /* UTILS */
 const setValidationErrorMessage = (param, msg) =>
 	`Something is not right with the ${param}: ${msg} `;
 
+const checkForValidationErrors = (req, res, path, renderOptions) => {
+	let isFormInvalid;
+	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
+
+	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
+	if (!validationErrors.isEmpty()) {
+		const { msg, param } = validationErrors.array()[0]; // TODO: the error-message format output and handle array of errors
+		const validationErrorMessage = setValidationErrorMessage(param, msg);
+
+		res.status(422).render(path, {
+			...renderOptions,
+			error: validationErrorMessage,
+			errorsArray: validationErrors.array(), // insert the entire error array to use it in the view to dynamically show input error styles
+		});
+		isFormInvalid = true;
+	}
+	isFormInvalid = false;
+
+	return isFormInvalid;
+};
+
 module.exports = {
-	setValidationErrorMessage,
 	signupValidations,
 	loginValidations,
 	postProductValidation,
+	checkForValidationErrors,
 };
