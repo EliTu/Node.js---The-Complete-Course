@@ -1,5 +1,4 @@
 const crypto = require('crypto'); // node-core module that can help generate random token
-const { validationResult } = require('express-validator');
 const { checkForValidationErrors } = require('../util/validations');
 const {
 	authForm,
@@ -8,7 +7,6 @@ const {
 	newPasswordForm,
 } = require('../util/forms');
 const {
-	setValidationErrorMessage,
 	confirmationMail,
 	passwordResetMail,
 	passwordResetSuccess,

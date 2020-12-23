@@ -7,7 +7,7 @@ block styles
 block content
     h2 #{pageSubtitle}
     main
-        if error
+        if error || (errorsArray && errorsArray.length)
             include ../layouts/user-message.pug
         
         form.signup-form(action="/signup" method="POST")
@@ -19,7 +19,7 @@ block content
                           placeholder=`${form.placeholder}` 
                           minLength=`${form.min}` 
                           maxLength=`${form.max}` 
-                          value=`${error && Object.values(prevData).length ? prevData[form.name] : ''}`
-                          class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)        
+                          value=`${prevData && Object.values(prevData).length ? prevData[form.name] : ''}`
+                          class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)        
             input(type="hidden" name="_csrf" value=`${csrfToken}`)  
             button(type="submit") Signup

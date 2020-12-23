@@ -1,1 +1,8 @@
-div(class=`message ${success && success.length ? 'success-message' : ''} ${error && error.length ? 'error-message' : ''}`) #{error && error.length ? error : success} 
+div(class=`message ${success && success.length ? 'success-message' : ''} 
+    ${error && error.length ? 'error-message' : ''} 
+    ${errorsArray && errorsArray.length ? 'error-message errors-array' : ''}`) #{error && error.length ? error : success}
+    if (errorsArray && errorsArray.length)
+        ul
+            span Uhh, there seem to be some issues with your request:
+            each err in errorsArray
+                li #{err.msg}

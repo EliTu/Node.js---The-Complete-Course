@@ -7,9 +7,7 @@ block styles
 block content 
     h2 #{pageSubtitle} 
     main 
-        if success
-            include ../layouts/user-message.pug
-        if error
+        if error || (errorsArray && errorsArray.length) || success
             include ../layouts/user-message.pug
 
         if forms.length > 0
@@ -24,8 +22,8 @@ block content
                                 placeholder=`${form.placeholder}` 
                                 minLength=`${form.min}` 
                                 maxLength=`${form.max}`
-                                class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`
-                            ) #{isEditingProduct || (error && Object.values(productData).length) ? productData[form.name] : ''}
+                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`
+                            ) #{isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : ''}
                         else
                             input(
                                 type=`${form.type}` 
@@ -34,10 +32,10 @@ block content
                                 step="0.01" 
                                 minLength=`${form.min}` 
                                 maxLength=`${form.max}`
-                                value=`${isEditingProduct || (error && Object.values(productData).length)
+                                value=`${isEditingProduct || (productData && Object.values(productData).length)
                                 ? productData[form.name] 
                                 : ''}`
-                                class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
+                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
                 if isEditingProduct
                     input(type="hidden" name="productId" value=`${productData._id}`) 
                 button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}

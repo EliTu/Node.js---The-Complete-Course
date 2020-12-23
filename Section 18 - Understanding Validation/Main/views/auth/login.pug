@@ -7,9 +7,7 @@ block styles
 block content
     h2 #{pageSubtitle}
     main 
-        if error
-            include ../layouts/user-message.pug
-        else if success
+        if error || (errorsArray && errorsArray.length) || success
             include ../layouts/user-message.pug
         
         form.login-form(action="/login", method="POST")
@@ -22,8 +20,8 @@ block content
                         placeholder=`${form.placeholder}`  
                         minLength=`${form.min}` 
                         maxLength=`${form.max}`
-                        value=`${error && Object.values(prevData).length ? prevData[form.name] : ''}`
-                        class=`${error && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
+                        value=`${prevData && Object.values(prevData).length ? prevData[form.name] : ''}`
+                        class=`${errorsArray  && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
             input(type="hidden" name="_csrf" value=`${csrfToken}`)  
             button(type="submit") Sign in
         a(class="text-link" href="/reset-password") Forgot your password?

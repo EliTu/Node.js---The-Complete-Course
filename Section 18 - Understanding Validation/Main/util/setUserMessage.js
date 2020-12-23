@@ -1,6 +1,6 @@
 const setUserMessage = (flash) => {
-    const [message] = flash;
-    
+	const [message] = flash;
+
 	if (!message) return '';
 
 	return message;
