@@ -2,11 +2,12 @@ const Product = require('../models/product');
 const { setProductForm } = require('../util/forms');
 const { checkForValidationErrors } = require('../util/validations');
 const setUserMessage = require('../util/setUserMessage');
+const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
 /* GET CONTROLS */
 
-const getAdminProduct = async (req, res) => {
+const getAdminProduct = async (req, res, next) => {
 	try {
-		const products = await Product.find({ userId: 12344 });
+		const products = await Product.find({ userId: req.user._id });
 		// .select('title price -_id')
 		// .populate('userId');
 		res.render('admin/admin-products', {
@@ -17,8 +18,7 @@ const getAdminProduct = async (req, res) => {
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
-		res.locals.error = error;
-		res.redirect('/500');
+		setErrorMiddlewareObject(error, next);
 	}
 };
 

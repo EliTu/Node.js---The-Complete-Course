@@ -87,8 +87,14 @@ app.use(shopRoute);
 
 // error routes
 app.use(errorRoutes);
+
 // 404 catch all middleware
 app.use(getPageNotFound);
+
+// define an error handling middleware (defined by setting error as first argument) to let express handle incoming errors (by calling next with an error object)
+app.use((error, req, res, next) => {
+	res.redirect('/500');
+});
 
 mongoose
 	.connect(MONGODB_URI, {
