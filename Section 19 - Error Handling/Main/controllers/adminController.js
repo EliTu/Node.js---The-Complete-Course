@@ -6,7 +6,7 @@ const setUserMessage = require('../util/setUserMessage');
 
 const getAdminProduct = async (req, res) => {
 	try {
-		const products = await Product.find({ userId: req.user._id });
+		const products = await Product.find({ userId: 12344 });
 		// .select('title price -_id')
 		// .populate('userId');
 		res.render('admin/admin-products', {
@@ -17,7 +17,8 @@ const getAdminProduct = async (req, res) => {
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
-		console.log(error);
+		res.locals.error = error;
+		res.redirect('/500');
 	}
 };
 

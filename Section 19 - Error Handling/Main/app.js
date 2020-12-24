@@ -12,9 +12,10 @@ const flash = require('connect-flash');
 const authRoutes = require('./routes/auth');
 const AdminRoute = require('./routes/admin');
 const shopRoute = require('./routes/shop');
+const errorRoutes = require('./routes/error');
 
 // FIles
-const { getPageNotFound } = require('./controllers/404');
+const { getPageNotFound } = require('./controllers/errorController');
 const User = require('./models/user');
 
 const MONGODB_URI =
@@ -59,18 +60,19 @@ app.use(async (req, res, next) => {
 	if (!req.session.user) return next();
 	try {
 		const user = await User.findById(req.session.user);
-		req.user = user;
+		if (!user) next();
 
+		req.user = user;
 		return next();
 	} catch (error) {
-		console.log(error);
+		throw new Error(error);
 	}
 });
 
 // Serve CSS files statically from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// set a middleware that will declare common local variables that will be available for every view that is being rendered
+// set a middleware that will declare common local variables that will be available for every req/res and is passable to any view that is being rendered
 app.use((req, res, next) => {
 	res.locals.isLoggedIn = req.session.isLoggedIn;
 	res.locals.csrfToken = req.csrfToken(); // register a valid csrf token for every POST request
@@ -78,12 +80,14 @@ app.use((req, res, next) => {
 	next();
 });
 
-// app routes
+// shop/admin routes
 app.use(authRoutes);
 app.use('/admin', AdminRoute);
 app.use(shopRoute);
 
-// 404 catch all route
+// error routes
+app.use(errorRoutes);
+// 404 catch all middleware
 app.use(getPageNotFound);
 
 mongoose
