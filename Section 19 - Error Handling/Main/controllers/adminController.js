@@ -34,7 +34,7 @@ const getAddProduct = (req, res) => {
 	});
 };
 
-const getEditProduct = async (req, res) => {
+const getEditProduct = async (req, res, next) => {
 	const editMode = req.query.edit;
 	if (!editMode) return res.redirect('/');
 
@@ -55,13 +55,13 @@ const getEditProduct = async (req, res) => {
 			productData: product,
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
 /* POST CONTROLS */
 
-const postProduct = async (req, res) => {
+const postProduct = async (req, res, next) => {
 	const { title, description, price, imageUrl, productId } = req.body;
 	const { path } = req.route;
 
@@ -102,7 +102,7 @@ const postProduct = async (req, res) => {
 			req.flash('success', `${title} has been successfully added`);
 			return res.redirect('/products');
 		} catch (error) {
-			console.log(error);
+			setErrorMiddlewareObject(error, next);
 		}
 	} else {
 		// Update an existing product
@@ -128,12 +128,12 @@ const postProduct = async (req, res) => {
 			req.flash('success', `${title} has been successfully edited`);
 			return res.redirect('/admin/admin-products');
 		} catch (error) {
-			console.log(error);
+			setErrorMiddlewareObject(error, next);
 		}
 	}
 };
 
-const postDeleteProduct = async (req, res) => {
+const postDeleteProduct = async (req, res, next) => {
 	const { deletedProductId: productId, deletedProductTitle: title } = req.body;
 	try {
 		const { deletedCount } = await Product.deleteOne({
@@ -146,7 +146,7 @@ const postDeleteProduct = async (req, res) => {
 		req.flash('success', `${title} has been successfully deleted`);
 		return res.redirect('/admin/admin-products');
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 

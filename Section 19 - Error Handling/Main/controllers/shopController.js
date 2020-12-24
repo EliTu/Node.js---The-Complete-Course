@@ -1,6 +1,7 @@
 const Product = require('../models/product.js');
 const Order = require('../models/order');
 const setUserMessage = require('../util/setUserMessage');
+const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
 
 //  Specific for shop or '/':
 const getShopPage = (req, res) => {
@@ -13,7 +14,7 @@ const getShopPage = (req, res) => {
 	});
 };
 
-const getOrdersPage = async (req, res) => {
+const getOrdersPage = async (req, res, next) => {
 	try {
 		const orders = await Order.find({ 'user.userId': req.session.user._id });
 		res.render('shop/orders', {
@@ -24,11 +25,11 @@ const getOrdersPage = async (req, res) => {
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const getCartPage = async (req, res) => {
+const getCartPage = async (req, res, next) => {
 	try {
 		const userCart = await req.user
 			.populate('cart.items.productId')
@@ -47,11 +48,11 @@ const getCartPage = async (req, res) => {
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const postCart = async (req, res) => {
+const postCart = async (req, res, next) => {
 	const prodId = req.body.cartAddId;
 
 	try {
@@ -61,27 +62,22 @@ const postCart = async (req, res) => {
 		req.flash('success', `${product.title} has been added to the cart`);
 		res.redirect('/cart');
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const postCartDeleteProduct = async (req, res) => {
-	const {
-		cartDeleteId: id,
-		isDeleteAll,
-		cardDeleteProductName: productTitle,
-	} = req.body;
+const postCartDeleteProduct = async (req, res, next) => {
+	const { isDeleteAll, cardDeleteProductName: productTitle } = req.body;
 
 	try {
-		await req.user.removeFromCart(id, isDeleteAll);
-
+		await req.user.removeFromCart(5, isDeleteAll);
 		req.flash('success', `${productTitle} has been removed from the cart`);
 	} catch (error) {
-		req.flash(
-			'error',
-			`Something went wrong! ${productTitle} wasn't removed successfully`
-		);
-		console.log(error);
+		// req.flash(
+		// 	'error',
+		// 	`Something went wrong! ${productTitle} wasn't removed successfully`
+		// ); // TODO: figure out how to handle unsuccessful removal inside the try block
+		setErrorMiddlewareObject(error, next);
 	} finally {
 		res.redirect('/cart');
 	}
@@ -95,7 +91,7 @@ const getCheckoutPage = (req, res) => {
 	});
 };
 
-const getAllProducts = async (req, res) => {
+const getAllProducts = async (req, res, next) => {
 	try {
 		const products = await Product.find();
 		res.render('shop/product-list', {
@@ -109,11 +105,11 @@ const getAllProducts = async (req, res) => {
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const getProductDetailsPage = async (req, res) => {
+const getProductDetailsPage = async (req, res, next) => {
 	const productId = req.params.productId;
 	try {
 		const product = await Product.findById(productId);
@@ -125,11 +121,11 @@ const getProductDetailsPage = async (req, res) => {
 			path: '/products',
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const postOrder = async (req, res) => {
+const postOrder = async (req, res, next) => {
 	try {
 		const cartProductsData = await req.user
 			.populate('cart.items.productId')
@@ -152,7 +148,7 @@ const postOrder = async (req, res) => {
 		req.flash('success', `Order ${order._id} has been made successfully`);
 		res.redirect('/orders');
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 

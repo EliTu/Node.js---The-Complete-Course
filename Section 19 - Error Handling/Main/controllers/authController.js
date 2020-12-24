@@ -1,4 +1,7 @@
 const crypto = require('crypto'); // node-core module that can help generate random token
+const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
 const { checkForValidationErrors } = require('../util/validations');
 const {
 	authForm,
@@ -13,8 +16,6 @@ const {
 } = require('../util/email-templates');
 const setUserMessage = require('../util/setUserMessage');
 const User = require('../models/user');
-const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
 
 /* AUTH UTILS */
 
@@ -88,14 +89,14 @@ const getPasswordResetPage = (req, res) => {
 	});
 };
 
-const getNewPasswordPage = async (req, res) => {
+const getNewPasswordPage = async (req, res, next) => {
 	const token = req.params.token;
 	try {
 		const user = await User.findOne({
 			resetPasswordToken: token,
 			resetPasswordTokenExpiration: { $gt: Date.now() }, // Also check the expiration token on the DB if its still valid with $gt operation
 		});
-		console.log(user);
+
 		if (!user) {
 			req.flash(
 				'error',
@@ -114,13 +115,13 @@ const getNewPasswordPage = async (req, res) => {
 			passwordToken: token,
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
 /* POST CONTROLS */
 
-const postLogin = async (req, res) => {
+const postLogin = async (req, res, next) => {
 	const { email } = req.body;
 
 	const isFormInvalid = checkForValidationErrors(req, res, 'auth/login', {
@@ -136,18 +137,20 @@ const postLogin = async (req, res) => {
 	try {
 		const user = await User.findOne({ email: email });
 		return setLoginUserSession(user, req.session).save((err) => {
-			if (err) console.log(err);
+			if (err) {
+				setErrorMiddlewareObject(err, next);
+			}
 
 			const userInitialName = setUserInitialName(user);
 			req.flash('success', `Welcome back, ${userInitialName}!`);
 			return res.redirect('/');
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const postSignup = async (req, res) => {
+const postSignup = async (req, res, next) => {
 	const { email, password } = req.body;
 
 	const isFormInvalid = checkForValidationErrors(req, res, 'auth/signup', {
@@ -171,7 +174,9 @@ const postSignup = async (req, res) => {
 		await newUser.save();
 
 		return setLoginUserSession(newUser, req.session).save((err) => {
-			if (err) throw new Error(err);
+			if (err) {
+				setErrorMiddlewareObject(err, next);
+			}
 
 			const userInitialName = setUserInitialName(newUser);
 			req.flash(
@@ -188,27 +193,26 @@ const postSignup = async (req, res) => {
 			});
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const postLogout = async (req, res) => {
+const postLogout = async (req, res, next) => {
 	try {
-		req.session.destroy(() => {
+		await req.session.destroy(() => {
 			res.redirect('/login');
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
-const postPasswordReset = async (req, res) => {
+const postPasswordReset = async (req, res, next) => {
 	const { email: userEmail } = req.body;
 
 	// use the crypto module to generate random string with 32 bytes
 	crypto.randomBytes(32, async (err, buffer) => {
 		if (err) {
-			console.error(err);
 			req.flash('error', 'Something went wrong!');
 			return res.redirect('/reset-password');
 		}
@@ -230,7 +234,7 @@ const postPasswordReset = async (req, res) => {
 				return res.redirect('/reset-password');
 			}
 			user.resetPasswordToken = token;
-			user.resetPasswordTokenExpiration = Date.now() + 8.64e7;
+			user.resetPasswordTokenExpiration = Date.now() + 8.64e7; // set expiration date to 24 hours from the request time
 			await user.save();
 
 			req.flash(
@@ -245,12 +249,12 @@ const postPasswordReset = async (req, res) => {
 				html: passwordResetMail(token),
 			});
 		} catch (error) {
-			console.log(error);
+			setErrorMiddlewareObject(error, next);
 		}
 	});
 };
 
-const postNewPassword = async (req, res) => {
+const postNewPassword = async (req, res, next) => {
 	const { password: newPassword, userId, passwordToken } = req.body;
 
 	try {
@@ -279,7 +283,7 @@ const postNewPassword = async (req, res) => {
 			html: passwordResetSuccess,
 		});
 	} catch (error) {
-		console.log(error);
+		setErrorMiddlewareObject(error, next);
 	}
 };
 
