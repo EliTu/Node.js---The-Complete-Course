@@ -24,6 +24,12 @@ block content
                                 maxLength=`${form.max}`
                                 class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`
                             ) #{isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : ''}
+                        else if form.type === 'file'
+                             input(
+                                type=`${form.type}` 
+                                name=`${form.name}` 
+                                placeholder=`${form.placeholder}`
+                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'file-picker-input input-error' : 'file-picker-input'}`)
                         else
                             input(
                                 type=`${form.type}` 

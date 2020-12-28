@@ -9,10 +9,10 @@ const appForms = {
 			max: 25,
 		},
 		{
-			name: 'imageUrl',
-			type: 'url',
-			title: 'Image URL',
-			placeholder: 'Enter product image URL',
+			name: 'image',
+			type: 'file',
+			title: 'Product Image',
+			placeholder: 'Upload an image of the product',
 		},
 		{
 			name: 'price',

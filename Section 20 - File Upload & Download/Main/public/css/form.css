@@ -27,6 +27,46 @@
 	padding: 0 10px;
 }
 
+.form-control .file-picker-input {
+	height: auto;
+	padding: 0;
+	font-size: 12px;
+	color: #123fd39f;
+}
+/* hide the default html5 file upload button */
+.file-picker-input::-webkit-file-upload-button {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	z-index: -1;
+}
+/* style the upload button */
+.file-picker-input::before {
+	cursor: pointer;
+	content: 'Choose file';
+	display: inline-block;
+	border-right: 2px solid #123fd39f;
+	outline: none;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	font-size: 12px;
+	padding: 4px 10px;
+	color: #123fd39f;
+	transition: all 0.2s ease-in;
+	font-weight: 700;
+}
+
+.file-picker-input:hover::before {
+	color: white;
+	background-color: #0b2a91e7;
+}
+
+.file-picker-input:active::before {
+	outline-color: #662fbee8;
+	border-color: #2807bec9;
+}
+
 .form-control .input-error {
 	border-color: #f05454a1 !important;
 }
