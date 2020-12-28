@@ -67,10 +67,6 @@
 	border-color: #2807bec9;
 }
 
-.form-control .input-error {
-	border-color: #f05454a1 !important;
-}
-
 .form-control textarea {
 	border: 2px solid #123fd39f;
 	border-radius: 6px;
@@ -93,6 +89,10 @@
 .form-control input:active {
 	outline-color: #662fbee8;
 	border-color: #2807bec9;
+}
+
+.form-control .input-error {
+	border-color: #f05454a1 !important;
 }
 
 button {
