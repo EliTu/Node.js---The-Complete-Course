@@ -123,7 +123,6 @@ const getNewPasswordPage = async (req, res, next) => {
 
 const postLogin = async (req, res, next) => {
 	const { email } = req.body;
-
 	const isFormInvalid = checkForValidationErrors(req, res, 'auth/login', {
 		docTitle: 'Login',
 		pageSubtitle: 'Enter details to log in',
