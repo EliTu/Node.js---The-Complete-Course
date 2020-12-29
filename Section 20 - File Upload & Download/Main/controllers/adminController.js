@@ -62,8 +62,10 @@ const getEditProduct = async (req, res, next) => {
 /* POST CONTROLS */
 
 const postProduct = async (req, res, next) => {
-	const { title, description, price, image, productId } = req.body;
+	const { title, description, price, productId } = req.body;
+	const image = req.file; // get the image by accessing the file parsed by multer middleware
 	const { path } = req.route;
+	console.log(image);
 
 	const isFormInvalid = checkForValidationErrors(
 		req,

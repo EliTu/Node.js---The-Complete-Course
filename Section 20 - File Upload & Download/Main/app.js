@@ -34,12 +34,16 @@ const csrfProtection = csrf();
 app.set('view engine', 'pug');
 app.set('views', 'views');
 
-// Set body parser middleware
+// Set body parser middleware to parse plain text requests (like forms)
 app.use(
 	parser.urlencoded({
 		extended: false,
 	})
 );
+
+// set multer middleware to scan for enctype=multipart requests (files. images etc) and parse them correctly
+app.use(multer({ dest: 'images' }).single('image'));
+
 // Register a session middleware
 app.use(
 	session({
