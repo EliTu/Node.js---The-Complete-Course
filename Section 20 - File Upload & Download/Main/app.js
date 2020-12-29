@@ -30,6 +30,18 @@ const store = new mongodbSessionStore({
 // init CSRF token service with csurf
 const csrfProtection = csrf();
 
+// set a multer storage engine to handle file storage on the memory by setting destination folder and file names
+const fileStorage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		// call the cb function and pass null for error to indicate operation success and set a destination folder
+		cb(null, 'images');
+	},
+	filename: (req, file, cb) => {
+		// call the cb function and set a unique file name by combining the filenames with a unique string
+		cb(null, `${file.originalname}-${Date.now()}`);
+	},
+});
+
 // Set a template engine global value
 app.set('view engine', 'pug');
 app.set('views', 'views');
@@ -41,8 +53,8 @@ app.use(
 	})
 );
 
-// set multer middleware to scan for enctype=multipart requests (files. images etc) and parse them correctly
-app.use(multer({ dest: 'images' }).single('image'));
+// set multer middleware to scan for enctype=multipart requests (files. images etc) and parse them correctly, use the fileStorage as the engine
+app.use(multer({ storage: fileStorage }).single('image'));
 
 // Register a session middleware
 app.use(
