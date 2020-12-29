@@ -73,7 +73,7 @@ const loginValidations = [
 	)
 		.isLength({ min: 4, max: 12 })
 		.bail()
-		// .matches(/\d/g) //TODO: think about this thingy
+		.matches(/\d/g)
 		.trim()
 		.custom(async (value, { req }) => {
 			if (!value) return false;
@@ -99,11 +99,8 @@ const postProductValidation = [
 		.withMessage('Title field is empty or invalid.')
 		.bail()
 		.trim(),
-	body('imageUrl')
-		.optional({ checkFalsy: true })
-		.isURL()
-		.trim()
-		.withMessage('Image URL field is empty or invalid.'),
+	body('image').optional({ checkFalsy: true }).trim(),
+	// .withMessage('Image URL field is empty or invalid.'),
 	body('price')
 		.notEmpty()
 		.withMessage('Price field is empty.')

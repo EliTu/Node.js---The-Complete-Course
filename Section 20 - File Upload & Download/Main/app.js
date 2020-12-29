@@ -7,6 +7,7 @@ const session = require('express-session');
 const mongodbSessionStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 // Routes
 const authRoutes = require('./routes/auth');

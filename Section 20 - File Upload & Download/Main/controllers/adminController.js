@@ -62,7 +62,7 @@ const getEditProduct = async (req, res, next) => {
 /* POST CONTROLS */
 
 const postProduct = async (req, res, next) => {
-	const { title, description, price, imageUrl, productId } = req.body;
+	const { title, description, price, image, productId } = req.body;
 	const { path } = req.route;
 
 	const isFormInvalid = checkForValidationErrors(
@@ -76,7 +76,7 @@ const postProduct = async (req, res, next) => {
 			path: `/admin${path}`,
 			formsActive: true,
 			formsCSS: true,
-			productData: { title, description, price, imageUrl, _id: productId },
+			productData: { title, description, price, image, _id: productId },
 			isEditingProduct: path.includes('edit'),
 		}
 	);
@@ -88,11 +88,11 @@ const postProduct = async (req, res, next) => {
 			title: title,
 			price: price,
 			description: description,
-			imageUrl: !imageUrl
+			image: !image
 				? `https://loremflickr.com/320/240/kaohsiung?random=${
 						Math.floor(Math.random() * (45 - 1)) + 1
 				  }`
-				: imageUrl,
+				: image,
 			userId: req.user._id,
 		});
 
@@ -122,7 +122,7 @@ const postProduct = async (req, res, next) => {
 				title: title,
 				price: price,
 				description: description,
-				imageUrl: imageUrl,
+				image: image,
 			});
 
 			req.flash('success', `${title} has been successfully edited`);

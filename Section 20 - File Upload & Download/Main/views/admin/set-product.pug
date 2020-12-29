@@ -11,7 +11,11 @@ block content
             include ../layouts/user-message.pug
 
         if forms.length > 0
-            form.product-form(action=`/admin${isEditingProduct ? '/edit-product' : '/add-product'}`, method="POST" id="set-product-form")
+            form.product-form(
+                action=`/admin${isEditingProduct ? '/edit-product' : '/add-product'}`
+                method="POST" 
+                id="set-product-form"
+                enctype="multipart/form-data")
                 each form in forms 
                     .form-control
                         label(for=`${form.name}`) #{form.title}:
