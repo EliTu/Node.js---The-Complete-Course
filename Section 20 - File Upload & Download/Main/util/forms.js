@@ -9,7 +9,7 @@ const appForms = {
 			max: 25,
 		},
 		{
-			name: 'image',
+			name: 'imageUrl',
 			type: 'file',
 			title: 'Product Image',
 			placeholder: 'Upload an image of the product',

@@ -99,8 +99,26 @@ const postProductValidation = [
 		.withMessage('Title field is empty or invalid.')
 		.bail()
 		.trim(),
-	body('image').optional({ checkFalsy: true }).trim(),
-	// .withMessage('Image URL field is empty or invalid.'),
+	body('imageUrl').custom((value, { req }) => {
+		console.log(value, req.file);
+		// express-validator by default validates string values, for files etc use a custom validation function and use the req to get the file
+		// THough we have the multer filter function to validate on app.js, use this extra layer to validate and render error message with status 422
+		if (!req.file)
+			throw new Error(
+				'File is missing or incorrect format (Should be an image of png/jpg/jpeg/gif format).'
+			);
+
+		const { mimetype, filename } = req.file;
+		const [, imageType] = mimetype.split('/');
+		const validImageFormats = ['jpg', 'jpeg', 'png', 'gif'];
+
+		if (!filename || !mimetype)
+			throw new Error('Something wrong with the attached file.');
+		if (!validImageFormats.includes(imageType))
+			throw new Error('Attached file is not an image.');
+
+		return true;
+	}),
 	body('price')
 		.notEmpty()
 		.withMessage('Price field is empty.')

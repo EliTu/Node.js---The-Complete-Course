@@ -65,7 +65,6 @@ const postProduct = async (req, res, next) => {
 	const { title, description, price, productId } = req.body;
 	const image = req.file; // get the image by accessing the file parsed by multer middleware
 	const { path } = req.route;
-	console.log(image);
 
 	const isFormInvalid = checkForValidationErrors(
 		req,
@@ -78,23 +77,27 @@ const postProduct = async (req, res, next) => {
 			path: `/admin${path}`,
 			formsActive: true,
 			formsCSS: true,
-			productData: { title, description, price, image, _id: productId },
+			productData: {
+				title,
+				description,
+				price,
+				_id: productId,
+			},
 			isEditingProduct: path.includes('edit'),
 		}
 	);
 	if (isFormInvalid) return;
 
+	const newImageUrl = image ? image.path : undefined; // if new image has been uploaded, set it as the the imageUrl to be added
+
+	// if the image file is valid, we will pass the file path reference to the DB and not the whole file
 	if (!productId) {
-		// Save a new product
+		// save a new product
 		const product = new Product({
-			title: title,
-			price: price,
-			description: description,
-			image: !image
-				? `https://loremflickr.com/320/240/kaohsiung?random=${
-						Math.floor(Math.random() * (45 - 1)) + 1
-				  }`
-				: image,
+			title,
+			price,
+			description,
+			imageUrl: newImageUrl,
 			userId: req.user._id,
 		});
 
@@ -110,21 +113,23 @@ const postProduct = async (req, res, next) => {
 		// Update an existing product
 		try {
 			const productToUpdate = await Product.findById(productId);
+			const { imageUrl } = productToUpdate;
 
 			if (!productToUpdate) {
 				req.flash('error', 'No product to update');
 				return res.redirect('/admin/admin-product');
 			}
+			// Authorization guard - only the user who created the product can edit it
 			if (productToUpdate.userId.toString() !== req.user._id.toString()) {
 				req.flash('error', 'Could not edit products of other users');
-				return res.redirect('/'); // Authorization guard - only the user who created the product can edit it
+				return res.redirect('/');
 			}
 
 			await Product.findByIdAndUpdate(productToUpdate._id, {
-				title: title,
-				price: price,
-				description: description,
-				image: image,
+				title,
+				price,
+				description,
+				imageUrl: newImageUrl ? newImageUrl : imageUrl, // if the user sets a new image, use the new one, otherwise set the old one that was retrieved from the DB
 			});
 
 			req.flash('success', `${title} has been successfully edited`);

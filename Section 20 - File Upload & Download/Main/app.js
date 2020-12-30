@@ -44,11 +44,12 @@ const fileStorage = multer.diskStorage({
 // set a storage file filter validation function to pass it to multer in order to filter files based on file mimetype property
 const multerFilter = (req, file, cb) => {
 	// call the cb function with true to accept and store the file, or false to deny the file
+	const [, imageType] = file.mimetype.split('/');
 	if (
-		file.mimetype === 'image/png' ||
-		file.mimetype === 'image/jpg' ||
-		file.mimetype === 'image/jpeg' ||
-		file.mimetype === 'image/gif'
+		imageType === 'png' ||
+		imageType === 'jpg' ||
+		imageType === 'jpeg' ||
+		imageType === 'gif'
 	) {
 		cb(null, true);
 	} else {
@@ -69,7 +70,7 @@ app.use(
 
 // set multer middleware to scan for enctype=multipart requests (files. images etc) and parse them correctly, use the fileStorage as the engine, and fileFilter for validation
 app.use(
-	multer({ storage: fileStorage, fileFilter: multerFilter }).single('image')
+	multer({ storage: fileStorage, fileFilter: multerFilter }).single('imageUrl')
 );
 
 // Register a session middleware
