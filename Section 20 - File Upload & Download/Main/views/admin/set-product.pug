@@ -29,14 +29,15 @@ block content
                                 class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`
                             ) #{isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : ''}
                         else if form.type === 'file'
-                             input(
+                             .file-picker-container
+                                input(
+                                id="file-picker"
                                 type=`${form.type}` 
                                 name=`${form.name}` 
                                 placeholder=`${form.placeholder}`
-                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'file-picker-input input-error' : 'file-picker-input'}`
-                                value=`${isEditingProduct || (productData && Object.values(productData).length)
-                                ? productData[form.name] 
-                                : ''}`)
+                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'file-picker-input input-error' : 'file-picker-input'}`)
+                                label(for="file-picker" class="file-name") #{ isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : '' }
+                                input(type="hidden" name="file-placeholder" value=`${ isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : ''}`)
                         else
                             input(
                                 type=`${form.type}` 

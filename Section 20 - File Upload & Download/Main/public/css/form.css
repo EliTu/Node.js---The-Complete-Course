@@ -27,14 +27,31 @@
 	padding: 0 10px;
 }
 
-.form-control .file-picker-input {
+.file-picker-container {
+	display: flex;
+	width: 400px;
+}
+
+.file-picker-container .file-picker-input {
 	height: auto;
 	padding: 0;
 	font-size: 12px;
-	color: #123fd39f;
+	color: transparent;
+	width: 110px;
 }
+
+.file-picker-container label {
+	width: 65%;
+	align-self: center;
+	font-size: 14px;
+	margin-left: 10px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
 /* hide the default html5 file upload button */
-.file-picker-input::-webkit-file-upload-button {
+.file-picker-container .file-picker-input::-webkit-file-upload-button {
 	width: 0.1px;
 	height: 0.1px;
 	opacity: 0;
@@ -42,7 +59,9 @@
 	z-index: -1;
 }
 /* style the upload button */
-.file-picker-input::before {
+.file-picker-container .file-picker-input::before {
+	width: 87px;
+	text-align: center;
 	cursor: pointer;
 	content: 'Choose file';
 	display: inline-block;
@@ -57,12 +76,12 @@
 	font-weight: 700;
 }
 
-.file-picker-input:hover::before {
+.file-picker-container .file-picker-input:hover::before {
 	color: white;
 	background-color: #0b2a91e7;
 }
 
-.file-picker-input:active::before {
+.file-picker-container .file-picker-input:active::before {
 	outline-color: #662fbee8;
 	border-color: #2807bec9;
 }

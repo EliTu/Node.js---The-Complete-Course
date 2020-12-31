@@ -113,7 +113,6 @@ const postProduct = async (req, res, next) => {
 		// Update an existing product
 		try {
 			const productToUpdate = await Product.findById(productId);
-			const { imageUrl } = productToUpdate;
 
 			if (!productToUpdate) {
 				req.flash('error', 'No product to update');
@@ -124,6 +123,8 @@ const postProduct = async (req, res, next) => {
 				req.flash('error', 'Could not edit products of other users');
 				return res.redirect('/');
 			}
+
+			const { imageUrl } = productToUpdate;
 
 			await Product.findByIdAndUpdate(productToUpdate._id, {
 				title,

@@ -99,22 +99,34 @@ const postProductValidation = [
 		.withMessage('Title field is empty or invalid.')
 		.bail()
 		.trim(),
-	body('imageUrl').custom((value, { req }) => {
-		console.log(value, req.file);
+	body('file-placeholder').custom((value, { req }) => {
 		// express-validator by default validates string values, for files etc use a custom validation function and use the req to get the file
-		// THough we have the multer filter function to validate on app.js, use this extra layer to validate and render error message with status 422
+		// Though we have the multer filter function to validate on app.js, use this extra layer to validate and render error message with status 422
+
+		const validImageFormats = ['jpg', 'jpeg', 'png', 'gif'];
+
+		// if file already exists (in edit mode) then return true;
+		if (value) {
+			console.log(value);
+			const [, imageFormat] = value.split('.');
+
+			if (!validImageFormats.includes(imageFormat))
+				throw new Error('Something is wrong with the attached file.');
+
+			return true;
+		}
+
 		if (!req.file)
 			throw new Error(
 				'File is missing or incorrect format (Should be an image of png/jpg/jpeg/gif format).'
 			);
 
 		const { mimetype, filename } = req.file;
-		const [, imageType] = mimetype.split('/');
-		const validImageFormats = ['jpg', 'jpeg', 'png', 'gif'];
+		const [, imageFormat] = mimetype.split('/');
 
 		if (!filename || !mimetype)
-			throw new Error('Something wrong with the attached file.');
-		if (!validImageFormats.includes(imageType))
+			throw new Error('Something is wrong with the attached file.');
+		if (!validImageFormats.includes(imageFormat))
 			throw new Error('Attached file is not an image.');
 
 		return true;
