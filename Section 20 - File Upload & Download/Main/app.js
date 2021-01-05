@@ -103,8 +103,11 @@ app.use(async (req, res, next) => {
 	}
 });
 
-// Serve CSS files statically from the public folder
+// serve CSS files statically from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+// serve the image files statically
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // set a middleware that will declare common local variables that will be available for every req/res and is passable to any view that is being rendered
 app.use((req, res, next) => {

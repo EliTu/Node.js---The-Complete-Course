@@ -46,7 +46,7 @@ const getEditProduct = async (req, res, next) => {
 
 		// extract the imageUrl without the full path
 		const { imageUrl } = product;
-		const [, imageName] = imageUrl.split('/');
+		const [, , imageName] = imageUrl.split('/');
 		const updatedProductData = { ...product._doc, imageUrl: imageName };
 
 		res.render('admin/set-product', {
@@ -93,7 +93,7 @@ const postProduct = async (req, res, next) => {
 	);
 	if (isFormInvalid) return;
 
-	const newImageUrl = image ? image.path : undefined; // if new image has been uploaded, set it as the the imageUrl to be added
+	const newImageUrl = image ? `/${image.path}` : null; // if new image has been uploaded, set it as the the imageUrl to be added
 
 	// if the image file is valid, we will pass the file path reference to the DB and not the whole file
 	if (!productId) {
