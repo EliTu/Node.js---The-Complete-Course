@@ -10,9 +10,7 @@ if (filePicker) {
 	document.querySelector('.file-picker-input').onchange = () => {
 		if (filePicker.files.length > 0) {
 			const fileName = filePicker.files[0].name;
-			document.querySelector(
-				'.file-name'
-			).textContent = `${Date.now()}-${fileName}`;
+			document.querySelector('.file-name').textContent = `${fileName}`;
 		}
 	};
 }

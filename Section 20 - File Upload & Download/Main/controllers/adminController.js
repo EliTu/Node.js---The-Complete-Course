@@ -44,6 +44,11 @@ const getEditProduct = async (req, res, next) => {
 		const product = await Product.findById(prodId);
 		if (!product) return res.redirect('/');
 
+		// extract the imageUrl without the full path
+		const { imageUrl } = product;
+		const [, imageName] = imageUrl.split('/');
+		const updatedProductData = { ...product._doc, imageUrl: imageName };
+
 		res.render('admin/set-product', {
 			docTitle: 'Edit Product',
 			pageSubtitle: 'Edit Product',
@@ -52,7 +57,7 @@ const getEditProduct = async (req, res, next) => {
 			formsActive: true,
 			formsCSS: true,
 			isEditingProduct: editMode,
-			productData: product,
+			productData: updatedProductData,
 		});
 	} catch (error) {
 		setErrorMiddlewareObject(error, next);
