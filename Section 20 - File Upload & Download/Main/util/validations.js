@@ -102,12 +102,10 @@ const postProductValidation = [
 	body('file-placeholder').custom((value, { req }) => {
 		// express-validator by default validates string values, for files etc use a custom validation function and use the req to get the file
 		// Though we have the multer filter function to validate on app.js, use this extra layer to validate and render error message with status 422
-
 		const validImageFormats = ['jpg', 'jpeg', 'png', 'gif'];
 
 		// if file already exists (in edit mode) then return true;
 		if (value) {
-			console.log(value);
 			const [, imageFormat] = value.split('.');
 
 			if (!validImageFormats.includes(imageFormat))
@@ -116,6 +114,7 @@ const postProductValidation = [
 			return true;
 		}
 
+		// if posting a new file
 		if (!req.file)
 			throw new Error(
 				'File is missing or incorrect format (Should be an image of png/jpg/jpeg/gif format).'
