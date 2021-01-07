@@ -46,7 +46,7 @@ const getEditProduct = async (req, res, next) => {
 
 		// extract the imageUrl without the full path
 		const { imageUrl } = product;
-		const [, , imageName] = imageUrl.split('/');
+		const [, , , imageName] = imageUrl.split('/');
 		const updatedProductData = { ...product._doc, imageUrl: imageName };
 
 		res.render('admin/set-product', {

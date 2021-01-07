@@ -34,7 +34,7 @@ const csrfProtection = csrf();
 const fileStorage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		// call the cb function and pass null for error to indicate operation success and set a destination folder
-		cb(null, './images');
+		cb(null, './assets/images');
 	},
 	filename: (req, file, cb) => {
 		// call the cb function and set a unique file name by combining the filenames with a unique string
@@ -107,7 +107,10 @@ app.use(async (req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // serve the image files statically
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(
+	'/assets/images',
+	express.static(path.join(__dirname, './assets/images'))
+);
 
 // set a middleware that will declare common local variables that will be available for every req/res and is passable to any view that is being rendered
 app.use((req, res, next) => {
