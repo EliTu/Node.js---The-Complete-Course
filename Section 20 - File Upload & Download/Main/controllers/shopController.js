@@ -31,14 +31,20 @@ const getOrdersPage = async (req, res, next) => {
 	}
 };
 
-const getOrderInvoice = async (req, res, next) => {
+const getOrderInvoice = (req, res, next) => {
 	const orderId = req.params.orderId;
 	const invoiceFileName = `invoice-${orderId}.pdf`;
 	const invoicePath = path.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
 
 	// use the file system module to read the file and serve it
 	fs.readFile(invoicePath, (err, data) => {
-		if (err) return next(err); // if error, pass it to the error middleware
+		if (err) return setErrorMiddlewareObject(err, next); // if error, pass it to the error middleware
+
+		res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
+		res.setHeader(
+			'Content-Disposition',
+			`inline; filename="${invoiceFileName}"`
+		); // set the response header to make sure the pdf is displayed in the browser and has a file name
 
 		res.send(data);
 	});
