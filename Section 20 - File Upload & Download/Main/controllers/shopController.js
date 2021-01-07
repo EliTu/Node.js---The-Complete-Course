@@ -31,23 +31,33 @@ const getOrdersPage = async (req, res, next) => {
 	}
 };
 
-const getOrderInvoice = (req, res, next) => {
+const getOrderInvoice = async (req, res, next) => {
 	const orderId = req.params.orderId;
-	const invoiceFileName = `invoice-${orderId}.pdf`;
-	const invoicePath = path.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
+	try {
+		const order = await Order.findById(orderId);
 
-	// use the file system module to read the file and serve it
-	fs.readFile(invoicePath, (err, data) => {
-		if (err) return setErrorMiddlewareObject(err, next); // if error, pass it to the error middleware
+		if (!order) return setErrorMiddlewareObject('No order found', next);
+		if (order.user.userId.toString() !== req.user._id.toString())
+			return setErrorMiddlewareObject('Unauthorized access attempt', next);
 
-		res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
-		res.setHeader(
-			'Content-Disposition',
-			`inline; filename="${invoiceFileName}"`
-		); // set the response header to make sure the pdf is displayed in the browser and has a file name
+		const invoiceFileName = `invoice-${orderId}.pdf`;
+		const invoicePath = path.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
 
-		res.send(data);
-	});
+		// use the file system module to read the file and serve it
+		fs.readFile(invoicePath, (err, data) => {
+			if (err) return setErrorMiddlewareObject(err, next); // if error, pass it to the error middleware
+
+			res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
+			res.setHeader(
+				'Content-Disposition',
+				`inline; filename="${invoiceFileName}"`
+			); // set the response header to make sure the pdf is displayed in the browser and has a file name
+
+			res.send(data);
+		});
+	} catch (error) {
+		setErrorMiddlewareObject(error, next);
+	}
 };
 
 const getCartPage = async (req, res, next) => {
