@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Product = require('../models/product.js');
 const Order = require('../models/order');
 const setUserMessage = require('../util/setUserMessage');
@@ -27,6 +29,19 @@ const getOrdersPage = async (req, res, next) => {
 	} catch (error) {
 		setErrorMiddlewareObject(error, next);
 	}
+};
+
+const getOrderInvoice = async (req, res, next) => {
+	const orderId = req.params.orderId;
+	const invoiceFileName = `invoice-${orderId}.pdf`;
+	const invoicePath = path.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
+
+	// use the file system module to read the file and serve it
+	fs.readFile(invoicePath, (err, data) => {
+		if (err) return next(err); // if error, pass it to the error middleware
+
+		res.send(data);
+	});
 };
 
 const getCartPage = async (req, res, next) => {
@@ -158,6 +173,7 @@ module.exports = {
 	getShopPage,
 	getCartPage,
 	getOrdersPage,
+	getOrderInvoice,
 	getCheckoutPage,
 	postCart,
 	postCartDeleteProduct,

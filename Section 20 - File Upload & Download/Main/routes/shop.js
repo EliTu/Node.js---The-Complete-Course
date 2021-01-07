@@ -9,6 +9,7 @@ const {
 	getCartPage,
 	getOrdersPage,
 	getCheckoutPage,
+	getOrderInvoice,
 	postCart,
 	postCartDeleteProduct,
 	postOrder,
@@ -21,6 +22,7 @@ router.get('/products', getAllProducts);
 router.get('/products/:productId', getProductDetailsPage);
 router.get('/cart', isAuthenticated, getCartPage);
 router.get('/orders', isAuthenticated, getOrdersPage);
+router.get('/orders/:orderId', isAuthenticated, getOrderInvoice);
 router.get('/checkout', isAuthenticated, getCheckoutPage);
 
 router.post('/cart', isAuthenticated, postCart);

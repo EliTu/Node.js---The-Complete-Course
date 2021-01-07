@@ -7,10 +7,10 @@ setTimeout(() => {
 /* a util to set the file picker input label text value when picking a file with the input */
 const filePicker = document.querySelector('.file-picker-input');
 if (filePicker) {
-	document.querySelector('.file-picker-input').onchange = () => {
+	filePicker.onchange = () => {
 		if (filePicker.files.length > 0) {
 			const fileName = filePicker.files[0].name;
-			document.querySelector('.file-name').textContent = `${fileName}`;
+			document.querySelector('.file-name').textContent = fileName;
 		}
 	};
 }
