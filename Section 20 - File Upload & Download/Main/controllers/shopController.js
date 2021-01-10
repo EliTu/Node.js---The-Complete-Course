@@ -43,18 +43,14 @@ const getOrderInvoice = async (req, res, next) => {
 		const invoiceFileName = `invoice-${orderId}.pdf`;
 		const invoicePath = path.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
 
-		// use the file system module to read the file and serve it
-		fs.readFile(invoicePath, (err, data) => {
-			if (err) return setErrorMiddlewareObject(err, next); // if error, pass it to the error middleware
+		const file = fs.createReadStream(invoicePath); // create a stream for the file to be served later byte by byte
+		res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
+		res.setHeader(
+			'Content-Disposition',
+			`inline; filename="${invoiceFileName}"`
+		); // set the response header to make sure the pdf is displayed in the browser and has a file name
 
-			res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
-			res.setHeader(
-				'Content-Disposition',
-				`inline; filename="${invoiceFileName}"`
-			); // set the response header to make sure the pdf is displayed in the browser and has a file name
-
-			res.send(data);
-		});
+		file.pipe(res); // pass the res, which is a writable stream, to the file readable stream pipe method to serve it
 	} catch (error) {
 		setErrorMiddlewareObject(error, next);
 	}
