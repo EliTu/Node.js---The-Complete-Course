@@ -68,15 +68,16 @@ const getOrderInvoice = async (req, res, next) => {
 			})
 			.fontSize(16)
 			.text(
-				'----------------------------------------------------------------------------',
+				'---------------------------------------------------------------------------',
 				{ lineGap: 20, lineBreak: true }
 			)
 			.fontSize(20)
 			.text('Product details:', { lineGap: 10 });
 
 		let totalPrice = 0;
-		for (prodObj of order.products) {
-			const { product, quantity } = prodObj;
+		// Loop through all of the possible order products and create pdf texts for each and set the total price
+		for (orderProdObj of order.products) {
+			const { product, quantity } = orderProdObj;
 			const { title, price, description } = product;
 			totalPrice += quantity * price;
 
@@ -90,7 +91,7 @@ const getOrderInvoice = async (req, res, next) => {
 					lineBreak: true,
 				});
 		}
-		pdfDoc.fontSize(26).text(`Total: $${totalPrice}`);
+		pdfDoc.fontSize(26).text(`Total: $${totalPrice.toFixed(2)}`);
 
 		pdfDoc.end(); // When finishing with creating the pdf doc, call the end method to stop writing the stream
 	} catch (error) {
