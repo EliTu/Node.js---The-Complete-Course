@@ -5,6 +5,7 @@ const Product = require('../models/product.js');
 const Order = require('../models/order');
 const setUserMessage = require('../util/setUserMessage');
 const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
+const { fontSize } = require('pdfkit');
 
 //  Specific for shop or '/':
 const getShopPage = (req, res) => {
@@ -53,9 +54,43 @@ const getOrderInvoice = async (req, res, next) => {
 
 		pdfDoc.pipe(fs.createWriteStream(invoicePath)); // pipe it to a writable stream we can create with fs
 		pdfDoc.pipe(res); // also pipe it to the res
-		
+
 		// populate the pdf with the relevant data
-		pdfDoc.text('Hello world'); // create a single text line for the pdf
+		pdfDoc
+			.fontSize(20)
+			.text(`Invoice for order ${orderId}`, {
+				align: 'left',
+			})
+			.fontSize(16)
+			.text(`To: ${req.user.email}`, {
+				lineBreak: true,
+				lineGap: 10,
+			})
+			.fontSize(16)
+			.text(
+				'----------------------------------------------------------------------------',
+				{ lineGap: 20, lineBreak: true }
+			)
+			.fontSize(20)
+			.text('Product details:', { lineGap: 10 });
+
+		let totalPrice = 0;
+		for (prodObj of order.products) {
+			const { product, quantity } = prodObj;
+			const { title, price, description } = product;
+			totalPrice += quantity * price;
+
+			pdfDoc
+				.fontSize(16)
+				.text(`Product name: ${title}`, { lineGap: 5, indent: 20 })
+				.text(`Quantity: ${quantity}`, { lineGap: 5, indent: 20 })
+				.text(`Product description: ${description}`, {
+					lineGap: 30,
+					indent: 20,
+					lineBreak: true,
+				});
+		}
+		pdfDoc.fontSize(26).text(`Total: $${totalPrice}`);
 
 		pdfDoc.end(); // When finishing with creating the pdf doc, call the end method to stop writing the stream
 	} catch (error) {

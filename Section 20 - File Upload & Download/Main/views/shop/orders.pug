@@ -13,6 +13,6 @@ block content
                         for product in order.products
                             li
                                 p  #{product.product.title} x #{product.quantity} 
-                                a(href=`/orders/${order._id}` rel="noopener noreferrer" target="_blank") Invoice
+                a(href=`/orders/${order._id}` rel="noopener noreferrer" target="_blank") Invoice
         else 
             h2 No orders to Display!
