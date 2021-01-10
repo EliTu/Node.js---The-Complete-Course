@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 const Product = require('../models/product.js');
 const Order = require('../models/order');
 const setUserMessage = require('../util/setUserMessage');
@@ -43,14 +44,20 @@ const getOrderInvoice = async (req, res, next) => {
 		const invoiceFileName = `invoice-${orderId}.pdf`;
 		const invoicePath = path.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
 
-		const file = fs.createReadStream(invoicePath); // create a stream for the file to be served later byte by byte
+		const pdfDoc = new PDFDocument(); // create a new pdfkit instance which is a stream
 		res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
 		res.setHeader(
 			'Content-Disposition',
 			`inline; filename="${invoiceFileName}"`
 		); // set the response header to make sure the pdf is displayed in the browser and has a file name
 
-		file.pipe(res); // pass the res, which is a writable stream, to the file readable stream pipe method to serve it
+		pdfDoc.pipe(fs.createWriteStream(invoicePath)); // pipe it to a writable stream we can create with fs
+		pdfDoc.pipe(res); // also pipe it to the res
+		
+		// populate the pdf with the relevant data
+		pdfDoc.text('Hello world'); // create a single text line for the pdf
+
+		pdfDoc.end(); // When finishing with creating the pdf doc, call the end method to stop writing the stream
 	} catch (error) {
 		setErrorMiddlewareObject(error, next);
 	}
