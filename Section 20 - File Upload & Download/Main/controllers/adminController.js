@@ -3,6 +3,7 @@ const { setProductForm } = require('../util/forms');
 const { checkForValidationErrors } = require('../util/validations');
 const setUserMessage = require('../util/setUserMessage');
 const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
+const removeFile = require('../util/removeFile');
 /* GET CONTROLS */
 
 const getAdminProduct = async (req, res, next) => {
@@ -131,6 +132,9 @@ const postProduct = async (req, res, next) => {
 
 			const { imageUrl } = productToUpdate;
 
+			// if about to set up a new imageUrl, first remove the old one from fs
+			if (imageUrl && newImageUrl) removeFile(imageUrl);
+
 			await Product.findByIdAndUpdate(productToUpdate._id, {
 				title,
 				price,
@@ -147,14 +151,22 @@ const postProduct = async (req, res, next) => {
 };
 
 const postDeleteProduct = async (req, res, next) => {
-	const { deletedProductId: productId, deletedProductTitle: title } = req.body;
+	const {
+		deletedProductId: productId,
+		deletedProductTitle: title,
+		deletedProductImageUrl: imageUrl,
+	} = req.body;
 	try {
 		const { deletedCount } = await Product.deleteOne({
 			_id: productId,
 			userId: req.user._id,
 		});
 
-		if (deletedCount === 0) req.flash('error', 'Could not delete product');
+		if (deletedCount === 0) {
+			req.flash('error', 'Could not delete product');
+			return res.redirect('/admin/admin-products');
+		}
+		if (imageUrl) removeFile(imageUrl);
 
 		req.flash('success', `${title} has been successfully deleted`);
 		return res.redirect('/admin/admin-products');

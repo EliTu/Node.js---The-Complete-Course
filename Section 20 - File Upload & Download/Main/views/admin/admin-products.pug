@@ -5,6 +5,9 @@ block content
     main
         if success
             include ../layouts/user-message.pug
+        if error 
+            include ../layouts/user-message.pug
+
         if products.length > 0
             .grid
                 each product in products
@@ -23,6 +26,7 @@ block content
                             form(action="/admin/delete-product" method="POST")
                                 input(type="hidden" name="deletedProductId" value=`${product._id}`)
                                 input(type="hidden" name="deletedProductTitle" value=`${product.title}`)
+                                input(type="hidden" name="deletedProductImageUrl" value=`${product.imageUrl}`)
                                 input(type="hidden" name="_csrf" value=`${csrfToken}`)  
                                 button(class='btn' type="submit") Delete
         else 
