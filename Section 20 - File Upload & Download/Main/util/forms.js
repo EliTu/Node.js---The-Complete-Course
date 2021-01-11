@@ -1,3 +1,6 @@
+/**
+ * An object that contains all the data for various forms in the app, to be consumed in the view by the template engine to create form fields.
+ */
 const appForms = {
 	setProductForm: [
 		{

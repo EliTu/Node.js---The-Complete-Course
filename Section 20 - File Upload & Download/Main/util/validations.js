@@ -4,6 +4,9 @@ const User = require('../models/user');
 
 /* AUTH VALIDATIONS */
 
+/**
+ * Validation chain for the signup forms, will validate: email, password and confirm password.
+ */
 const signupValidations = [
 	check('email', 'Email is invalid or missing.') // checks the entire field for errors (body, params, cookies etc)
 		.isEmail()
@@ -49,6 +52,9 @@ const signupValidations = [
 		}),
 ];
 
+/**
+ * Validation chain for the login forms, will validate: email and password.
+ */
 const loginValidations = [
 	body('email', 'Email is invalid or missing.')
 		.isEmail()
@@ -92,6 +98,10 @@ const loginValidations = [
 ];
 
 /* PRODUCT VALIDATIONS */
+
+/**
+ * Validation chain for the post product form, will validate: title, file-placeholder(hidden input), price and description.
+ */
 const postProductValidation = [
 	body('title')
 		.isString()
@@ -149,8 +159,18 @@ const postProductValidation = [
 		.trim(),
 ];
 
+// TODO: ADD VALIDATIONS FOR EMAIL RESET FORM
+
 /* UTILS */
 
+/**
+ * Calls the validationResult method to check for any validation errors, if found then it will render the same view with the forms being validated with the old data
+ * and the validation errors array, also will set isFormInvalid to 'true' to stop the form submit process.
+ * @param req The Express middleware req method. Used as an argument for the validationResult function.
+ * @param res The Express middleware res method. Used to return a result with a status and body of data in case of validation errors.
+ * @param path The path string to the current validated view.
+ * @param renderOptions The data to be passed to the view in the response body, will contain the required data to render the view as well as form data.
+ */
 const checkForValidationErrors = (req, res, path, renderOptions) => {
 	let isFormInvalid = false;
 	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
@@ -164,6 +184,7 @@ const checkForValidationErrors = (req, res, path, renderOptions) => {
 
 		isFormInvalid = true;
 	}
+
 	return isFormInvalid;
 };
 

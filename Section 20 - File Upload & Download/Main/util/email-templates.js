@@ -1,3 +1,6 @@
+/**
+ * An object that contains various templates for emails to be sent upon completing actions like registration complete, password reset etc.
+ */
 const emailTemplates = {
 	confirmationMail: `
         <main style="text-align: center">

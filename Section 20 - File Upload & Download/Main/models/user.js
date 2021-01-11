@@ -34,6 +34,10 @@ const userSchema = new Schema({
 	},
 });
 
+/**
+ * A custom method for the User model for adding new items to the user's cart. Will set the items array and quantity.
+ * @param {*} product The product object that is requested to be added.
+ */
 userSchema.methods.addToCart = function (product) {
 	const cartProductIndex = this.cart.items.findIndex((el) =>
 		el.productId ? el.productId.toString() === product._id.toString() : null
@@ -62,6 +66,11 @@ userSchema.methods.addToCart = function (product) {
 	return this.save();
 };
 
+/**
+ * A custom method for the User model to remove items from the cart, either a single item or a whole bunch of items.
+ * @param {*} productId The id of the item that is requested to be removed.
+ * @param {*} isDeleteAll A flag to indicate if the remove request is for the entire item and its quantity. If false, will remove a single item (quantity -1).
+ */
 userSchema.methods.removeFromCart = function (productId, isDeleteAll) {
 	let updatedCartItems;
 
@@ -82,6 +91,9 @@ userSchema.methods.removeFromCart = function (productId, isDeleteAll) {
 	return this.save();
 };
 
+/**
+ * a custom method for the User model to reset the cart to an empty state.
+ */
 userSchema.methods.clearCart = function () {
 	this.cart = { items: [] };
 	return this.save();
