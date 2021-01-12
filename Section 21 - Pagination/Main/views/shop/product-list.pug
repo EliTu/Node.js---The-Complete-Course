@@ -8,10 +8,11 @@ block content
     main
         if success
             include ../layouts/user-message.pug
-        if products.length > 0
+
+        if hasProducts
             section(class="pagination")
-                a(href="/?page=1") 1
-                a(href="/?page=2") 2
+                a(href="/products/?page=1" class=`${currentPage === '1' ? 'active' : ''}`) 1
+                a(href="/products/?page=2" class=`${currentPage === '2' ? 'active' : ''}`) 2
             .grid
                 each product in products
                     article.card.product-item

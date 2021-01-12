@@ -5,10 +5,11 @@ const Product = require('../models/product.js');
 const Order = require('../models/order');
 const setUserMessage = require('../util/setUserMessage');
 const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
-const { fontSize } = require('pdfkit');
+
+const ITEMS_PER_PAGE = 3;
 
 //  Specific for shop or '/':
-const getShopPage = (req, res) => {
+const getIndexPage = (req, res) => {
 	res.render('shop/index', {
 		docTitle: 'Shop Main Page',
 		pageSubtitle: 'Welcome to the shop',
@@ -16,6 +17,68 @@ const getShopPage = (req, res) => {
 		success: setUserMessage(req.flash('success')),
 		error: setUserMessage(req.flash('error')),
 	});
+};
+
+const getProductList = async (req, res, next) => {
+	const page = req.query.page;
+	try {
+		const products = await Product.find()
+			.skip((page - 1) * ITEMS_PER_PAGE) // skip finding results based on current page and the limit of items
+			.limit(ITEMS_PER_PAGE); // also limit the amount of data retrieved by the items per page value
+
+		res.render('shop/product-list', {
+			docTitle: 'Product List',
+			pageSubtitle: 'Available Products',
+			products: products,
+			path: '/products',
+			hasProducts: products.length,
+			productsActive: true,
+			productCSS: true,
+			currentPage: page,
+			success: setUserMessage(req.flash('success')),
+		});
+	} catch (error) {
+		setErrorMiddlewareObject(error, next);
+	}
+};
+
+const getProductDetailsPage = async (req, res, next) => {
+	const productId = req.params.productId;
+	try {
+		const product = await Product.findById(productId);
+
+		res.render('shop/product-details', {
+			docTitle: `Product: ${product.title}`,
+			pageSubtitle: 'Product Details',
+			product: product,
+			path: '/products',
+		});
+	} catch (error) {
+		setErrorMiddlewareObject(error, next);
+	}
+};
+
+const getCartPage = async (req, res, next) => {
+	try {
+		const userCart = await req.user
+			.populate('cart.items.productId')
+			.execPopulate();
+		const cartProducts = [...userCart.cart.items];
+		const priceCalc = +cartProducts
+			.reduce((a, c) => a + +c.productId.price * +c.quantity, 0)
+			.toFixed(2);
+
+		res.render('shop/cart', {
+			docTitle: 'Cart',
+			pageSubtitle: 'Your Cart',
+			path: '/cart',
+			cartProducts: cartProducts,
+			totalPrice: priceCalc,
+			success: setUserMessage(req.flash('success')),
+		});
+	} catch (error) {
+		setErrorMiddlewareObject(error, next);
+	}
 };
 
 const getOrdersPage = async (req, res, next) => {
@@ -99,29 +162,6 @@ const getOrderInvoice = async (req, res, next) => {
 	}
 };
 
-const getCartPage = async (req, res, next) => {
-	try {
-		const userCart = await req.user
-			.populate('cart.items.productId')
-			.execPopulate();
-		const cartProducts = [...userCart.cart.items];
-		const priceCalc = +cartProducts
-			.reduce((a, c) => a + +c.productId.price * +c.quantity, 0)
-			.toFixed(2);
-
-		res.render('shop/cart', {
-			docTitle: 'Cart',
-			pageSubtitle: 'Your Cart',
-			path: '/cart',
-			cartProducts: cartProducts,
-			totalPrice: priceCalc,
-			success: setUserMessage(req.flash('success')),
-		});
-	} catch (error) {
-		setErrorMiddlewareObject(error, next);
-	}
-};
-
 const postCart = async (req, res, next) => {
 	const prodId = req.body.cartAddId;
 
@@ -161,40 +201,6 @@ const getCheckoutPage = (req, res) => {
 	});
 };
 
-const getAllProducts = async (req, res, next) => {
-	try {
-		const products = await Product.find();
-		res.render('shop/product-list', {
-			docTitle: 'Product List',
-			pageSubtitle: 'Available Products',
-			products: products,
-			path: '/products',
-			hasProducts: products.length,
-			productsActive: true,
-			productCSS: true,
-			success: setUserMessage(req.flash('success')),
-		});
-	} catch (error) {
-		setErrorMiddlewareObject(error, next);
-	}
-};
-
-const getProductDetailsPage = async (req, res, next) => {
-	const productId = req.params.productId;
-	try {
-		const product = await Product.findById(productId);
-
-		res.render('shop/product-details', {
-			docTitle: `Product: ${product.title}`,
-			pageSubtitle: 'Product Details',
-			product: product,
-			path: '/products',
-		});
-	} catch (error) {
-		setErrorMiddlewareObject(error, next);
-	}
-};
-
 const postOrder = async (req, res, next) => {
 	try {
 		const cartProductsData = await req.user
@@ -223,9 +229,9 @@ const postOrder = async (req, res, next) => {
 };
 
 module.exports = {
-	getAllProducts,
+	getIndexPage,
+	getProductList,
 	getProductDetailsPage,
-	getShopPage,
 	getCartPage,
 	getOrdersPage,
 	getOrderInvoice,

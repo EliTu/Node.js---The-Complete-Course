@@ -3,9 +3,9 @@ const router = express.Router();
 const isAuthenticated = require('../middleware/isAuthenticated');
 
 const {
-	getAllProducts,
+	getIndexPage,
+	getProductList,
 	getProductDetailsPage,
-	getShopPage,
 	getCartPage,
 	getOrdersPage,
 	getCheckoutPage,
@@ -17,8 +17,8 @@ const {
 
 /* the middleware parse the arguments from left to right, so we can add as many middlewares, like isAuthenticated, before the final resolving function as we like*/
 
-router.get('/', getShopPage);
-router.get('/products', getAllProducts);
+router.get('/', getIndexPage);
+router.get('/products', getProductList);
 router.get('/products/:productId', getProductDetailsPage);
 router.get('/cart', isAuthenticated, getCartPage);
 router.get('/orders', isAuthenticated, getOrdersPage);

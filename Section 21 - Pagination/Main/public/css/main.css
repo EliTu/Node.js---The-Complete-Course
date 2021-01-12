@@ -126,7 +126,8 @@ main {
 }
 
 .pagination a:hover,
-.pagination a:active {
+.pagination a:active,
+.pagination a.active {
 	background-color: #123fd39f;
 	color: white;
 }
