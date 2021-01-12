@@ -109,6 +109,28 @@ main {
 	margin: 0 auto;
 }
 
+.pagination {
+	width: 80%;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2rem;
+}
+
+.pagination a {
+	color: #123fd39f;
+	font-size: 20px;
+	text-decoration: none;
+	margin: 0 0.5rem;
+	border: 1px solid rgba(118, 118, 189, 0.712);
+	padding: 0.4rem;
+}
+
+.pagination a:hover,
+.pagination a:active {
+	background-color: #123fd39f;
+	color: white;
+}
+
 .grid {
 	display: flex;
 	flex-wrap: wrap;
@@ -141,7 +163,9 @@ main {
 }
 
 .card__image img {
-	width: 70%;
+	width: 75%;
+	min-height: 14rem;
+	max-height: 14rem;
 }
 
 .card__actions {

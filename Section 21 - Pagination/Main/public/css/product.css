@@ -6,8 +6,9 @@
 }
 
 .product-item {
-	width: 23rem;
+	width: 20rem;
 	max-width: 95%;
+	max-height: 28rem;
 }
 
 .product__title {
