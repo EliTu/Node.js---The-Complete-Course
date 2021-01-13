@@ -8,34 +8,9 @@ block content
     main
         if success
             include ../layouts/user-message.pug
-
+            
         if hasProducts
-            section(class="pagination")
-                if hasPreviousPage && currentPage !== 1
-                    a(class="pagination_arrow" href=`/products/?page=${previousPage}`) <
-
-                if currentPage !== 1 && previousPage !== 1
-                    a(href="/products/?page=1") 1
-
-                if hasPreviousPage && previousPage !== 1
-                    span ...
-
-                if hasPreviousPage
-                    a(href=`/products/?page=${previousPage}`) #{previousPage}
-
-                a(href=`/products/?page=${currentPage}` class="active") #{currentPage}
-
-                if hasNextPage
-                    a(href=`/products/?page=${nextPage}`) #{nextPage}
-
-                if hasNextPage && nextPage !== lastPage
-                    span ...
-                
-                if currentPage !== lastPage && nextPage !== lastPage
-                    a(href=`/products/?page=${lastPage}`) #{lastPage}
-
-                if hasNextPage  && currentPage !== lastPage
-                    a(class="pagination_arrow" href=`/products/?page=${nextPage}`) >
+            include ../layouts/pagination.pug
 
             .grid
                 each product in products

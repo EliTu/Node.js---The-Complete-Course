@@ -29,7 +29,7 @@ html(lang="en")
                             li.main-header__item 
                                 a(href="/admin/add-product", class=(path === '/admin/add-product' ? 'active' : '')) Add Product
                             li.main-header__item 
-                                a(href="/admin/admin-products", class=(path === '/admin/admin-products' ? 'active' : '')) Admin Products
+                                a(href="/admin/admin-products/?page=1", class=(path === '/admin/admin-products' ? 'active' : '')) Admin Products
 
                     .auth-routes
                         if !isLoggedIn

@@ -11,7 +11,9 @@ block content
         if error 
             include ../layouts/user-message.pug
 
-        if products.length > 0
+        if hasProducts
+            include ../layouts/pagination.pug
+            
             .grid
                 each product in products
                     article.card.product-item

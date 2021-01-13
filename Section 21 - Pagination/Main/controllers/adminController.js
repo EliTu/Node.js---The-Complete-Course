@@ -4,18 +4,43 @@ const { checkForValidationErrors } = require('../util/validations');
 const setUserMessage = require('../util/setUserMessage');
 const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
 const removeFile = require('../util/removeFile');
+const {
+	ITEMS_PER_PAGE,
+	getPaginationData,
+} = require('../util/getPaginationData');
 /* GET CONTROLS */
 
 const getAdminProduct = async (req, res, next) => {
+	const page = +req.query.page || 1;
 	try {
-		const products = await Product.find({ userId: req.user._id });
+		const products = await Product.find({ userId: req.user._id })
+			.skip((page - 1) * ITEMS_PER_PAGE) // skip finding results based on current page and the limit of items
+			.limit(ITEMS_PER_PAGE); // also limit the amount of data retrieved by the items per page value
 		// .select('title price -_id')
 		// .populate('userId');
+
+		const totalNumberOfProducts = await Product.countDocuments(); // count the amount documents in the products collection
+
+		const {
+			hasNextPage,
+			hasPreviousPage,
+			lastPage,
+			nextPage,
+			previousPage,
+		} = getPaginationData(page, totalNumberOfProducts);
+
 		res.render('admin/admin-products', {
 			docTitle: 'Admin Products',
 			pageSubtitle: 'Products in store',
 			path: '/admin/admin-products',
-			products: products,
+			hasProducts: products.length,
+			products,
+			currentPage: page,
+			hasNextPage,
+			hasPreviousPage,
+			nextPage,
+			previousPage,
+			lastPage,
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {

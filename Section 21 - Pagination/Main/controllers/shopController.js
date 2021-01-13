@@ -5,8 +5,10 @@ const Product = require('../models/product.js');
 const Order = require('../models/order');
 const setUserMessage = require('../util/setUserMessage');
 const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
-
-const ITEMS_PER_PAGE = 1;
+const {
+	getPaginationData,
+	ITEMS_PER_PAGE,
+} = require('../util/getPaginationData');
 
 //  Specific for shop or '/':
 const getIndexPage = (req, res) => {
@@ -28,6 +30,14 @@ const getProductList = async (req, res, next) => {
 			.skip((page - 1) * ITEMS_PER_PAGE) // skip finding results based on current page and the limit of items
 			.limit(ITEMS_PER_PAGE); // also limit the amount of data retrieved by the items per page value
 
+		const {
+			hasNextPage,
+			hasPreviousPage,
+			lastPage,
+			nextPage,
+			previousPage,
+		} = getPaginationData(page, totalNumberOfProducts);
+
 		res.render('shop/product-list', {
 			docTitle: 'Product List',
 			pageSubtitle: 'Available Products',
@@ -37,11 +47,11 @@ const getProductList = async (req, res, next) => {
 			productsActive: true,
 			productCSS: true,
 			currentPage: page,
-			hasNextPage: ITEMS_PER_PAGE * page < totalNumberOfProducts,
-			hasPreviousPage: page > 1,
-			nextPage: page + 1,
-			previousPage: page - 1,
-			lastPage: Math.ceil(totalNumberOfProducts / ITEMS_PER_PAGE),
+			hasNextPage,
+			hasPreviousPage,
+			nextPage,
+			previousPage,
+			lastPage,
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
