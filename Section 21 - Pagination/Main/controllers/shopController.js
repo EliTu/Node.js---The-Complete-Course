@@ -6,7 +6,7 @@ const Order = require('../models/order');
 const setUserMessage = require('../util/setUserMessage');
 const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
 
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 1;
 
 //  Specific for shop or '/':
 const getIndexPage = (req, res) => {
@@ -20,9 +20,9 @@ const getIndexPage = (req, res) => {
 };
 
 const getProductList = async (req, res, next) => {
-	const page = req.query.page;
+	const page = +req.query.page || 1;
 	try {
-		const totalNumberOfProducts = await Product.countDocuments();
+		const totalNumberOfProducts = await Product.countDocuments(); // count the amount documents in the products collection
 
 		const products = await Product.find()
 			.skip((page - 1) * ITEMS_PER_PAGE) // skip finding results based on current page and the limit of items
@@ -36,9 +36,9 @@ const getProductList = async (req, res, next) => {
 			hasProducts: products.length,
 			productsActive: true,
 			productCSS: true,
-			totalNumberOfProducts,
+			currentPage: page,
 			hasNextPage: ITEMS_PER_PAGE * page < totalNumberOfProducts,
-			hasPrevious: page > 1,
+			hasPreviousPage: page > 1,
 			nextPage: page + 1,
 			previousPage: page - 1,
 			lastPage: Math.ceil(totalNumberOfProducts / ITEMS_PER_PAGE),

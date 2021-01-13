@@ -132,6 +132,17 @@ main {
 	color: white;
 }
 
+.pagination .pagination_arrow {
+	border: none;
+	font-weight: bold;
+}
+
+.pagination span {
+	font-size: 24px;
+	letter-spacing: 3px;
+	align-self: flex-end;
+}
+
 .grid {
 	display: flex;
 	flex-wrap: wrap;

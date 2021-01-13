@@ -11,8 +11,32 @@ block content
 
         if hasProducts
             section(class="pagination")
-                a(href="/products/?page=1" class=`${currentPage === '1' ? 'active' : ''}`) 1
-                a(href="/products/?page=2" class=`${currentPage === '2' ? 'active' : ''}`) 2
+                if hasPreviousPage && currentPage !== 1
+                    a(class="pagination_arrow" href=`/products/?page=${previousPage}`) <
+
+                if currentPage !== 1 && previousPage !== 1
+                    a(href="/products/?page=1") 1
+
+                if hasPreviousPage && previousPage !== 1
+                    span ...
+
+                if hasPreviousPage
+                    a(href=`/products/?page=${previousPage}`) #{previousPage}
+
+                a(href=`/products/?page=${currentPage}` class="active") #{currentPage}
+
+                if hasNextPage
+                    a(href=`/products/?page=${nextPage}`) #{nextPage}
+
+                if hasNextPage && nextPage !== lastPage
+                    span ...
+                
+                if currentPage !== lastPage && nextPage !== lastPage
+                    a(href=`/products/?page=${lastPage}`) #{lastPage}
+
+                if hasNextPage  && currentPage !== lastPage
+                    a(class="pagination_arrow" href=`/products/?page=${nextPage}`) >
+
             .grid
                 each product in products
                     article.card.product-item
