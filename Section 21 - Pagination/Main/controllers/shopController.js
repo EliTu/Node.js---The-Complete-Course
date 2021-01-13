@@ -22,6 +22,8 @@ const getIndexPage = (req, res) => {
 const getProductList = async (req, res, next) => {
 	const page = req.query.page;
 	try {
+		const totalNumberOfProducts = await Product.countDocuments();
+
 		const products = await Product.find()
 			.skip((page - 1) * ITEMS_PER_PAGE) // skip finding results based on current page and the limit of items
 			.limit(ITEMS_PER_PAGE); // also limit the amount of data retrieved by the items per page value
@@ -29,12 +31,17 @@ const getProductList = async (req, res, next) => {
 		res.render('shop/product-list', {
 			docTitle: 'Product List',
 			pageSubtitle: 'Available Products',
-			products: products,
+			products,
 			path: '/products',
 			hasProducts: products.length,
 			productsActive: true,
 			productCSS: true,
-			currentPage: page,
+			totalNumberOfProducts,
+			hasNextPage: ITEMS_PER_PAGE * page < totalNumberOfProducts,
+			hasPrevious: page > 1,
+			nextPage: page + 1,
+			previousPage: page - 1,
+			lastPage: Math.ceil(totalNumberOfProducts / ITEMS_PER_PAGE),
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
