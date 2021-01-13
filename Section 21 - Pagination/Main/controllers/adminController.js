@@ -8,6 +8,7 @@ const {
 	ITEMS_PER_PAGE,
 	getPaginationData,
 } = require('../util/getPaginationData');
+
 /* GET CONTROLS */
 
 const getAdminProduct = async (req, res, next) => {

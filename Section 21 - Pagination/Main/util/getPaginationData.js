@@ -4,7 +4,7 @@
 const ITEMS_PER_PAGE = 2;
 
 /**
- * Calculates and returns data relevant to the pagination logic.
+ * Calculates and returns an object of the data relevant to the page pagination logic.
  * @param {*} page The current page number selected.
  * @param {*} totalItems The total amount of items in the DB collection.
  */
