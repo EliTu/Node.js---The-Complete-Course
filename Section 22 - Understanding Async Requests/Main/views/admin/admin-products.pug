@@ -1,0 +1,38 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/product.css")
+
+block content
+    h2 #{pageSubtitle}
+    main
+        if success
+            include ../layouts/user-message.pug
+        if error 
+            include ../layouts/user-message.pug
+
+        if hasProducts
+            include ../layouts/pagination.pug
+            
+            .grid
+                each product in products
+                    article.card.product-item
+                        header.card__header
+                            h1.product__title #{product.title}
+                        .card__image
+                            img(src=`${product.imageUrl}`, alt="product image")
+
+                        .card__content
+                            h2.product__price $#{product.price}
+                            p.product__description #{product.description}
+
+                        .card__actions
+                            a(class="link" href=`/admin/edit-product/${product._id}?edit=true`) Edit
+                            form(action="/admin/delete-product" method="POST")
+                                input(type="hidden" name="deletedProductId" value=`${product._id}`)
+                                input(type="hidden" name="deletedProductTitle" value=`${product.title}`)
+                                input(type="hidden" name="deletedProductImageUrl" value=`${product.imageUrl}`)
+                                input(type="hidden" name="_csrf" value=`${csrfToken}`)  
+                                button(class='btn' type="submit") Delete
+        else 
+            h1 No products

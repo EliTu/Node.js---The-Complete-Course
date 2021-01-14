@@ -1,0 +1,58 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/form.css")
+    link(rel="stylesheet", href="/css/user-message.css")
+
+block content 
+    h2 #{pageSubtitle} 
+    main 
+        if error || (errorsArray && errorsArray.length) || success
+            include ../layouts/user-message.pug
+
+        if forms.length > 0
+            form.product-form(
+                action=`/admin${isEditingProduct ? '/edit-product' : '/add-product'}`
+                method="POST" 
+                id="set-product-form"
+                enctype="multipart/form-data")
+                each form in forms 
+                    .form-control
+                        label(for=`${form.name}`) #{form.title}:
+                        if form.type === 'textarea'
+                            textarea(
+                                name=`${form.name}` 
+                                form="set-product-form" 
+                                placeholder=`${form.placeholder}` 
+                                minLength=`${form.min}` 
+                                maxLength=`${form.max}`
+                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`
+                            ) #{isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : ''}
+                        else if form.type === 'file'
+                             .file-picker-container
+                                input(
+                                id="file-picker"
+                                type=`${form.type}` 
+                                name=`${form.name}` 
+                                placeholder=`${form.placeholder}`
+                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'file-picker-input input-error' : 'file-picker-input'}`)
+                                label(for="file-picker" class="file-name") #{ isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : '' }
+                                input(type="hidden" name="file-placeholder" value=`${ isEditingProduct || (productData && Object.values(productData).length) ? productData[form.name] : ''}`)
+                        else
+                            input(
+                                type=`${form.type}` 
+                                name=`${form.name}` 
+                                placeholder=`${form.placeholder}`
+                                step="0.01" 
+                                minLength=`${form.min}` 
+                                maxLength=`${form.max}`
+                                value=`${isEditingProduct || (productData && Object.values(productData).length)
+                                ? productData[form.name] 
+                                : ''}`
+                                class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
+                if isEditingProduct
+                    input(type="hidden" name="productId" value=`${productData._id}`) 
+                button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}
+                input(type="hidden" name="_csrf" value=`${csrfToken}`)  
+        else
+            h1 Nothing to see here!
