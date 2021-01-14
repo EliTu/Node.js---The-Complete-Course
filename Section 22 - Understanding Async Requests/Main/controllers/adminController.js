@@ -176,13 +176,10 @@ const postProduct = async (req, res, next) => {
 	}
 };
 
-const postDeleteProduct = async (req, res, next) => {
-	const {
-		deletedProductId: productId,
-		deletedProductTitle: title,
-		deletedProductImageUrl: imageUrl,
-	} = req.body;
+const deleteProduct = async (req, res, next) => {
+	const productId = req.params.productId;
 	try {
+		const { imageUrl, title } = await Product.findById(productId);
 		const { deletedCount } = await Product.deleteOne({
 			_id: productId,
 			userId: req.user._id,
@@ -190,14 +187,23 @@ const postDeleteProduct = async (req, res, next) => {
 
 		if (deletedCount === 0) {
 			req.flash('error', 'Could not delete product');
-			return res.redirect('/admin/admin-products');
+			// Instead of redirecting and rendering a new page, return json data
+			return res.status(500).json({
+				message: 'Could not delete product',
+			});
 		}
 		if (imageUrl) removeFile(imageUrl);
 
 		req.flash('success', `${title} has been successfully deleted`);
-		return res.redirect('/admin/admin-products');
+		// instead of redirecting, send back JSON data
+		return res
+			.status(200)
+			.json({ message: `${title} has been successfully deleted` });
 	} catch (error) {
-		setErrorMiddlewareObject(error, next);
+		// Instead of passing the error to the error handler middleware, return json data
+		res.status(500).json({
+			message: `Delete attempt failed, ${error}`,
+		});
 	}
 };
 
@@ -206,5 +212,5 @@ module.exports = {
 	getEditProduct,
 	getAdminProduct,
 	postProduct,
-	postDeleteProduct,
+	deleteProduct,
 };

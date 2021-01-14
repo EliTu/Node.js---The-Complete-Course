@@ -9,7 +9,7 @@ const {
 	getAdminProduct,
 	getEditProduct,
 	postProduct,
-	postDeleteProduct,
+	deleteProduct,
 } = require('../controllers/adminController');
 
 /* the middleware parse the arguments from left to right, so we can add as many middlewares, like isAuthenticated, before the final resolving function as we like*/
@@ -32,6 +32,8 @@ router.post(
 	postProductValidation,
 	postProduct
 );
-router.post('/delete-product', isAuthenticated, postDeleteProduct);
+
+// Using async request (and not form action)
+router.delete('/product/:productId', isAuthenticated, deleteProduct);
 
 module.exports = router;

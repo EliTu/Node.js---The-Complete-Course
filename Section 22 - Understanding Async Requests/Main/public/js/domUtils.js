@@ -18,17 +18,17 @@ if (message) {
 if (filePicker) {
 	filePicker.onchange = () => {
 		if (filePicker.files.length > 0) {
-			const fileName = filePicker.files[0].name;
-			document.querySelector('.file-name').textContent = fileName;
+			const { name } = filePicker.files[0];
+			document.querySelector('.file-name').textContent = name;
 		}
 	};
 }
 
 /**
- * a util function to delete a product from the admin products list.
+ * an async util function to make an async request to delete a product from the admin products list.
  * @param {*} btn The button input that was clicked, accessed via the native onclick function.
  */
-const deleteProduct = (btn) => {
+const deleteProduct = async (btn) => {
 	// access the clicked button element parent first
 	const buttonParent = btn.parentNode;
 
@@ -40,5 +40,21 @@ const deleteProduct = (btn) => {
 	for (const { name, value } of hiddenInputs) {
 		inputValues[name] = value;
 	}
-	console.log(inputValues);
+
+	if (Object.keys(inputValues).length) {
+		const { deletedProductId: productId, _csrf } = inputValues;
+
+		try {
+			const deleteRes = await fetch(`/admin/product/${productId}`, {
+				method: 'DELETE',
+				headers: {
+					// the csurf package will not only check request bodies for csrf tokens, but also headers
+					'csrf-token': _csrf,
+				},
+			});
+			console.log(deleteRes);
+		} catch (error) {
+			console.error(error);
+		}
+	}
 };

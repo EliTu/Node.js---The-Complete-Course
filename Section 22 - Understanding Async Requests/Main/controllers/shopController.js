@@ -114,7 +114,7 @@ const getOrdersPage = async (req, res, next) => {
 };
 
 const getOrderInvoice = async (req, res, next) => {
-	const orderId = req.params.orderId;
+	const { orderId } = req.params;
 	try {
 		const order = await Order.findById(orderId);
 
