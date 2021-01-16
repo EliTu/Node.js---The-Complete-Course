@@ -1,23 +1,23 @@
 // Packages
-const express = require('express');
-const path = require('path');
-const parser = require('body-parser');
-const mongoose = require('mongoose');
-const session = require('express-session');
+import express, { Request, Response, NextFunction } from 'express';
+import path from 'path';
+import parser from 'body-parser';
+import mongoose from 'mongoose';
+import session from 'express-session';
 const mongodbSessionStore = require('connect-mongodb-session')(session);
-const csrf = require('csurf');
-const flash = require('connect-flash');
-const multer = require('multer');
+import csrf from 'csurf';
+import flash from 'connect-flash';
+import multer, { FileFilterCallback, Multer } from 'multer';
 
 // Routes
-const authRoutes = require('./routes/auth');
-const AdminRoute = require('./routes/admin');
-const shopRoute = require('./routes/shop');
-const errorRoutes = require('./routes/error');
+import authRoutes from './routes/auth';
+import AdminRoute from './routes/admin';
+import shopRoute from './routes/shop';
+import errorRoutes from './routes/error';
 
 // Files
-const { getPageNotFound } = require('./controllers/errorController');
-const User = require('./models/user');
+import { getPageNotFound } from './controllers/errorController';
+import User from './models/user';
 
 const MONGODB_URI =
 	'mongodb+srv://eliad91:Et@081991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority';
@@ -32,7 +32,11 @@ const csrfProtection = csrf();
 
 // set a multer storage engine to handle file storage on the memory by setting destination folder and file names
 const fileStorage = multer.diskStorage({
-	destination: (req, file, cb) => {
+	destination: (
+		req: Request,
+		file: Express.Multer.File,
+		cb: (error: Error | null, destination: string) => void
+	) => {
 		// call the cb function and pass null for error to indicate operation success and set a destination folder
 		cb(null, './assets/images');
 	},
@@ -42,7 +46,11 @@ const fileStorage = multer.diskStorage({
 	},
 });
 // set a storage file filter validation function to pass it to multer in order to filter files based on file mimetype property
-const multerFilter = (req, file, cb) => {
+const multerFilter = (
+	req: Request,
+	file: Express.Multer.File,
+	cb: FileFilterCallback
+) => {
 	// call the cb function with true to accept and store the file, or false to deny the file
 	const [, imageType] = file.mimetype.split('/');
 	if (
@@ -132,7 +140,7 @@ app.use(errorRoutes);
 app.use(getPageNotFound);
 
 // define an error handling middleware (defined by setting error as first argument) to let express handle incoming errors (by calling next with an error object)
-app.use((error, req, res, next) => {
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 	// render the 500 error page when this middleware is reached
 	return res.status(500).render('error/500', {
 		docTitle: 'Something went wrong',
@@ -152,4 +160,4 @@ mongoose
 		const port = process.env.PORT || 3000;
 		app.listen(port, () => console.log(`Connected on port: ${port}`));
 	})
-	.catch((err) => console.log(err));
+	.catch((err: Error) => console.log(err));
