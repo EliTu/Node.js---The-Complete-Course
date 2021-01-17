@@ -4,10 +4,10 @@ import path from 'path';
 import parser from 'body-parser';
 import mongoose from 'mongoose';
 import session from 'express-session';
-const mongodbSessionStore = require('connect-mongodb-session')(session);
 import csrf from 'csurf';
 import flash from 'connect-flash';
-import multer, { FileFilterCallback, Multer } from 'multer';
+import multer, { FileFilterCallback } from 'multer';
+const mongodbSessionStore = require('connect-mongodb-session')(session);
 
 // Routes
 import authRoutes from './routes/auth';
