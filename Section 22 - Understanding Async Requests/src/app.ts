@@ -14,10 +14,22 @@ import authRoutes from './routes/auth';
 import AdminRoute from './routes/admin';
 import shopRoute from './routes/shop';
 import errorRoutes from './routes/error';
-
 // Files
 import { getPageNotFound } from './controllers/errorController';
 import User from './models/user';
+
+declare module 'express-session' {
+	interface SessionData {
+		user: any;
+		isLoggedIn: boolean;
+	}
+}
+
+declare module 'express' {
+	interface Request {
+		user?: any;
+	}
+}
 
 const MONGODB_URI =
 	'mongodb+srv://eliad91:Et@081991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority';
@@ -98,7 +110,7 @@ app.use(csrfProtection);
 app.use(flash());
 
 // set the mongoose user document found in the DB by looking up the userId in the session
-app.use(async (req, res, next) => {
+app.use(async (req: Request, res: Response, next: NextFunction) => {
 	if (!req.session.user) return next();
 	try {
 		const user = await User.findById(req.session.user);
