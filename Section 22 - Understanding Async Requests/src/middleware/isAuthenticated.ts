@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 /**
  * A simple middleware for route protection that will first check if the requesting user is logged in (authenticated),
  * if not, he will be redirected to log in first. If authenticated, call next to go to the next middleware.
@@ -5,11 +6,15 @@
  * @param {*} res The Express res object.
  * @param {*} next The Express next middleware.
  */
-const isAuthenticated = (req, res, next) => {
+const isAuthenticated = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+): void => {
 	if (!req.session.isLoggedIn) {
 		return res.redirect('/login');
 	}
 	next();
 };
 
-module.exports = isAuthenticated;
+export default isAuthenticated;

@@ -1,16 +1,16 @@
 import mongoose, { Document } from 'mongoose';
-import { IProductModel } from './product';
-import { IUserModel } from './user';
+import { ProductModel } from './product';
+import { UserModel } from './user';
 
 const Schema = mongoose.Schema;
 
-type Products = { product: IProductModel; quantity: number }[];
-export interface IOrderModel extends Document {
+type Products = { product: ProductModel; quantity: number }[];
+export interface OrderModel extends Document {
 	products: Products;
-	user: IUserModel['_id'];
+	user: UserModel['_id'];
 }
 
-const orderSchema = new Schema({
+const orderSchema = new Schema<OrderModel>({
 	products: [
 		{
 			product: { type: Object, required: true },
@@ -23,4 +23,4 @@ const orderSchema = new Schema({
 	},
 });
 
-export default mongoose.model<IOrderModel>('Order', orderSchema);
+export default mongoose.model<OrderModel>('Order', orderSchema);

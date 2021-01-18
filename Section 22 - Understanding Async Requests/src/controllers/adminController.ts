@@ -1,17 +1,21 @@
-const Product = require('../models/product');
-const { setProductForm } = require('../util/forms');
-const { checkForValidationErrors } = require('../util/validations');
-const setUserMessage = require('../util/setUserMessage');
-const setErrorMiddlewareObject = require('../util/setErrorMiddlewareObject');
-const removeFile = require('../util/removeFile');
-const {
-	ITEMS_PER_PAGE,
-	getPaginationData,
-} = require('../util/getPaginationData');
+import { Request, Response, NextFunction } from 'express';
+import Product, { ProductModel } from '../models/product';
+import appForms from '../util/forms';
+import { checkForValidationErrors } from '../util/validations';
+import setUserMessage from '../util/setUserMessage';
+import setErrorMiddlewareObject from '../util/setErrorMiddlewareObject';
+import removeFile from '../util/removeFile';
+import { ITEMS_PER_PAGE, getPaginationData } from '../util/getPaginationData';
+
+const { setProductForm } = appForms;
 
 /* GET CONTROLS */
 
-const getAdminProduct = async (req, res, next) => {
+export const getAdminProduct = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const page = +req.query.page || 1;
 	try {
 		const products = await Product.find({ userId: req.user._id })
@@ -50,7 +54,7 @@ const getAdminProduct = async (req, res, next) => {
 };
 
 // Specific for '/admin/...':
-const getAddProduct = (req, res) => {
+export const getAddProduct = (req: Request, res: Response) => {
 	res.render('admin/set-product', {
 		docTitle: 'Add Product',
 		pageSubtitle: 'Add a product',
@@ -61,7 +65,11 @@ const getAddProduct = (req, res) => {
 	});
 };
 
-const getEditProduct = async (req, res, next) => {
+export const getEditProduct = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const editMode = req.query.edit;
 	if (!editMode) return res.redirect('/');
 
@@ -74,7 +82,7 @@ const getEditProduct = async (req, res, next) => {
 		// extract the imageUrl without the full path
 		const { imageUrl } = product;
 		const [, , , imageName] = imageUrl.split('/');
-		const updatedProductData = { ...product._doc, imageUrl: imageName };
+		const updatedProductData = { ...product['_doc'], imageUrl: imageName };
 
 		res.render('admin/set-product', {
 			docTitle: 'Edit Product',
@@ -93,8 +101,12 @@ const getEditProduct = async (req, res, next) => {
 
 /* POST CONTROLS */
 
-const postProduct = async (req, res, next) => {
-	const { title, description, price, productId } = req.body;
+export const postProduct = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const { title, description, price, _id } = req.body as ProductModel;
 	const image = req.file; // get the image by accessing the file parsed by multer middleware
 	const { path } = req.route;
 
@@ -113,7 +125,7 @@ const postProduct = async (req, res, next) => {
 				title,
 				description,
 				price,
-				_id: productId,
+				_id,
 			},
 			isEditingProduct: path.includes('edit'),
 		}
@@ -123,7 +135,7 @@ const postProduct = async (req, res, next) => {
 	const newImageUrl = image ? `/${image.path}` : null; // if new image has been uploaded, set it as the the imageUrl to be added
 
 	// if the image file is valid, we will pass the file path reference to the DB and not the whole file
-	if (!productId) {
+	if (!_id) {
 		// save a new product
 		const product = new Product({
 			title,
@@ -144,7 +156,7 @@ const postProduct = async (req, res, next) => {
 	} else {
 		// Update an existing product
 		try {
-			const productToUpdate = await Product.findById(productId);
+			const productToUpdate = await Product.findById(_id);
 
 			if (!productToUpdate) {
 				req.flash('error', 'No product to update');
@@ -176,7 +188,11 @@ const postProduct = async (req, res, next) => {
 	}
 };
 
-const deleteProduct = async (req, res, next) => {
+export const deleteProduct = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const productId = req.params.productId;
 	try {
 		const { imageUrl, title } = await Product.findById(productId);
@@ -205,12 +221,4 @@ const deleteProduct = async (req, res, next) => {
 			message: `Delete attempt failed, ${error}`,
 		});
 	}
-};
-
-module.exports = {
-	getAddProduct,
-	getEditProduct,
-	getAdminProduct,
-	postProduct,
-	deleteProduct,
 };

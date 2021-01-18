@@ -1,12 +1,12 @@
 import mongoose, { Document } from 'mongoose';
-const Schema = mongoose.Schema;
+
+import { ProductModel } from './product';
 
 type CartItem = { productId: string; quantity: number };
 type Cart = {
 	items: CartItem[];
 };
-
-export interface IUserModel extends Document {
+export interface UserModel extends Document {
 	email: string;
 	password: string;
 	resetPasswordToken: string;
@@ -14,7 +14,14 @@ export interface IUserModel extends Document {
 	cart: Cart;
 }
 
-const userSchema = new Schema({
+interface UserSchemaTypes extends UserModel {
+	addToCart(product: ProductModel): void;
+	removeFromCart(productId: string, isDeleteAll: boolean): void;
+	clearCart(): void;
+}
+
+const Schema = mongoose.Schema;
+const userSchema = new Schema<UserSchemaTypes>({
 	email: {
 		type: String,
 		trim: true,
@@ -52,7 +59,7 @@ const userSchema = new Schema({
  * @param {*} product The product object that is requested to be added.
  */
 //TODO: TYPES - ADD PRODUCT MODEL TYPE
-userSchema.methods.addToCart = function (product) {
+userSchema.methods.addToCart = function (product: ProductModel) {
 	const cartProductIndex = this.cart.items.findIndex((el: CartItem) =>
 		el.productId ? el.productId.toString() === product._id.toString() : null
 	);
@@ -116,4 +123,4 @@ userSchema.methods.clearCart = function () {
 	return this.save();
 };
 
-export default mongoose.model<IUserModel>('User', userSchema);
+export default mongoose.model<UserModel>('User', userSchema);

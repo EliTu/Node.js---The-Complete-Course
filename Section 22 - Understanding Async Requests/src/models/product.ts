@@ -1,18 +1,18 @@
 import mongoose, { Document } from 'mongoose';
 
-import { IUserModel } from './user';
+import { UserModel } from './user';
 
 const Schema = mongoose.Schema;
 
-export interface IProductModel extends Document {
+export interface ProductModel extends Document {
 	title: string;
 	price: number;
 	description: string;
 	imageUrl: string;
-	userId: IUserModel['_id'];
+	userId: UserModel['_id'];
 }
 
-const productSchema = new Schema({
+const productSchema = new Schema<ProductModel>({
 	title: {
 		type: String,
 		required: true,
@@ -36,4 +36,4 @@ const productSchema = new Schema({
 	},
 });
 
-export default mongoose.model<IProductModel>('Product', productSchema);
+export default mongoose.model<ProductModel>('Product', productSchema);

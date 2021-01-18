@@ -51,7 +51,7 @@ block content
                                 : ''}`
                                 class=`${errorsArray && errorsArray.find(err => err.param === form.name) ? 'input-error' : ''}`)
                 if isEditingProduct
-                    input(type="hidden" name="productId" value=`${productData._id}`) 
+                    input(type="hidden" name="_id" value=`${productData._id}`) 
                 button(type="submit") #{isEditingProduct ? 'Update Product' : 'Add Product'}
                 input(type="hidden" name="_csrf" value=`${csrfToken}`)  
         else
