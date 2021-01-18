@@ -6,7 +6,7 @@ type Cart = {
 	items: CartItem[];
 };
 
-interface IUserModel extends Document {
+export interface IUserModel extends Document {
 	email: string;
 	password: string;
 	resetPasswordToken: string;
