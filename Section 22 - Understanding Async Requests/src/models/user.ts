@@ -10,7 +10,7 @@ export interface UserModel extends Document {
 	email: string;
 	password: string;
 	resetPasswordToken: string;
-	resetPasswordTokenExpiration: string;
+	resetPasswordTokenExpiration: string | number;
 	cart: Cart;
 }
 
