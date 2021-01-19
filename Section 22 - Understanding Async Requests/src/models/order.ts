@@ -1,13 +1,16 @@
 import mongoose, { Document } from 'mongoose';
 import { ProductModel } from './product';
-import { UserModel } from './user';
+import { BaseModel } from './user';
 
 const Schema = mongoose.Schema;
 
-type Products = { product: ProductModel; quantity: number }[];
+export type Products = { product: ProductModel; quantity: number }[];
 export interface OrderModel extends Document {
 	products: Products;
-	user: UserModel['_id'];
+	user: {
+		email: string;
+		userId: BaseModel['_id'];
+	};
 }
 
 const orderSchema = new Schema<OrderModel>({

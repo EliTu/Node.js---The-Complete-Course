@@ -6,7 +6,7 @@ type CartItem = { productId: string; quantity: number };
 type Cart = {
 	items: CartItem[];
 };
-export interface UserModel extends Document {
+interface BaseUserDocument extends Document {
 	email: string;
 	password: string;
 	resetPasswordToken: string;
@@ -14,14 +14,17 @@ export interface UserModel extends Document {
 	cart: Cart;
 }
 
-interface UserSchemaTypes extends UserModel {
-	addToCart(product: ProductModel): void;
-	removeFromCart(productId: string, isDeleteAll: boolean): void;
-	clearCart(): void;
+export interface UserModel extends BaseUserDocument {
+	addToCart(product: ProductModel): Promise<BaseUserDocument>;
+	removeFromCart(
+		productId: string,
+		isDeleteAll: boolean
+	): Promise<BaseUserDocument>;
+	clearCart(): Promise<BaseUserDocument>;
 }
 
 const Schema = mongoose.Schema;
-const userSchema = new Schema<UserSchemaTypes>({
+const userSchema = new Schema<UserModel>({
 	email: {
 		type: String,
 		trim: true,
@@ -58,8 +61,10 @@ const userSchema = new Schema<UserSchemaTypes>({
  * A custom method for the User model for adding new items to the user's cart. Will set the items array and quantity.
  * @param {*} product The product object that is requested to be added.
  */
-//TODO: TYPES - ADD PRODUCT MODEL TYPE
-userSchema.methods.addToCart = function (product: ProductModel) {
+userSchema.methods.addToCart = function (
+	this: BaseUserDocument,
+	product: ProductModel
+) {
 	const cartProductIndex = this.cart.items.findIndex((el: CartItem) =>
 		el.productId ? el.productId.toString() === product._id.toString() : null
 	);
@@ -93,6 +98,7 @@ userSchema.methods.addToCart = function (product: ProductModel) {
  * @param {*} isDeleteAll A flag to indicate if the remove request is for the entire item and its quantity. If false, will remove a single item (quantity -1).
  */
 userSchema.methods.removeFromCart = function (
+	this: BaseUserDocument,
 	productId: string,
 	isDeleteAll: boolean
 ) {
@@ -118,7 +124,7 @@ userSchema.methods.removeFromCart = function (
 /**
  * a custom method for the User model to reset the cart to an empty state.
  */
-userSchema.methods.clearCart = function () {
+userSchema.methods.clearCart = function (this: BaseUserDocument) {
 	this.cart = { items: [] };
 	return this.save();
 };
