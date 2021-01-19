@@ -2,12 +2,12 @@
 	"name": "nodejs-complete-guide",
 	"version": "1.0.0",
 	"description": "Complete Node.js Guide",
-	"main": "app.ts",
+	"main": "./src/app.ts",
 	"scripts": {
-		"start": "nodemon app.ts",
-		"start-server": "node app.ts",
+		"start": "nodemon ./src/app.ts",
+		"start-server": "node ./src/app.ts",
 		"build": "tsc",
-		"dev": "ts-node ./app.ts"
+		"dev": "ts-node ./src/app.ts"
 	},
 	"author": "Eliad T",
 	"license": "ISC",
@@ -24,7 +24,6 @@
 		"@types/pdfkit": "^0.10.6",
 		"nodemon": "^1.18.3",
 		"ts-node": "^9.1.1",
-		"tslint": "^6.1.3",
 		"typescript": "^4.1.3"
 	},
 	"dependencies": {
