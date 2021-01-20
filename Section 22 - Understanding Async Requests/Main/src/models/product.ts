@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Mongoose } from 'mongoose';
 
 import { UserModel } from './user';
 
@@ -10,6 +10,7 @@ export interface ProductModel extends Document {
 	description: string;
 	imageUrl: string;
 	userId: UserModel['_id'];
+	_doc: any; //TODO: TYPE - FIND BETTER TYPING FOR THIS
 }
 
 const productSchema = new Schema<ProductModel>({

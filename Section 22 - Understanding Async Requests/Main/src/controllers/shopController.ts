@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
 
-import Product, { ProductModel } from '../models/product.js';
+import Product, { ProductModel } from '../models/product';
 import Order, { OrderModel, Products } from '../models/order';
 
 import setUserMessage from '../util/setUserMessage';

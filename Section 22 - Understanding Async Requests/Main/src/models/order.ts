@@ -1,6 +1,6 @@
 import mongoose, { Document } from 'mongoose';
 import { ProductModel } from './product';
-import { BaseModel } from './user';
+import { UserModel } from './user';
 
 const Schema = mongoose.Schema;
 
@@ -9,7 +9,7 @@ export interface OrderModel extends Document {
 	products: Products;
 	user: {
 		email: string;
-		userId: BaseModel['_id'];
+		userId: UserModel['_id'];
 	};
 }
 
