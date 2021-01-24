@@ -19,6 +19,12 @@ import errorRoutes from './routes/error';
 import { getPageNotFound } from './controllers/errorController';
 import User from './models/user';
 
+// Paths
+const assetImagesPath = path.join(__dirname, 'assets', 'images');
+const viewsPath = path.join(__dirname, 'views');
+const publicPath = path.join(__dirname, 'public');
+const distPath = path.join(__dirname, '../', 'dist');
+
 const MONGODB_URI =
 	'mongodb+srv://eliad91:Et@081991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority';
 
@@ -38,7 +44,7 @@ const fileStorage = multer.diskStorage({
 		cb: (error: Error | null, destination: string) => void
 	) => {
 		// call the cb function and pass null for error to indicate operation success and set a destination folder
-		cb(null, './assets/images');
+		cb(null, assetImagesPath);
 	},
 	filename: (req, file, cb) => {
 		// call the cb function and set a unique file name by combining the filenames with a unique string
@@ -67,7 +73,7 @@ const multerFilter = (
 
 // Set a template engine global value
 app.set('view engine', 'pug');
-app.set('views', 'views');
+app.set('views', viewsPath);
 
 // Set body parser middleware to parse plain text requests (like forms)
 app.use(
@@ -111,14 +117,13 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
 	}
 });
 
-// serve CSS files statically from the public folder
-app.use(express.static(path.join(__dirname, 'public')));
+// serve CSS statically from the public folder
+app.use(express.static(publicPath));
+// serve the dist folder to access the .js script files on public/scripts
+app.use(express.static(distPath));
 
 // serve the image files statically
-app.use(
-	'/assets/images',
-	express.static(path.join(__dirname, './assets/images'))
-);
+app.use('/assets/images', express.static(assetImagesPath));
 
 // set a middleware that will declare common local variables that will be available for every req/res and is passable to any view that is being rendered
 app.use((req, res, next) => {
@@ -145,7 +150,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 	return res.status(500).render('error/500', {
 		docTitle: 'Something went wrong',
 		path: '/error/500',
-		isLoggedIn: req.session.isLoggedIn,
+		// isLoggedIn: req.session.isLoggedIn,
 		error,
 	});
 });

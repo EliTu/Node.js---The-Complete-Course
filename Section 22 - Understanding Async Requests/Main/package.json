@@ -2,7 +2,7 @@
 	"name": "nodejs-complete-guide",
 	"version": "1.0.0",
 	"description": "Complete Node.js Guide",
-	"main": "dist",
+	"main": "dist/app.js",
 	"scripts": {
 		"start": "nodemon -e ts -w ./src/app.ts -x npm run watch:serve",
 		"watch:serve": "ts-node --files src/app.ts",

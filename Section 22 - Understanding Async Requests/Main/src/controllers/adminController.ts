@@ -109,6 +109,7 @@ export const postProduct = async (
 	const { title, description, price, _id } = req.body as ProductModel;
 	const image = req.file; // get the image by accessing the file parsed by multer middleware
 	const { path } = req.route;
+	console.log(image);
 
 	const isFormInvalid = checkForValidationErrors(
 		req,
@@ -116,7 +117,7 @@ export const postProduct = async (
 		'admin/set-product',
 		{
 			docTitle: path.includes('edit') ? 'Edit Product' : 'Add Product',
-			pageSubtitle: path.includes('edit') ? 'Edit Product' : 'Add a product',
+			pageSubtitle: path.includes('edit') ? 'Edit a Product' : 'Add a product',
 			forms: setProductForm,
 			path: `/admin${path}`,
 			formsActive: true,
@@ -131,6 +132,9 @@ export const postProduct = async (
 		}
 	);
 	if (isFormInvalid) return;
+
+	const [, hey] = image.path.split('src');
+	console.log(hey);
 
 	const newImageUrl = image ? `/${image.path}` : null; // if new image has been uploaded, set it as the the imageUrl to be added
 
