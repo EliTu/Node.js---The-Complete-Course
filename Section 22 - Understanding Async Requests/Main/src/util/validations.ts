@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { check, body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
+
 import User from '../models/user';
+import removeFile from './removeFile';
 
 /* AUTH VALIDATIONS */
 
@@ -183,6 +185,8 @@ export const checkForValidationErrors = (
 
 	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
 	if (!validationErrors.isEmpty()) {
+		if (req.file) removeFile(req.file.path);
+
 		res.status(422).render(path, {
 			...renderOptions,
 			errorsArray: validationErrors.array(), // insert the entire error array to use it in the view to dynamically show input error styles

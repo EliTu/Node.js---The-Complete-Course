@@ -6,6 +6,7 @@ import setUserMessage from '../util/setUserMessage';
 import setErrorMiddlewareObject from '../util/setErrorMiddlewareObject';
 import removeFile from '../util/removeFile';
 import { ITEMS_PER_PAGE, getPaginationData } from '../util/getPaginationData';
+import path from 'path';
 
 const { setProductForm } = appForms;
 
@@ -109,7 +110,6 @@ export const postProduct = async (
 	const { title, description, price, _id } = req.body as ProductModel;
 	const image = req.file; // get the image by accessing the file parsed by multer middleware
 	const { path } = req.route;
-	console.log(image);
 
 	const isFormInvalid = checkForValidationErrors(
 		req,
@@ -131,12 +131,11 @@ export const postProduct = async (
 			isEditingProduct: path.includes('edit'),
 		}
 	);
-	if (isFormInvalid) return;
+	if (isFormInvalid) return null;
 
-	const [, hey] = image.path.split('src');
-	console.log(hey);
+	const [, relativePath] = image.path.split('src');
 
-	const newImageUrl = image ? `/${image.path}` : null; // if new image has been uploaded, set it as the the imageUrl to be added
+	const newImageUrl = image ? relativePath : null; // if new image has been uploaded, set it as the the imageUrl to be added
 
 	// if the image file is valid, we will pass the file path reference to the DB and not the whole file
 	if (!_id) {
@@ -212,7 +211,11 @@ export const deleteProduct = async (
 				message: 'Could not delete product',
 			});
 		}
-		if (imageUrl) removeFile(imageUrl);
+		if (imageUrl) {
+			const imageFullPath = `${path.join(__dirname, '../')}${imageUrl}`;
+
+			removeFile(imageFullPath);
+		}
 
 		req.flash('success', `${title} has been successfully deleted`);
 		// instead of redirecting, send back JSON data

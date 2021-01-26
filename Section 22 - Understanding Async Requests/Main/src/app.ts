@@ -18,6 +18,7 @@ import errorRoutes from './routes/error';
 // Files
 import { getPageNotFound } from './controllers/errorController';
 import User from './models/user';
+import { validationResult } from 'express-validator';
 
 // Paths
 const assetImagesPath = path.join(__dirname, 'assets', 'images');
@@ -38,9 +39,10 @@ const csrfProtection = csrf();
 
 // set a multer storage engine to handle file storage on the memory by setting destination folder and file names
 const fileStorage = multer.diskStorage({
+	// TODO: ADD THE VERIFICATION RESULT BEFORE SAVING FILE
 	destination: (
-		req: Request,
-		file: Express.Multer.File,
+		req,
+		file,
 		cb: (error: Error | null, destination: string) => void
 	) => {
 		// call the cb function and pass null for error to indicate operation success and set a destination folder
