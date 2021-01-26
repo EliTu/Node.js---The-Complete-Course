@@ -104,7 +104,14 @@ userSchema.methods.removeFromCart = function (
 ) {
 	let updatedCartItems: CartItem[];
 
-	if (isDeleteAll) {
+	const isQuantityZero =
+		this.cart.items.find(
+			(item) => item.productId.toString() === productId.toString()
+		).quantity -
+			1 ===
+		0;
+
+	if (isDeleteAll || isQuantityZero) {
 		updatedCartItems = this.cart.items.filter(
 			(item: CartItem) => item.productId.toString() !== productId.toString()
 		);

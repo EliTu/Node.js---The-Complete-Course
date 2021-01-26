@@ -93,6 +93,8 @@ export const getCartPage = async (
 			.populate('cart.items.productId')
 			.execPopulate();
 		const cartProducts = [...userCart.cart.items];
+		console.log(cartProducts);
+
 		const priceCalc = +cartProducts
 			.reduce(
 				(a, c) =>
@@ -236,6 +238,7 @@ export const postCartDeleteProduct = async (
 		cartDeleteId,
 		cardDeleteProductName: productTitle,
 	} = req.body as DeleteProductBodyType;
+	console.log(productTitle);
 
 	try {
 		await req.user.removeFromCart(cartDeleteId, isDeleteAll);
