@@ -25,6 +25,7 @@ block content
                                     form(action="/cart-delete-product" method="POST")
                                         input(type="hidden" name="_csrf" value=`${csrfToken}`) 
                                         input(type="hidden" name="cartDeleteId" value=`${product.productId._id}`)
+                                        input(type="hidden" name="cardDeleteProductName" value=`${product.productId.title}`)
                                         button(class="btn" type="submit") -
                             img(src=`${product.productId.imageUrl}`, alt=`${product.productId.title} product image`)
                         div(class="cart_item_controls")

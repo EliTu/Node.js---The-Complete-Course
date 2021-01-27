@@ -93,7 +93,6 @@ export const getCartPage = async (
 			.populate('cart.items.productId')
 			.execPopulate();
 		const cartProducts = [...userCart.cart.items];
-		console.log(cartProducts);
 
 		const priceCalc = +cartProducts
 			.reduce(
@@ -149,7 +148,13 @@ export const getOrderInvoice = async (
 			return setErrorMiddlewareObject('Unauthorized access attempt', next);
 
 		const invoiceFileName = `invoice-${orderId}.pdf`;
-		const invoicePath = path.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
+		const invoicePath = path.join(
+			__dirname,
+			'../',
+			'assets',
+			'invoices',
+			invoiceFileName
+		); // construct a path to the relevant invoice
 
 		const pdfDoc = new PDFDocument(); // create a new pdfkit instance which is a stream
 		res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
@@ -191,6 +196,16 @@ export const getOrderInvoice = async (
 				.fontSize(16)
 				.text(`Product name: ${title}`, { lineGap: 5, indent: 20 })
 				.text(`Quantity: ${quantity}`, { lineGap: 5, indent: 20 })
+				.text(
+					`Item price: $${price} ${
+						quantity > 1
+							? `(Total for ${quantity} items: $${(price * quantity).toFixed(
+									2
+							  )})`
+							: ''
+					}`,
+					{ lineGap: 5, indent: 20 }
+				)
 				.text(`Product description: ${description}`, {
 					lineGap: 30,
 					indent: 20,
@@ -238,11 +253,14 @@ export const postCartDeleteProduct = async (
 		cartDeleteId,
 		cardDeleteProductName: productTitle,
 	} = req.body as DeleteProductBodyType;
-	console.log(productTitle);
 
 	try {
 		await req.user.removeFromCart(cartDeleteId, isDeleteAll);
-		req.flash('success', `${productTitle} has been removed from the cart`);
+
+		const removeMessage = isDeleteAll
+			? `${productTitle} has been removed from the cart`
+			: `One (1) ${productTitle} item has been removed from the cart`;
+		req.flash('success', removeMessage);
 	} catch (error) {
 		// req.flash(
 		// 	'error',
