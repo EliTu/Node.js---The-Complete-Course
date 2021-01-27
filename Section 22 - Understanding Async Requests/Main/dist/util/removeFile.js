@@ -9,8 +9,7 @@ const fs_1 = __importDefault(require("fs"));
  * @param filePath the path url to the file in the file system as saved on the DB.
  */
 const removeFile = (filePath) => {
-    const resolvedPath = filePath.substr(1, filePath.length - 1); // remove the initial '/' char
-    fs_1.default.unlink(resolvedPath, (error) => {
+    fs_1.default.unlink(filePath, (error) => {
         if (error)
             throw error;
     });

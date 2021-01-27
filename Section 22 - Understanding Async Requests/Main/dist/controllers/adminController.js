@@ -20,6 +20,7 @@ const setUserMessage_1 = __importDefault(require("../util/setUserMessage"));
 const setErrorMiddlewareObject_1 = __importDefault(require("../util/setErrorMiddlewareObject"));
 const removeFile_1 = __importDefault(require("../util/removeFile"));
 const getPaginationData_1 = require("../util/getPaginationData");
+const path_1 = __importDefault(require("path"));
 const { setProductForm } = forms_1.default;
 /* GET CONTROLS */
 const getAdminProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -96,11 +97,15 @@ exports.getEditProduct = getEditProduct;
 /* POST CONTROLS */
 const postProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, description, price, _id } = req.body;
-    const image = req.file; // get the image by accessing the file parsed by multer middleware
     const { path } = req.route;
+    const image = req.file; // get the image by accessing the file parsed by multer middleware
+    let imagePartialPath;
+    if (image) {
+        imagePartialPath = image.path.split('src')[1];
+    }
     const isFormInvalid = validations_1.checkForValidationErrors(req, res, 'admin/set-product', {
         docTitle: path.includes('edit') ? 'Edit Product' : 'Add Product',
-        pageSubtitle: path.includes('edit') ? 'Edit Product' : 'Add a product',
+        pageSubtitle: path.includes('edit') ? 'Edit a Product' : 'Add a product',
         forms: setProductForm,
         path: `/admin${path}`,
         formsActive: true,
@@ -114,8 +119,8 @@ const postProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         isEditingProduct: path.includes('edit'),
     });
     if (isFormInvalid)
-        return;
-    const newImageUrl = image ? `/${image.path}` : null; // if new image has been uploaded, set it as the the imageUrl to be added
+        return null;
+    const newImageUrl = imagePartialPath ? imagePartialPath : null; // if new image has been uploaded, set it as the the imageUrl to be added
     // if the image file is valid, we will pass the file path reference to the DB and not the whole file
     if (!_id) {
         // save a new product
@@ -182,8 +187,10 @@ const deleteProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, func
                 message: 'Could not delete product',
             });
         }
-        if (imageUrl)
-            removeFile_1.default(imageUrl);
+        if (imageUrl) {
+            const imageFullPath = `${path_1.default.join(__dirname, '../')}${imageUrl}`;
+            removeFile_1.default(imageFullPath);
+        }
         req.flash('success', `${title} has been successfully deleted`);
         // instead of redirecting, send back JSON data
         return res

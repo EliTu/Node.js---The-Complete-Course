@@ -71,7 +71,10 @@ userSchema.methods.addToCart = function (product) {
  */
 userSchema.methods.removeFromCart = function (productId, isDeleteAll) {
     let updatedCartItems;
-    if (isDeleteAll) {
+    const isQuantityZero = this.cart.items.find((item) => item.productId.toString() === productId.toString()).quantity -
+        1 ===
+        0;
+    if (isDeleteAll || isQuantityZero) {
         updatedCartItems = this.cart.items.filter((item) => item.productId.toString() !== productId.toString());
     }
     else {

@@ -16,6 +16,7 @@ exports.checkForValidationErrors = exports.postProductValidation = exports.login
 const express_validator_1 = require("express-validator");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("../models/user"));
+const removeFile_1 = __importDefault(require("./removeFile"));
 /* AUTH VALIDATIONS */
 /**
  * Validation chain for the signup forms, will validate: email, password and confirm password.
@@ -163,12 +164,14 @@ exports.postProductValidation = [
  * @param path The path string to the current validated view.
  * @param renderOptions The data to be passed to the view in the response body, will contain the required data to render the view as well as form data.
  */
-const checkForValidationErrors = (req, res, path, renderOptions //TODO: TYPE- ADD BETTER TYPING HERE
-) => {
+const checkForValidationErrors = (req, res, path, renderOptions) => {
     let isFormInvalid = false;
     const validationErrors = express_validator_1.validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
     // first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
     if (!validationErrors.isEmpty()) {
+        // if a file has been saved when the validation failed, remove it from memory.
+        if (req.file)
+            removeFile_1.default(req.file.path);
         res.status(422).render(path, Object.assign(Object.assign({}, renderOptions), { errorsArray: validationErrors.array() }));
         isFormInvalid = true;
     }

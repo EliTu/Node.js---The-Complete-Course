@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const message = document.querySelector('.message');
 const filePicker = document.querySelector('.file-picker-input');
 const deleteButton = document.querySelector('#product-delete-button');
+const fileNameLabel = document.querySelector('.file-name');
 /**
  * a simple util to find and hide the popout success or error message in the UI after 8 seconds.
  */
@@ -26,7 +27,7 @@ if (filePicker) {
     filePicker.onchange = () => {
         if (filePicker.files.length > 0) {
             const { name } = filePicker.files[0];
-            document.querySelector('.file-name').textContent = name;
+            fileNameLabel.textContent = name;
         }
     };
 }
@@ -47,14 +48,20 @@ const deleteProduct = (btn) => __awaiter(this, void 0, void 0, function* () {
     if (Object.keys(inputValues).length) {
         const { deletedProductId: productId, _csrf } = inputValues;
         try {
-            const deleteRes = yield fetch(`/admin/product/${productId}`, {
+            const response = yield fetch(`/admin/product/${productId}`, {
                 method: 'DELETE',
                 headers: {
                     // the csurf package will not only check request bodies for csrf tokens, but also headers
                     'csrf-token': _csrf,
                 },
             });
-            console.log(deleteRes);
+            const deleteResBody = yield response.json();
+            console.log(deleteResBody);
+            if (response.status === 200) {
+                const productElementNode = btn.closest('article');
+                if (productElementNode)
+                    productElementNode.remove();
+            }
         }
         catch (error) {
             console.error(error);

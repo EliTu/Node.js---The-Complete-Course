@@ -6,6 +6,7 @@ const filePicker: HTMLInputElement = document.querySelector(
 const deleteButton: HTMLElement = document.querySelector(
 	'#product-delete-button'
 );
+const fileNameLabel: HTMLElement = document.querySelector('.file-name');
 
 /**
  * a simple util to find and hide the popout success or error message in the UI after 8 seconds.
@@ -23,7 +24,7 @@ if (filePicker) {
 	filePicker.onchange = () => {
 		if (filePicker.files.length > 0) {
 			const { name } = filePicker.files[0];
-			document.querySelector('.file-name').textContent = name;
+			fileNameLabel.textContent = name;
 		}
 	};
 }
@@ -51,14 +52,20 @@ const deleteProduct = async (btn: HTMLButtonElement) => {
 		const { deletedProductId: productId, _csrf } = inputValues;
 
 		try {
-			const deleteRes = await fetch(`/admin/product/${productId}`, {
+			const response = await fetch(`/admin/product/${productId}`, {
 				method: 'DELETE',
 				headers: {
 					// the csurf package will not only check request bodies for csrf tokens, but also headers
 					'csrf-token': _csrf,
 				},
 			});
-			console.log(deleteRes);
+			const deleteResBody = await response.json();
+			console.log(deleteResBody);
+
+			if (response.status === 200) {
+				const productElementNode = btn.closest('article');
+				if (productElementNode) productElementNode.remove();
+			}
 		} catch (error: any) {
 			console.error(error);
 		}

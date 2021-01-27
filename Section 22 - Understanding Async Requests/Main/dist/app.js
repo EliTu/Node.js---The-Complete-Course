@@ -30,6 +30,11 @@ const error_1 = __importDefault(require("./routes/error"));
 // Files
 const errorController_1 = require("./controllers/errorController");
 const user_1 = __importDefault(require("./models/user"));
+// Paths
+const assetImagesPath = path_1.default.join(__dirname, 'assets', 'images');
+const viewsPath = path_1.default.join(__dirname, 'views');
+const publicPath = path_1.default.join(__dirname, 'public');
+const distPath = path_1.default.join(__dirname, '../', 'dist');
 const MONGODB_URI = 'mongodb+srv://eliad91:Et@081991@cluster0.n3tbe.mongodb.net/Cluster0?retryWrites=true&w=majority';
 const app = express_1.default();
 const store = new mongodbSessionStore({
@@ -42,7 +47,7 @@ const csrfProtection = csurf_1.default();
 const fileStorage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
         // call the cb function and pass null for error to indicate operation success and set a destination folder
-        cb(null, './assets/images');
+        cb(null, assetImagesPath);
     },
     filename: (req, file, cb) => {
         // call the cb function and set a unique file name by combining the filenames with a unique string
@@ -65,7 +70,7 @@ const multerFilter = (req, file, cb) => {
 };
 // Set a template engine global value
 app.set('view engine', 'pug');
-app.set('views', 'views');
+app.set('views', viewsPath);
 // Set body parser middleware to parse plain text requests (like forms)
 app.use(body_parser_1.default.urlencoded({
     extended: false,
@@ -98,10 +103,12 @@ app.use((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error(error);
     }
 }));
-// serve CSS files statically from the public folder
-app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
+// serve CSS statically from the public folder
+app.use(express_1.default.static(publicPath));
+// serve the dist folder to access the .js script files on public/scripts
+app.use(express_1.default.static(distPath));
 // serve the image files statically
-app.use('/assets/images', express_1.default.static(path_1.default.join(__dirname, './assets/images')));
+app.use('/assets/images', express_1.default.static(assetImagesPath));
 // set a middleware that will declare common local variables that will be available for every req/res and is passable to any view that is being rendered
 app.use((req, res, next) => {
     res.locals.isLoggedIn = req.session.isLoggedIn;

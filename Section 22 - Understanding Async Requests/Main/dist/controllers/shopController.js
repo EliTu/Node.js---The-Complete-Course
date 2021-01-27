@@ -126,7 +126,7 @@ const getOrderInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         if (order.user.userId.toString() !== req.user._id.toString())
             return setErrorMiddlewareObject_1.default('Unauthorized access attempt', next);
         const invoiceFileName = `invoice-${orderId}.pdf`;
-        const invoicePath = path_1.default.join('assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
+        const invoicePath = path_1.default.join(__dirname, '../', 'assets', 'invoices', invoiceFileName); // construct a path to the relevant invoice
         const pdfDoc = new pdfkit_1.default(); // create a new pdfkit instance which is a stream
         res.setHeader('Content-Type', 'application/pdf'); // set the response header to allow the browser handle and display the pdf file
         res.setHeader('Content-Disposition', `inline; filename="${invoiceFileName}"`); // set the response header to make sure the pdf is displayed in the browser and has a file name
@@ -157,6 +157,9 @@ const getOrderInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
                 .fontSize(16)
                 .text(`Product name: ${title}`, { lineGap: 5, indent: 20 })
                 .text(`Quantity: ${quantity}`, { lineGap: 5, indent: 20 })
+                .text(`Item price: $${price} ${quantity > 1
+                ? `(Total for ${quantity} items: $${(price * quantity).toFixed(2)})`
+                : ''}`, { lineGap: 5, indent: 20 })
                 .text(`Product description: ${description}`, {
                 lineGap: 30,
                 indent: 20,
@@ -188,7 +191,10 @@ const postCartDeleteProduct = (req, res, next) => __awaiter(void 0, void 0, void
     const { isDeleteAll, cartDeleteId, cardDeleteProductName: productTitle, } = req.body;
     try {
         yield req.user.removeFromCart(cartDeleteId, isDeleteAll);
-        req.flash('success', `${productTitle} has been removed from the cart`);
+        const removeMessage = isDeleteAll
+            ? `${productTitle} has been removed from the cart`
+            : `One (1) ${productTitle} item has been removed from the cart`;
+        req.flash('success', removeMessage);
     }
     catch (error) {
         // req.flash(
