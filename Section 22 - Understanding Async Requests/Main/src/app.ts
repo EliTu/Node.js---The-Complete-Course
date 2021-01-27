@@ -39,7 +39,6 @@ const csrfProtection = csrf();
 
 // set a multer storage engine to handle file storage on the memory by setting destination folder and file names
 const fileStorage = multer.diskStorage({
-	// TODO: ADD THE VERIFICATION RESULT BEFORE SAVING FILE
 	destination: (
 		req,
 		file,
@@ -152,7 +151,7 @@ app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 	return res.status(500).render('error/500', {
 		docTitle: 'Something went wrong',
 		path: '/error/500',
-		// isLoggedIn: req.session.isLoggedIn,
+		isLoggedIn: req.session.isLoggedIn,
 		error,
 	});
 });

@@ -108,8 +108,13 @@ export const postProduct = async (
 	next: NextFunction
 ) => {
 	const { title, description, price, _id } = req.body as ProductModel;
-	const image = req.file; // get the image by accessing the file parsed by multer middleware
 	const { path } = req.route;
+	const image = req.file; // get the image by accessing the file parsed by multer middleware
+
+	let imagePartialPath: string;
+	if (image) {
+		imagePartialPath = image.path.split('src')[1];
+	}
 
 	const isFormInvalid = checkForValidationErrors(
 		req,
@@ -133,9 +138,7 @@ export const postProduct = async (
 	);
 	if (isFormInvalid) return null;
 
-	const [, relativePath] = image.path.split('src');
-
-	const newImageUrl = image ? relativePath : null; // if new image has been uploaded, set it as the the imageUrl to be added
+	const newImageUrl = imagePartialPath ? imagePartialPath : null; // if new image has been uploaded, set it as the the imageUrl to be added
 
 	// if the image file is valid, we will pass the file path reference to the DB and not the whole file
 	if (!_id) {

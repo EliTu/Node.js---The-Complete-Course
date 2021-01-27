@@ -178,13 +178,14 @@ export const checkForValidationErrors = (
 	req: Request,
 	res: Response,
 	path: string,
-	renderOptions: Record<string, any> //TODO: TYPE- ADD BETTER TYPING HERE
+	renderOptions: Record<string, any>
 ) => {
 	let isFormInvalid = false;
 	const validationErrors = validationResult(req); // This method will collect all the errors that were found in the validation middleware (on the routes)
 
 	// first check if the validationErrors array is empty (no errors found), if it's not then reject the form and re-render the page
 	if (!validationErrors.isEmpty()) {
+		// if a file has been saved when the validation failed, remove it from memory.
 		if (req.file) removeFile(req.file.path);
 
 		res.status(422).render(path, {

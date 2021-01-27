@@ -86,6 +86,7 @@ li {
 	text-decoration: none;
 	color: rgb(253, 253, 253);
 	font-size: 16px;
+	margin: 0;
 }
 
 .main-header__item a:hover,
