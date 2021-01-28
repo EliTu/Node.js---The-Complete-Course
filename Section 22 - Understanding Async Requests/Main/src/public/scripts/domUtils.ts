@@ -60,11 +60,24 @@ const deleteProduct = async (btn: HTMLButtonElement) => {
 				},
 			});
 			const deleteResBody = await response.json();
-			console.log(deleteResBody);
 
+			// simultaneously remove a product item from the DOM
 			if (response.status === 200) {
-				const productElementNode = btn.closest('article');
+				const productElementNode = btn.closest('article'); // find the nearest article to the button which is the product item element
 				if (productElementNode) productElementNode.remove();
+
+				// handle pagination links in case all items have been removed
+				const productElementList = document.querySelectorAll('.product-item');
+				if (productElementList.length === 0) {
+					const activePaginationElement = document.querySelector(
+						'.pagination > a.active'
+					);
+
+					if (activePaginationElement) {
+						activePaginationElement.remove();
+						document.getElementById('prev-arrow').click(); // find and click on the previous page arrow to navigate to a new page
+					}
+				}
 			}
 		} catch (error: any) {
 			console.error(error);

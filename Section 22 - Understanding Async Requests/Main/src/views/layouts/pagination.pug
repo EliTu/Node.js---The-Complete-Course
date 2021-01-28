@@ -1,6 +1,6 @@
 section(class="pagination")
     if hasPreviousPage && currentPage !== 1
-        a(class="pagination_arrow" href=`?page=${previousPage}`) <
+        a(class="pagination_arrow" id="prev-arrow" href=`?page=${previousPage}`) <
 
     if currentPage !== 1 && previousPage !== 1
         a(href="?page=1") 1
@@ -23,4 +23,4 @@ section(class="pagination")
         a(href=`?page=${lastPage}`) #{lastPage}
 
     if hasNextPage  && currentPage !== lastPage
-        a(class="pagination_arrow" href=`?page=${nextPage}`) >
+        a(class="pagination_arrow" id="next-arrow" href=`?page=${nextPage}`) >
