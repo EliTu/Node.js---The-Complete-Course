@@ -1,0 +1,46 @@
+extends ../layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet", href="/css/cart.css")
+
+block content 
+    h2 #{pageSubtitle}
+    main
+        if success
+            include ../layouts/user-message.pug
+        if cartProducts.length
+            ul
+                each product in cartProducts
+                    li(class="cart_item")
+                        div(class="cart_item_content")
+                            div(class="cart_item_text")
+                                p(class="cart_item_title") #{product.productId.title}
+                                p(class="cart_item_price") $#{product.productId.price}
+                                div(class="cart_item_amount_controls")
+                                    p(class="cart_item_amount_text") Amount: #{product.quantity}
+                                    form(action="/cart" method="POST")
+                                        input(type="hidden" name="_csrf" value=`${csrfToken}`)  
+                                        input(type="hidden" name="cartAddId" value=`${product.productId._id}`)
+                                        button(class="btn" type="submit") +
+                                    form(action="/cart-delete-product" method="POST")
+                                        input(type="hidden" name="_csrf" value=`${csrfToken}`) 
+                                        input(type="hidden" name="cartDeleteId" value=`${product.productId._id}`)
+                                        input(type="hidden" name="cardDeleteProductName" value=`${product.productId.title}`)
+                                        button(class="btn" type="submit") -
+                            img(src=`${product.productId.imageUrl}`, alt=`${product.productId.title} product image`)
+                        div(class="cart_item_controls")
+                            div
+                                a(class="btn link" href=`/products/${product.productId._id}`) Details
+                            form(action="/cart-delete-product" method="POST")
+                                input(type="hidden" name="_csrf" value=`${csrfToken}`)                           
+                                input(type="hidden" name="cartDeleteId" value=`${product.productId._id}`)
+                                input(type="hidden" name="cardDeleteProductName" value=`${product.productId.title}`)
+                                input(type="hidden" name="isDeleteAll" value="true")
+                                button(class="btn remove_btn" type="submit") Remove 
+            div(class="checkout_details")
+                h3(class="total") Total price: $#{totalPrice}
+                form(action="/create-order" method="POST")
+                    input(type="hidden" name="_csrf" value=`${csrfToken}`)  
+                    button(class="btn checkout_btn" type="submit") Checkout
+        else
+            h1 No products in cart!

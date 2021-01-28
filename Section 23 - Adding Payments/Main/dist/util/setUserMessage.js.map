@@ -1,0 +1,1 @@
+{"version":3,"file":"setUserMessage.js","sourceRoot":"","sources":["../../src/util/setUserMessage.ts"],"names":[],"mappings":";;AAAA;;;GAGG;AACH,MAAM,cAAc,GAAG,CAAC,KAAe,EAAE,EAAE;IAC1C,MAAM,CAAC,OAAO,CAAC,GAAG,KAAK,CAAC;IAExB,IAAI,CAAC,OAAO;QAAE,OAAO,EAAE,CAAC;IAExB,OAAO,OAAO,CAAC;AAChB,CAAC,CAAC;AAEF,kBAAe,cAAc,CAAC"}
