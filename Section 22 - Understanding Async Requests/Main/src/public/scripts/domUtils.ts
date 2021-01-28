@@ -30,7 +30,8 @@ if (filePicker) {
 }
 
 /**
- * an async util function to make an async request to delete a product from the admin products list.
+ * an async util function to make an async request to delete a product from the admin products list and manipulate the DOM to remove
+ * the product item from the view and handle the pagination view if needed.
  * @param {*} btn The button input that was clicked, accessed via the native onclick function.
  */
 const deleteProduct = async (btn: HTMLButtonElement) => {
@@ -71,7 +72,7 @@ const deleteProduct = async (btn: HTMLButtonElement) => {
 				if (productElementList.length === 0) {
 					const activePaginationElement = document.querySelector(
 						'.pagination > a.active'
-					);
+					); // find the current active pagination anchor tag
 
 					if (activePaginationElement) {
 						activePaginationElement.remove();
