@@ -1,5 +1,27 @@
 extends ../layouts/main-layout.pug
 
-block content
+block styles
+    link(rel="stylesheet", href="/css/cart.css")
+
+block content 
     h2 #{pageSubtitle}
     main
+        if success
+            include ../layouts/user-message.pug
+            
+        if cartProducts.length
+            ul
+                each product in cartProducts
+                    li(class="cart_item")
+                        div(class="cart_item_content")
+                            div(class="cart_item_text")
+                                p(class="cart_item_title") #{product.productId.title}
+                                p(class="cart_item_price") Price (per unit): $#{product.productId.price}
+                            img(src=`${product.productId.imageUrl}`, alt=`${product.productId.title} product image`)
+                        div(class="cart_item_controls")
+                            div
+                                a(class="btn link" href=`/products/${product.productId._id}`) Details
+            div(class="checkout_details")
+                h3(class="total") Total price: $#{totalPrice}
+        else
+            h1 No products in cart!

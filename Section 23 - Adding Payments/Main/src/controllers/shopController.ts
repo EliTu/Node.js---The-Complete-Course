@@ -10,6 +10,24 @@ import setUserMessage from '../util/setUserMessage';
 import setErrorMiddlewareObject from '../util/setErrorMiddlewareObject';
 import { getPaginationData, ITEMS_PER_PAGE } from '../util/getPaginationData';
 
+// Utils
+const getUserCartData = async (req: Request) => {
+	const userCart = await req.user
+		.populate('cart.items.productId')
+		.execPopulate();
+	const cartProducts = [...userCart.cart.items];
+
+	const priceCalc = +cartProducts
+		.reduce(
+			(a, c) =>
+				a + +((c.productId as unknown) as ProductModel).price * +c.quantity,
+			0
+		)
+		.toFixed(2);
+
+	return { cartProducts, priceCalc };
+};
+
 //  Specific for shop or '/':
 export const getIndexPage = (req: Request, res: Response) => {
 	res.render('shop/index', {
@@ -89,23 +107,33 @@ export const getCartPage = async (
 	next: NextFunction
 ) => {
 	try {
-		const userCart = await req.user
-			.populate('cart.items.productId')
-			.execPopulate();
-		const cartProducts = [...userCart.cart.items];
-
-		const priceCalc = +cartProducts
-			.reduce(
-				(a, c) =>
-					a + +((c.productId as unknown) as ProductModel).price * +c.quantity,
-				0
-			)
-			.toFixed(2);
+		const { cartProducts, priceCalc } = await getUserCartData(req);
 
 		res.render('shop/cart', {
 			docTitle: 'Cart',
 			pageSubtitle: 'Your Cart',
 			path: '/cart',
+			cartProducts: cartProducts,
+			totalPrice: priceCalc,
+			success: setUserMessage(req.flash('success')),
+		});
+	} catch (error) {
+		setErrorMiddlewareObject(error, next);
+	}
+};
+
+export const getCheckoutPage = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { cartProducts, priceCalc } = await getUserCartData(req);
+
+		res.render('shop/checkout', {
+			docTitle: 'Checkout',
+			pageSubtitle: 'Checkout',
+			path: '/checkout',
 			cartProducts: cartProducts,
 			totalPrice: priceCalc,
 			success: setUserMessage(req.flash('success')),
@@ -187,8 +215,7 @@ export const getOrderInvoice = async (
 
 		let totalPrice = 0; //TODO: SEE IF ITS POSSIBLE TO CREATE A REUSABLE TOTAL PRICE CALC FUNCTION
 		// Loop through all of the possible order products and create pdf texts for each and set the total price
-		for (const orderProdObj of order.products) {
-			const { product, quantity } = orderProdObj;
+		for (const { product, quantity } of order.products) {
 			const { title, price, description } = product;
 			totalPrice += quantity * price;
 
@@ -270,14 +297,6 @@ export const postCartDeleteProduct = async (
 	} finally {
 		res.redirect('/cart');
 	}
-};
-
-export const getCheckoutPage = (req: Request, res: Response) => {
-	res.render('shop/checkout', {
-		docTitle: 'Checkout',
-		pageSubtitle: 'Checkout',
-		path: '/checkout',
-	});
 };
 
 export const postOrder = async (

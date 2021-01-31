@@ -104,6 +104,10 @@ ul {
 }
 
 .checkout_btn {
+	text-decoration: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	font-size: 28px;
 	height: 4rem;
 	width: 15rem;

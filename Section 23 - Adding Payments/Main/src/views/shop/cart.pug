@@ -39,8 +39,9 @@ block content
                                 button(class="btn remove_btn" type="submit") Remove 
             div(class="checkout_details")
                 h3(class="total") Total price: $#{totalPrice}
-                form(action="/create-order" method="POST")
-                    input(type="hidden" name="_csrf" value=`${csrfToken}`)  
-                    button(class="btn checkout_btn" type="submit") Checkout
+                //- form(action="/create-order" method="POST")
+                //-     input(type="hidden" name="_csrf" value=`${csrfToken}`)  
+                //-     button(class="btn checkout_btn" type="submit") Checkout
+                a(href="/checkout" class="btn checkout_btn") Checkout
         else
             h1 No products in cart!
