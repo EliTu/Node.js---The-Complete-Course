@@ -14,36 +14,28 @@ html(lang="en")
             nav.main-header__nav
                 .main-header__item-list
                     .main-routes
-                        li.main-header__item 
-                            a(href="/" , class=(path === '/' ? 'active' : '')) Shop
-                        li.main-header__item 
-                            a(href="/products/?page=1" , class=(path === '/products' ? 'active' : '')) Products
+                        a(href="/" , class=(path === '/' ? 'active main-header__item ' : 'main-header__item ')) Shop
+                        a(href="/products/?page=1" , class=(path === '/products' ? 'active main-header__item ' : 'main-header__item ')) Products
 
                         if isLoggedIn
-                            li.main-header__item 
-                                a(href="/cart" , class=(path === '/cart' ? 'active' : '')) Cart
-                            li.main-header__item 
-                                a(href="/orders" , class=(path === '/orders' ? 'active' : '')) Orders
-                            li.main-header__item 
-                                a(href="/checkout" , class=(path === '/checkout' ? 'active' : '')) Checkout
-                            li.main-header__item 
-                                a(href="/admin/add-product", class=(path === '/admin/add-product' ? 'active' : '')) Add Product
-                            li.main-header__item 
-                                a(href="/admin/admin-products/?page=1", class=(path === '/admin/admin-products' ? 'active' : '')) Admin Products
+                            
+                            a(href="/cart" , class=(path === '/cart' ? 'active main-header__item ' : 'main-header__item ')) Cart
+                            a(href="/orders" , class=(path === '/orders' ? 'active main-header__item ' : ' main-header__item ')) Orders
+                            a(href="/checkout" , class=(path === '/checkout' ? 'active main-header__item ' : ' main-header__item ')) Checkout
+                            a(href="/admin/add-product", class=(path === '/admin/add-product' ? 'active main-header__item ' : ' main-header__item ')) Add Product
+                            a(href="/admin/admin-products/?page=1", class=(path === '/admin/admin-products' ? 'active main-header__item ' : ' main-header__item ')) Admin Products
 
                     .auth-routes
                         if !isLoggedIn
-                            li.main-header__item 
-                                input(type="hidden" name="_csrf" value=`${csrfToken}`) 
-                                a(href="/login" , class=(path === '/login' ? 'active' : '')) Login
-                            li.main-header__item
-                                input(type="hidden" name="_csrf" value=`${csrfToken}`) 
-                                a(href="/signup", class=(path === '/signup' ? 'active' : '')) Signup
+                            input(type="hidden" name="_csrf" value=`${csrfToken}`) 
+                            a(href="/login" , class=(path === '/login' ? 'active main-header__item ' : ' main-header__item ')) Login
+                            input(type="hidden" name="_csrf" value=`${csrfToken}`) 
+                            a(href="/signup", class=(path === '/signup' ? 'active main-header__item ' : ' main-header__item ')) Signup
 
                         else
-                            form(class="main-header__item" action="/logout" method="POST")
+                            form(action="/logout" class="logout-form__wrapper" method="POST")
                                 input(type="hidden" name="_csrf" value=`${csrfToken}`) 
-                                button(type="submit") Logout
+                                button(class="main-header__item" type="submit") Logout
 
         nav.mobile-nav
             .mobile-nav__item-list
