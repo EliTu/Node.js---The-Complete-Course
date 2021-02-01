@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import path from 'path';
 import PDFDocument from 'pdfkit';
+import Stripe from 'stripe';
 
 import Product, { ProductModel } from '../models/product';
 import Order, { OrderModel, Products } from '../models/order';
@@ -9,6 +10,14 @@ import Order, { OrderModel, Products } from '../models/order';
 import setUserMessage from '../util/setUserMessage';
 import setErrorMiddlewareObject from '../util/setErrorMiddlewareObject';
 import { getPaginationData, ITEMS_PER_PAGE } from '../util/getPaginationData';
+import { isProduct } from '../util/typeguards';
+
+// Types
+type DeleteProductBodyType = {
+	isDeleteAll: boolean;
+	cartDeleteId: ProductModel['_id'];
+	cardDeleteProductName: string;
+};
 
 // Utils
 const getUserCartData = async (req: Request) => {
@@ -18,11 +27,11 @@ const getUserCartData = async (req: Request) => {
 	const cartProducts = [...userCart.cart.items];
 
 	const priceCalc = +cartProducts
-		.reduce(
-			(a, c) =>
-				a + +((c.productId as unknown) as ProductModel).price * +c.quantity,
-			0
-		)
+		.reduce((a, c) => {
+			if (isProduct(c.productId)) {
+				return a + +c.productId.price * +c.quantity;
+			}
+		}, 0)
 		.toFixed(2);
 
 	return { cartProducts, priceCalc };
@@ -127,8 +136,32 @@ export const getCheckoutPage = async (
 	res: Response,
 	next: NextFunction
 ) => {
+	// instantiate stripe with the secret key
+	const stripe = new Stripe(
+		'sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb', // TODO: make this key and other keys a secret
+		{ apiVersion: '2020-08-27' }
+	);
+
 	try {
 		const { cartProducts, priceCalc } = await getUserCartData(req);
+
+		// Create a stripe session
+		const stripeSession = await stripe.checkout.sessions.create({
+			payment_method_types: ['card'],
+			line_items: cartProducts.map((product) => {
+				if (isProduct(product.productId)) {
+					return {
+						name: product.productId.title,
+						description: product.productId.description,
+						amount: product.productId.price * 100,
+						currency: 'usd',
+						quantity: product.quantity,
+					};
+				}
+			}),
+			success_url: `${req.protocol}${req.get('host')}/checkout/success`, // example: http://localhost:3000/checkout/sucesss
+			cancel_url: `${req.protocol}${req.get('host')}/checkout/cancel`,
+		});
 
 		res.render('shop/checkout', {
 			docTitle: 'Checkout',
@@ -136,6 +169,7 @@ export const getCheckoutPage = async (
 			path: '/checkout',
 			cartProducts: cartProducts,
 			totalPrice: priceCalc,
+			stripeSessionId: stripeSession.id,
 			success: setUserMessage(req.flash('success')),
 		});
 	} catch (error) {
@@ -213,7 +247,7 @@ export const getOrderInvoice = async (
 			.fontSize(20)
 			.text('Product details:', { lineGap: 10 });
 
-		let totalPrice = 0; //TODO: SEE IF ITS POSSIBLE TO CREATE A REUSABLE TOTAL PRICE CALC FUNCTION
+		let totalPrice = 0;
 		// Loop through all of the possible order products and create pdf texts for each and set the total price
 		for (const { product, quantity } of order.products) {
 			const { title, price, description } = product;
@@ -270,11 +304,6 @@ export const postCartDeleteProduct = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	type DeleteProductBodyType = {
-		isDeleteAll: boolean;
-		cartDeleteId: ProductModel['_id'];
-		cardDeleteProductName: string;
-	};
 	const {
 		isDeleteAll,
 		cartDeleteId,

@@ -27,7 +27,13 @@ block content
                 button(id="order-button") Order
                 script(src="https://js.stripe.com/terminal/v1/" )
                 script(type="text/javascript").
-                    const stripe = Stripe('sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb')
+                    const stripe = Stripe('sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb');
+                    const orderButton = document.getElementById('order-button');
+                    orderButton.addEventListener('click', () => {
+                    stripe.redirectToCheckout({
+                            sessionId: stripeSessionId
+                        });
+                    })
                     
 
         else
