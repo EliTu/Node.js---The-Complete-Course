@@ -24,13 +24,13 @@ block content
             div(class="checkout_details")
                 h3(class="total") Total price: $#{totalPrice}
             div
-                button(id="order-button") Order
-                script(src="https://js.stripe.com/terminal/v1/" )
+                button(id="order-button" class="btn checkout_btn") Order
+                script(src="https://js.stripe.com/v3/")
                 script(type="text/javascript").
-                    const stripe = Stripe('sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb');
+                    const stripe = Stripe('pk_test_51IFXgfI7bWgkmmL4dfRseVy8tvQFZ0lZkClJvioxM54bW3OCCIeeE0J5jSyJs8xgIn1h6l0V80pGsW9sB9wQpGWl00q4qCEd60');
                     const orderButton = document.getElementById('order-button');
-                    orderButton.addEventListener('click', () => {
-                    stripe.redirectToCheckout({
+                    orderButton.addEventListener('click', async () => {
+                    const res = await stripe.redirectToCheckout({
                             sessionId: stripeSessionId
                         });
                     })

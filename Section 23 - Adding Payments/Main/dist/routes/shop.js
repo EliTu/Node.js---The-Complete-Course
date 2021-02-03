@@ -12,11 +12,12 @@ router.get('/', shopController_1.getIndexPage);
 router.get('/products', shopController_1.getProductList);
 router.get('/products/:productId', shopController_1.getProductDetailsPage);
 router.get('/cart', isAuthenticated_1.default, shopController_1.getCartPage);
+router.get('/checkout', isAuthenticated_1.default, shopController_1.getCheckoutPage);
+router.get('/checkout/success', isAuthenticated_1.default, shopController_1.getCheckoutSuccess);
+router.get('/checkout/cancel', isAuthenticated_1.default, shopController_1.getCheckoutPage);
 router.get('/orders', isAuthenticated_1.default, shopController_1.getOrdersPage);
 router.get('/orders/:orderId', isAuthenticated_1.default, shopController_1.getOrderInvoice);
-router.get('/checkout', isAuthenticated_1.default, shopController_1.getCheckoutPage);
 router.post('/cart', isAuthenticated_1.default, shopController_1.postCart);
 router.post('/cart-delete-product', isAuthenticated_1.default, shopController_1.postCartDeleteProduct);
-router.post('/create-order', isAuthenticated_1.default, shopController_1.postOrder);
 exports.default = router;
 //# sourceMappingURL=shop.js.map

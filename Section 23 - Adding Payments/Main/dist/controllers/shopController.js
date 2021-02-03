@@ -12,15 +12,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postOrder = exports.getCheckoutPage = exports.postCartDeleteProduct = exports.postCart = exports.getOrderInvoice = exports.getOrdersPage = exports.getCartPage = exports.getProductDetailsPage = exports.getProductList = exports.getIndexPage = void 0;
+exports.getCheckoutSuccess = exports.postCartDeleteProduct = exports.postCart = exports.getOrderInvoice = exports.getOrdersPage = exports.getCheckoutPage = exports.getCartPage = exports.getProductDetailsPage = exports.getProductList = exports.getIndexPage = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const pdfkit_1 = __importDefault(require("pdfkit"));
+const stripe_1 = __importDefault(require("stripe"));
 const product_1 = __importDefault(require("../models/product"));
 const order_1 = __importDefault(require("../models/order"));
 const setUserMessage_1 = __importDefault(require("../util/setUserMessage"));
 const setErrorMiddlewareObject_1 = __importDefault(require("../util/setErrorMiddlewareObject"));
 const getPaginationData_1 = require("../util/getPaginationData");
+const typeguards_1 = require("../util/typeguards");
+// Utils
+const getUserCartData = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    const userCart = yield req.user
+        .populate('cart.items.productId')
+        .execPopulate();
+    const cartProducts = [...userCart.cart.items];
+    const priceCalc = +cartProducts
+        .reduce((a, c) => {
+        if (typeguards_1.isProduct(c.productId)) {
+            return a + +c.productId.price * +c.quantity;
+        }
+    }, 0)
+        .toFixed(2);
+    return { cartProducts, priceCalc };
+});
 //  Specific for shop or '/':
 const getIndexPage = (req, res) => {
     res.render('shop/index', {
@@ -80,13 +97,7 @@ const getProductDetailsPage = (req, res, next) => __awaiter(void 0, void 0, void
 exports.getProductDetailsPage = getProductDetailsPage;
 const getCartPage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userCart = yield req.user
-            .populate('cart.items.productId')
-            .execPopulate();
-        const cartProducts = [...userCart.cart.items];
-        const priceCalc = +cartProducts
-            .reduce((a, c) => a + +c.productId.price * +c.quantity, 0)
-            .toFixed(2);
+        const { cartProducts, priceCalc } = yield getUserCartData(req);
         res.render('shop/cart', {
             docTitle: 'Cart',
             pageSubtitle: 'Your Cart',
@@ -101,6 +112,44 @@ const getCartPage = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getCartPage = getCartPage;
+const getCheckoutPage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // instantiate stripe with the secret key
+    const stripe = new stripe_1.default('sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb', // TODO: make this key and other keys a secret
+    { apiVersion: '2020-08-27' });
+    try {
+        const { cartProducts, priceCalc } = yield getUserCartData(req);
+        // Create a stripe session
+        const stripeSession = yield stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: cartProducts.map((product) => {
+                if (typeguards_1.isProduct(product.productId)) {
+                    return {
+                        name: product.productId.title,
+                        description: product.productId.description,
+                        amount: Math.round(product.productId.price * 100),
+                        currency: 'usd',
+                        quantity: product.quantity,
+                    };
+                }
+            }),
+            success_url: `${req.protocol}://${req.get('host')}/checkout/success`,
+            cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
+        });
+        res.render('shop/checkout', {
+            docTitle: 'Checkout',
+            pageSubtitle: 'Checkout',
+            path: '/checkout',
+            cartProducts: cartProducts,
+            totalPrice: priceCalc,
+            stripeSessionId: stripeSession.id,
+            success: setUserMessage_1.default(req.flash('success')),
+        });
+    }
+    catch (error) {
+        setErrorMiddlewareObject_1.default(error, next);
+    }
+});
+exports.getCheckoutPage = getCheckoutPage;
 const getOrdersPage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const orders = yield order_1.default.find({ 'user.userId': req.session.user._id });
@@ -147,10 +196,9 @@ const getOrderInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
             .text('---------------------------------------------------------------------------', { lineGap: 20, lineBreak: true })
             .fontSize(20)
             .text('Product details:', { lineGap: 10 });
-        let totalPrice = 0; //TODO: SEE IF ITS POSSIBLE TO CREATE A REUSABLE TOTAL PRICE CALC FUNCTION
+        let totalPrice = 0;
         // Loop through all of the possible order products and create pdf texts for each and set the total price
-        for (const orderProdObj of order.products) {
-            const { product, quantity } = orderProdObj;
+        for (const { product, quantity } of order.products) {
             const { title, price, description } = product;
             totalPrice += quantity * price;
             pdfDoc
@@ -208,15 +256,7 @@ const postCartDeleteProduct = (req, res, next) => __awaiter(void 0, void 0, void
     }
 });
 exports.postCartDeleteProduct = postCartDeleteProduct;
-const getCheckoutPage = (req, res) => {
-    res.render('shop/checkout', {
-        docTitle: 'Checkout',
-        pageSubtitle: 'Checkout',
-        path: '/checkout',
-    });
-};
-exports.getCheckoutPage = getCheckoutPage;
-const postOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const getCheckoutSuccess = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const cartProductsData = yield req.user
             .populate('cart.items.productId')
@@ -243,5 +283,5 @@ const postOrder = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         setErrorMiddlewareObject_1.default(error, next);
     }
 });
-exports.postOrder = postOrder;
+exports.getCheckoutSuccess = getCheckoutSuccess;
 //# sourceMappingURL=shopController.js.map

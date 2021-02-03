@@ -125,6 +125,7 @@ app.use(error_1.default);
 app.use(errorController_1.getPageNotFound);
 // define an error handling middleware (defined by setting error as first argument) to let express handle incoming errors (by calling next with an error object)
 app.use((error, req, res, next) => {
+    console.log(error);
     // render the 500 error page when this middleware is reached
     return res.status(500).render('error/500', {
         docTitle: 'Something went wrong',

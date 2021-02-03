@@ -11,7 +11,7 @@ import {
 	getOrderInvoice,
 	postCart,
 	postCartDeleteProduct,
-	postOrder,
+	getCheckoutSuccess,
 } from '../controllers/shopController';
 
 const router = express.Router();
@@ -22,11 +22,12 @@ router.get('/products', getProductList);
 router.get('/products/:productId', getProductDetailsPage);
 router.get('/cart', isAuthenticated, getCartPage);
 router.get('/checkout', isAuthenticated, getCheckoutPage);
+router.get('/checkout/success', isAuthenticated, getCheckoutSuccess);
+router.get('/checkout/cancel', isAuthenticated, getCheckoutPage);
 router.get('/orders', isAuthenticated, getOrdersPage);
 router.get('/orders/:orderId', isAuthenticated, getOrderInvoice);
 
 router.post('/cart', isAuthenticated, postCart);
 router.post('/cart-delete-product', isAuthenticated, postCartDeleteProduct);
-router.post('/create-order', isAuthenticated, postOrder);
 
 export default router;

@@ -93,11 +93,6 @@ li {
 .main-header__item:active,
 .main-header__item.active {
 	background-color: #123fd39f;
-}
-
-.main-header__item:hover,
-.main-header__item:active,
-.main-header__item .active {
 	color: #fff12a;
 }
 

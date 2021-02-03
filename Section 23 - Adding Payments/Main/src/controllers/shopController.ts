@@ -153,14 +153,14 @@ export const getCheckoutPage = async (
 					return {
 						name: product.productId.title,
 						description: product.productId.description,
-						amount: product.productId.price * 100,
+						amount: Math.round(product.productId.price * 100),
 						currency: 'usd',
 						quantity: product.quantity,
 					};
 				}
 			}),
-			success_url: `${req.protocol}${req.get('host')}/checkout/success`, // example: http://localhost:3000/checkout/sucesss
-			cancel_url: `${req.protocol}${req.get('host')}/checkout/cancel`,
+			success_url: `${req.protocol}://${req.get('host')}/checkout/success`, // example: http://localhost:3000/checkout/sucesss
+			cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
 		});
 
 		res.render('shop/checkout', {
@@ -328,7 +328,7 @@ export const postCartDeleteProduct = async (
 	}
 };
 
-export const postOrder = async (
+export const getCheckoutSuccess = async (
 	req: Request,
 	res: Response,
 	next: NextFunction
