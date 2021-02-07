@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCheckoutSuccess = exports.postCartDeleteProduct = exports.postCart = exports.getOrderInvoice = exports.getOrdersPage = exports.getCheckoutPage = exports.getCartPage = exports.getProductDetailsPage = exports.getProductList = exports.getIndexPage = void 0;
+exports.postCartDeleteProduct = exports.postCart = exports.postStripeCheckout = exports.getOrderInvoice = exports.getOrdersPage = exports.getCheckoutSuccess = exports.getCheckoutPage = exports.getCartPage = exports.getProductDetailsPage = exports.getProductList = exports.getIndexPage = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const pdfkit_1 = __importDefault(require("pdfkit"));
-const stripe_1 = __importDefault(require("stripe"));
+// import Stripe from 'stripe';
+const stripe_js_1 = require("@stripe/stripe-js");
 const product_1 = __importDefault(require("../models/product"));
 const order_1 = __importDefault(require("../models/order"));
 const setUserMessage_1 = __importDefault(require("../util/setUserMessage"));
@@ -113,35 +114,14 @@ const getCartPage = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.getCartPage = getCartPage;
 const getCheckoutPage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // instantiate stripe with the secret key
-    const stripe = new stripe_1.default('sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb', // TODO: make this key and other keys a secret
-    { apiVersion: '2020-08-27' });
     try {
         const { cartProducts, priceCalc } = yield getUserCartData(req);
-        // Create a stripe session
-        const stripeSession = yield stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: cartProducts.map((product) => {
-                if (typeguards_1.isProduct(product.productId)) {
-                    return {
-                        name: product.productId.title,
-                        description: product.productId.description,
-                        amount: Math.round(product.productId.price * 100),
-                        currency: 'usd',
-                        quantity: product.quantity,
-                    };
-                }
-            }),
-            success_url: `${req.protocol}://${req.get('host')}/checkout/success`,
-            cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
-        });
         res.render('shop/checkout', {
             docTitle: 'Checkout',
             pageSubtitle: 'Checkout',
             path: '/checkout',
             cartProducts: cartProducts,
             totalPrice: priceCalc,
-            stripeSessionId: stripeSession.id,
             success: setUserMessage_1.default(req.flash('success')),
         });
     }
@@ -150,6 +130,34 @@ const getCheckoutPage = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.getCheckoutPage = getCheckoutPage;
+const getCheckoutSuccess = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const cartProductsData = yield req.user
+            .populate('cart.items.productId')
+            .execPopulate();
+        const products = [...cartProductsData.cart.items].map((item) => {
+            return {
+                quantity: item.quantity,
+                product: Object.assign({}, item.productId._doc),
+            };
+        });
+        const order = new order_1.default({
+            products: products,
+            user: {
+                email: req.user.email,
+                userId: req.user,
+            },
+        });
+        yield order.save();
+        yield req.user.clearCart();
+        req.flash('success', `Order ${order._id} has been made successfully`);
+        res.redirect('/orders');
+    }
+    catch (error) {
+        setErrorMiddlewareObject_1.default(error, next);
+    }
+});
+exports.getCheckoutSuccess = getCheckoutSuccess;
 const getOrdersPage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const orders = yield order_1.default.find({ 'user.userId': req.session.user._id });
@@ -222,6 +230,36 @@ const getOrderInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.getOrderInvoice = getOrderInvoice;
+const postStripeCheckout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // instantiate stripe with the secret key
+        const stripe = yield stripe_js_1.loadStripe('sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb' // TODO: make this key and other keys a secret
+        );
+        const { cartProducts } = yield getUserCartData(req);
+        // Create a stripe session
+        const { error } = yield stripe.redirectToCheckout({
+            mode: 'payment',
+            lineItems: cartProducts.map((product) => {
+                if (typeguards_1.isProduct(product.productId)) {
+                    return {
+                        name: product.productId.title,
+                        description: product.productId.description,
+                        amount: Math.round(product.productId.price * 100),
+                        currency: 'usd',
+                        quantity: product.quantity,
+                    };
+                }
+            }),
+            successUrl: `${req.protocol}://${req.get('host')}/checkout/success`,
+            cancelUrl: `${req.protocol}://${req.get('host')}/checkout/cancel`,
+        });
+        console.log(error);
+    }
+    catch (error) {
+        setErrorMiddlewareObject_1.default(error, next);
+    }
+});
+exports.postStripeCheckout = postStripeCheckout;
 const postCart = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { cartAddId: prodId } = req.body;
     try {
@@ -256,32 +294,4 @@ const postCartDeleteProduct = (req, res, next) => __awaiter(void 0, void 0, void
     }
 });
 exports.postCartDeleteProduct = postCartDeleteProduct;
-const getCheckoutSuccess = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const cartProductsData = yield req.user
-            .populate('cart.items.productId')
-            .execPopulate();
-        const products = [...cartProductsData.cart.items].map((item) => {
-            return {
-                quantity: item.quantity,
-                product: Object.assign({}, item.productId._doc),
-            };
-        });
-        const order = new order_1.default({
-            products: products,
-            user: {
-                email: req.user.email,
-                userId: req.user,
-            },
-        });
-        yield order.save();
-        yield req.user.clearCart();
-        req.flash('success', `Order ${order._id} has been made successfully`);
-        res.redirect('/orders');
-    }
-    catch (error) {
-        setErrorMiddlewareObject_1.default(error, next);
-    }
-});
-exports.getCheckoutSuccess = getCheckoutSuccess;
 //# sourceMappingURL=shopController.js.map

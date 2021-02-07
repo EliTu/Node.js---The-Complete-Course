@@ -25,16 +25,25 @@ block content
                 h3(class="total") Total price: $#{totalPrice}
             div
                 button(id="order-button" class="btn checkout_btn") Order
+                input(type="hidden" name="_csrf" value=`${csrfToken}`) 
+
                 script(src="https://js.stripe.com/v3/")
                 script(type="text/javascript").
-                    const stripe = Stripe('pk_test_51IFXgfI7bWgkmmL4dfRseVy8tvQFZ0lZkClJvioxM54bW3OCCIeeE0J5jSyJs8xgIn1h6l0V80pGsW9sB9wQpGWl00q4qCEd60');
-                    const orderButton = document.getElementById('order-button');
-                    orderButton.addEventListener('click', async () => {
-                    const res = await stripe.redirectToCheckout({
-                            sessionId: stripeSessionId
-                        });
-                    })
+                    const stripe = Stripe("pk_test_51IFXgfI7bWgkmmL4dfRseVy8tvQFZ0lZkClJvioxM54bW3OCCIeeE0J5jSyJs8xgIn1h6l0V80pGsW9sB9wQpGWl00q4qCEd60");
+                    const checkoutButton = document.getElementById("order-button");
                     
-
+                    checkoutButton.addEventListener("click", async function () {
+                        try {
+                            const res = await fetch("/checkout-stripe", {
+                                method: "GET",
+                            });
+                            const session = await res.json();   
+                            const result = await stripe.redirectToCheckout({ sessionId: session.id });
+                        } catch(error) {
+                            console.log(error)
+                        }
+                       
+                    });
+                    
         else
             h1 No products in cart!

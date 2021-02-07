@@ -12,6 +12,10 @@ import setErrorMiddlewareObject from '../util/setErrorMiddlewareObject';
 import { getPaginationData, ITEMS_PER_PAGE } from '../util/getPaginationData';
 import { isProduct } from '../util/typeguards';
 
+const stripe: Stripe = require('stripe')(
+	'sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb'
+);
+
 // Types
 type DeleteProductBodyType = {
 	isDeleteAll: boolean;
@@ -136,14 +140,29 @@ export const getCheckoutPage = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	// instantiate stripe with the secret key
-	const stripe = new Stripe(
-		'sk_test_51IFXgfI7bWgkmmL4deebQsynH8A6B6gL7w7lhL5jm8eND7dhoYms6MMvEVhGoOmyhvwoixOGL4B57R4UctSTBKS500stv05ksb', // TODO: make this key and other keys a secret
-		{ apiVersion: '2020-08-27' }
-	);
-
 	try {
 		const { cartProducts, priceCalc } = await getUserCartData(req);
+
+		res.render('shop/checkout', {
+			docTitle: 'Checkout',
+			pageSubtitle: 'Checkout',
+			path: '/checkout',
+			cartProducts: cartProducts,
+			totalPrice: priceCalc,
+			success: setUserMessage(req.flash('success')),
+		});
+	} catch (error) {
+		setErrorMiddlewareObject(error, next);
+	}
+};
+
+export const getStripeCheckoutPage = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	try {
+		const { cartProducts } = await getUserCartData(req);
 
 		// Create a stripe session
 		const stripeSession = await stripe.checkout.sessions.create({
@@ -163,15 +182,7 @@ export const getCheckoutPage = async (
 			cancel_url: `${req.protocol}://${req.get('host')}/checkout/cancel`,
 		});
 
-		res.render('shop/checkout', {
-			docTitle: 'Checkout',
-			pageSubtitle: 'Checkout',
-			path: '/checkout',
-			cartProducts: cartProducts,
-			totalPrice: priceCalc,
-			stripeSessionId: stripeSession.id,
-			success: setUserMessage(req.flash('success')),
-		});
+		res.json({ id: stripeSession.id });
 	} catch (error) {
 		setErrorMiddlewareObject(error, next);
 	}

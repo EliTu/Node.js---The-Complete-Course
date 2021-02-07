@@ -18,6 +18,7 @@ router.get('/checkout/cancel', isAuthenticated_1.default, shopController_1.getCh
 router.get('/orders', isAuthenticated_1.default, shopController_1.getOrdersPage);
 router.get('/orders/:orderId', isAuthenticated_1.default, shopController_1.getOrderInvoice);
 router.post('/cart', isAuthenticated_1.default, shopController_1.postCart);
+router.post('/post-stripe', isAuthenticated_1.default, shopController_1.postStripeCheckout);
 router.post('/cart-delete-product', isAuthenticated_1.default, shopController_1.postCartDeleteProduct);
 exports.default = router;
 //# sourceMappingURL=shop.js.map

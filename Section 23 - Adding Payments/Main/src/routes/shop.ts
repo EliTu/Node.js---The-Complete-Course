@@ -12,6 +12,7 @@ import {
 	postCart,
 	postCartDeleteProduct,
 	getCheckoutSuccess,
+	getStripeCheckoutPage,
 } from '../controllers/shopController';
 
 const router = express.Router();
@@ -22,6 +23,7 @@ router.get('/products', getProductList);
 router.get('/products/:productId', getProductDetailsPage);
 router.get('/cart', isAuthenticated, getCartPage);
 router.get('/checkout', isAuthenticated, getCheckoutPage);
+router.get('/checkout-stripe', getStripeCheckoutPage);
 router.get('/checkout/success', isAuthenticated, getCheckoutSuccess);
 router.get('/checkout/cancel', isAuthenticated, getCheckoutPage);
 router.get('/orders', isAuthenticated, getOrdersPage);
