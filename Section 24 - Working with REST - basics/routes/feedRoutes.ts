@@ -2,8 +2,9 @@ import express from 'express';
 
 import { getPosts } from '../controllers/feedController';
 
-const router = express.Router();
+const feedRouter = express.Router();
 
-const getPostsRouter = router.get('/posts', getPosts);
+// handle requests for '/feed/*'
+const getPostsRouter = feedRouter.get('/posts', getPosts); // GET /feed/posts
 
-export default router;
+export default feedRouter;
