@@ -10,4 +10,4 @@ app.use(bodyParser.json()); // use the .json method to parse body json data foun
 
 app.use('/feed', feedRouter); // any request that starts with '/feed' param will be forwarder to the router
 
-app.listen(() => console.log(`Listening on port: ${PORT || 8080}`));
+app.listen(8080, '0.0.0.0');
