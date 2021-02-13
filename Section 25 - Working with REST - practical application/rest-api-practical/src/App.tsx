@@ -1,7 +1,7 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect, useCallback } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import {appReducer, initialState, State, actionTypes } from './appReducer';
+import { appReducer, initialState, State, actionTypes } from './appReducer';
 import Layout from './components/Layout/Layout';
 import Backdrop from './components/Backdrop/Backdrop';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -14,206 +14,229 @@ import LoginPage from './pages/Auth/Login';
 import SignupPage from './pages/Auth/Signup';
 import './App.css';
 
-function App(): React.FC {
+function App(props): React.FC<{}> {
+	const [state, dispatch] = useReducer(appReducer, initialState);
+	const {
+		authLoading,
+		error,
+		isAuth,
+		showBackdrop,
+		showMobileNav,
+		token,
+		userId,
+	} = state;
 
-  const [state, dispatch] = useReducer(appReducer, initialState);
+	const mobileNavHandler = (isOpen: boolean) => {
+		dispatch({
+			type: 'SET_MOBILE_NAV',
+			payload: { showMobileNav: isOpen, showBackdrop: isOpen },
+		});
+	};
 
-  componentDidMount() {
-    const token = localStorage.getItem('token');
-    const expiryDate = localStorage.getItem('expiryDate');
-    if (!token || !expiryDate) {
-      return;
-    }
-    if (new Date(expiryDate) <= new Date()) {
-      this.logoutHandler();
-      return;
-    }
-    const userId = localStorage.getItem('userId');
-    const remainingMilliseconds =
-      new Date(expiryDate).getTime() - new Date().getTime();
-    this.setState({ isAuth: true, token: token, userId: userId });
-    this.setAutoLogout(remainingMilliseconds);
-  }
+	const backdropClickHandler = () => {
+		dispatch({
+			type: 'SET_BACKDROP_CLICK',
+		});
+	};
 
-  mobileNavHandler = isOpen => {
-    this.setState({ showMobileNav: isOpen, showBackdrop: isOpen });
-  };
+	const logoutHandler = () => {
+		dispatch({ type: 'SET_LOGOUT' });
+		localStorage.removeItem('token');
+		localStorage.removeItem('expiryDate');
+		localStorage.removeItem('userId');
+	};
 
-  backdropClickHandler = () => {
-    this.setState({ showBackdrop: false, showMobileNav: false, error: null });
-  };
+	const loginHandler = async (event: React.SyntheticEvent, authData) => {
+		event.preventDefault();
+		dispatch({ type: 'SET_LOADING' });
 
-  logoutHandler = () => {
-    this.setState({ isAuth: false, token: null });
-    localStorage.removeItem('token');
-    localStorage.removeItem('expiryDate');
-    localStorage.removeItem('userId');
-  };
+		try {
+			const res = await fetch('URL');
+			if (res.status === 422) {
+				throw new Error('Validation failed.');
+			}
+			if (res.status !== 200 && res.status !== 201) {
+				console.log('Error!');
+				throw new Error('Could not authenticate you!');
+			}
 
-  loginHandler = (event, authData) => {
-    event.preventDefault();
-    this.setState({ authLoading: true });
-    fetch('URL')
-      .then(res => {
-        if (res.status === 422) {
-          throw new Error('Validation failed.');
-        }
-        if (res.status !== 200 && res.status !== 201) {
-          console.log('Error!');
-          throw new Error('Could not authenticate you!');
-        }
-        return res.json();
-      })
-      .then(resData => {
-        console.log(resData);
-        this.setState({
-          isAuth: true,
-          token: resData.token,
-          authLoading: false,
-          userId: resData.userId
-        });
-        localStorage.setItem('token', resData.token);
-        localStorage.setItem('userId', resData.userId);
-        const remainingMilliseconds = 60 * 60 * 1000;
-        const expiryDate = new Date(
-          new Date().getTime() + remainingMilliseconds
-        );
-        localStorage.setItem('expiryDate', expiryDate.toISOString());
-        this.setAutoLogout(remainingMilliseconds);
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({
-          isAuth: false,
-          authLoading: false,
-          error: err
-        });
-      });
-  };
+			const { token, userId } = res.json();
 
-  signupHandler = (event, authData) => {
-    event.preventDefault();
-    this.setState({ authLoading: true });
-    fetch('URL')
-      .then(res => {
-        if (res.status === 422) {
-          throw new Error(
-            "Validation failed. Make sure the email address isn't used yet!"
-          );
-        }
-        if (res.status !== 200 && res.status !== 201) {
-          console.log('Error!');
-          throw new Error('Creating a user failed!');
-        }
-        return res.json();
-      })
-      .then(resData => {
-        console.log(resData);
-        this.setState({ isAuth: false, authLoading: false });
-        this.props.history.replace('/');
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({
-          isAuth: false,
-          authLoading: false,
-          error: err
-        });
-      });
-  };
+			dispatch({
+				type: 'LOGIN_SUCCESS',
+				payload: {
+					token,
+					userId,
+				},
+			});
 
-  setAutoLogout = milliseconds => {
-    setTimeout(() => {
-      this.logoutHandler();
-    }, milliseconds);
-  };
+			localStorage.setItem('token', token);
+			localStorage.setItem('userId', userId);
 
-  errorHandler = () => {
-    this.setState({ error: null });
-  };
+			const remainingMilliseconds = 60 * 60 * 1000;
+			const expiryDate = new Date(new Date().getTime() + remainingMilliseconds);
+			localStorage.setItem('expiryDate', expiryDate.toISOString());
+			setAutoLogout(remainingMilliseconds);
+		} catch (error) {
+			console.log(error);
 
-  render() {
-    let routes = (
-      <Switch>
-        <Route
-          path="/"
-          exact
-          render={props => (
-            <LoginPage
-              {...props}
-              onLogin={this.loginHandler}
-              loading={this.state.authLoading}
-            />
-          )}
-        />
-        <Route
-          path="/signup"
-          exact
-          render={props => (
-            <SignupPage
-              {...props}
-              onSignup={this.signupHandler}
-              loading={this.state.authLoading}
-            />
-          )}
-        />
-        <Redirect to="/" />
-      </Switch>
-    );
-    if (this.state.isAuth) {
-      routes = (
-        <Switch>
-          <Route
-            path="/"
-            exact
-            render={props => (
-              <FeedPage userId={this.state.userId} token={this.state.token} />
-            )}
-          />
-          <Route
-            path="/:postId"
-            render={props => (
-              <SinglePostPage
-                {...props}
-                userId={this.state.userId}
-                token={this.state.token}
-              />
-            )}
-          />
-          <Redirect to="/" />
-        </Switch>
-      );
-    }
-    return (
-      <>
-        {this.state.showBackdrop && (
-          <Backdrop onClick={this.backdropClickHandler} />
-        )}
-        <ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
-        <Layout
-          header={
-            <Toolbar>
-              <MainNavigation
-                onOpenMobileNav={this.mobileNavHandler.bind(this, true)}
-                onLogout={this.logoutHandler}
-                isAuth={this.state.isAuth}
-              />
-            </Toolbar>
-          }
-          mobileNav={
-            <MobileNavigation
-              open={this.state.showMobileNav}
-              mobile
-              onChooseItem={this.mobileNavHandler.bind(this, false)}
-              onLogout={this.logoutHandler}
-              isAuth={this.state.isAuth}
-            />
-          }
-        />
-        {routes}
-      </>
-    )
-  }
+			dispatch({
+				type: 'LOGIN_FAILED',
+				payload: {
+					error,
+				},
+			});
+		}
+	};
+
+	const signupHandler = async (event: React.SyntheticEvent, authData) => {
+		event.preventDefault();
+		dispatch({ type: 'SET_LOADING' });
+
+		try {
+			const res = await fetch('URL');
+
+			if (res.status === 422) {
+				throw new Error(
+					"Validation failed. Make sure the email address isn't used yet!"
+				);
+			}
+			if (res.status !== 200 && res.status !== 201) {
+				console.log('Error!');
+				throw new Error('Creating a user failed!');
+			}
+			const data = res.json();
+
+			console.log(data);
+			dispatch({ type: 'SIGNUP_SUCCESS' });
+			props.history.replace('/');
+		} catch (error) {
+			console.log(error);
+			dispatch({
+				type: 'LOGIN_FAILED',
+				payload: {
+					error,
+				},
+			});
+		}
+	};
+
+	const setAutoLogout = useCallback((milliseconds: number) => {
+		setTimeout(() => {
+			logoutHandler();
+		}, milliseconds);
+	}, []);
+
+	const errorHandler = () => {
+		dispatch({ type: 'NULL_ERROR' });
+	};
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		const expiryDate = localStorage.getItem('expiryDate');
+		if (!token || !expiryDate) {
+			return;
+		}
+		if (new Date(expiryDate) <= new Date()) {
+			logoutHandler();
+			return;
+		}
+
+		const userId = localStorage.getItem('userId');
+		const remainingMilliseconds =
+			new Date(expiryDate).getTime() - new Date().getTime();
+
+		if (userId && token) {
+			dispatch({
+				type: 'LOGIN_SUCCESS',
+				payload: { token, userId },
+			});
+		}
+
+		setAutoLogout(remainingMilliseconds);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	let routes = (
+		<Switch>
+			<Route
+				path='/'
+				exact
+				render={(props) => (
+					<LoginPage
+						{...props}
+						onLogin={this.loginHandler}
+						loading={this.state.authLoading}
+					/>
+				)}
+			/>
+			<Route
+				path='/signup'
+				exact
+				render={(props) => (
+					<SignupPage
+						{...props}
+						onSignup={this.signupHandler}
+						loading={this.state.authLoading}
+					/>
+				)}
+			/>
+			<Redirect to='/' />
+		</Switch>
+	);
+	if (this.state.isAuth) {
+		routes = (
+			<Switch>
+				<Route
+					path='/'
+					exact
+					render={(props) => (
+						<FeedPage userId={this.state.userId} token={this.state.token} />
+					)}
+				/>
+				<Route
+					path='/:postId'
+					render={(props) => (
+						<SinglePostPage
+							{...props}
+							userId={this.state.userId}
+							token={this.state.token}
+						/>
+					)}
+				/>
+				<Redirect to='/' />
+			</Switch>
+		);
+	}
+	return (
+		<>
+			{this.state.showBackdrop && (
+				<Backdrop onClick={this.backdropClickHandler} />
+			)}
+			<ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
+			<Layout
+				header={
+					<Toolbar>
+						<MainNavigation
+							onOpenMobileNav={this.mobileNavHandler.bind(this, true)}
+							onLogout={this.logoutHandler}
+							isAuth={this.state.isAuth}
+						/>
+					</Toolbar>
+				}
+				mobileNav={
+					<MobileNavigation
+						open={this.state.showMobileNav}
+						mobile
+						onChooseItem={this.mobileNavHandler.bind(this, false)}
+						onLogout={this.logoutHandler}
+						isAuth={this.state.isAuth}
+					/>
+				}
+			/>
+			{routes}
+		</>
+	);
 }
 
 export default withRouter(App);

@@ -9,19 +9,6 @@ const SET_BACKDROP_CLICK = 'SET_BACKDROP_CLICK';
 const SET_LOGOUT = 'SET_LOGOUT';
 const NULL_ERROR = 'NULL_ERROR';
 
-export const actionTypes = {
-	SET_LOADING,
-	AUTHENTICATE_EXISTING_USER,
-	LOGIN_SUCCESS,
-	LOGIN_FAILED,
-	SIGNUP_SUCCESS,
-	SIGNUP_FAILED,
-	SET_MOBILE_NAV,
-	SET_BACKDROP_CLICK,
-	SET_LOGOUT,
-	NULL_ERROR,
-};
-
 export interface State {
 	showBackdrop: boolean;
 	showMobileNav: boolean;
@@ -33,28 +20,30 @@ export interface State {
 }
 
 type Action =
-	| { type: 'SET_LOADING' }
+	| { type: typeof SET_LOADING }
 	| {
-			type: 'AUTHENTICATE_EXISTING_USER';
+			type: typeof AUTHENTICATE_EXISTING_USER;
 			payload: { token: State['token']; userId: State['userId'] };
 	  }
 	| {
-			type: 'SET_MOBILE_NAV';
+			type: typeof SET_MOBILE_NAV;
 			payload: {
 				showMobileNav: State['showMobileNav'];
 				showBackdrop: State['showBackdrop'];
 			};
 	  }
-	| { type: 'SET_BACKDROP_CLICK' }
-	| { type: 'SET_LOGOUT' }
 	| {
-			type: 'LOGIN_SUCCESS';
+			type: typeof SET_BACKDROP_CLICK;
+	  }
+	| { type: typeof SET_LOGOUT }
+	| {
+			type: typeof LOGIN_SUCCESS;
 			payload: { token: State['token']; userId: State['userId'] };
 	  }
-	| { type: 'SIGNUP_SUCCESS' }
-	| { type: 'LOGIN_FAILED'; payload: { error: State['error'] } }
-	| { type: 'SIGNUP_FAILED'; payload: { error: State['error'] } }
-	| { type: 'NULL_ERROR' };
+	| { type: typeof SIGNUP_SUCCESS }
+	| { type: typeof LOGIN_FAILED; payload: { error: State['error'] } }
+	| { type: typeof SIGNUP_FAILED; payload: { error: State['error'] } }
+	| { type: typeof NULL_ERROR };
 
 export const initialState: State = {
 	showBackdrop: false,
