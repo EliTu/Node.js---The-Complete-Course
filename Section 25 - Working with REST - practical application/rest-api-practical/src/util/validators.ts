@@ -1,6 +1,6 @@
 interface Config {
-	min: number;
-	max: number;
+	min?: number;
+	max?: number;
 }
 
 export const required = (value: string) => value.trim() !== '';

@@ -15,7 +15,7 @@ import SignupPage from './pages/Auth/Signup';
 import { appReducer, initialState } from './appReducer';
 import './App.css';
 
-function App() {
+function App(): React.ReactNode {
 	const [state, dispatch] = useReducer(appReducer, initialState);
 	const {
 		authLoading,
@@ -80,20 +80,18 @@ function App() {
 
 				const { token, userId }: jsonResponse = await res.json();
 
-				if (!token || !userId) {
-					return Promise.reject(new Error('NO user ID or token found!'));
+				if (token && userId) {
+					dispatch({
+						type: 'LOGIN_SUCCESS',
+						payload: {
+							token,
+							userId,
+						},
+					});
+
+					localStorage.setItem('userId', userId);
+					localStorage.setItem('token', token);
 				}
-
-				dispatch({
-					type: 'LOGIN_SUCCESS',
-					payload: {
-						token,
-						userId,
-					},
-				});
-
-				localStorage.setItem('userId', userId);
-				localStorage.setItem('token', token);
 
 				const remainingMilliseconds = 60 * 60 * 1000;
 				const expiryDate = new Date(
