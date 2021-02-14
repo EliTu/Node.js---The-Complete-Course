@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect, useCallback } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
-import { appReducer, initialState, State, actionTypes } from './appReducer';
+import { appReducer, initialState } from './appReducer';
 import Layout from './components/Layout/Layout';
 import Backdrop from './components/Backdrop/Backdrop';
 import Toolbar from './components/Toolbar/Toolbar';
@@ -14,7 +14,7 @@ import LoginPage from './pages/Auth/Login';
 import SignupPage from './pages/Auth/Signup';
 import './App.css';
 
-function App(props): React.FC<{}> {
+function App(): React.FC<{}> {
 	const [state, dispatch] = useReducer(appReducer, initialState);
 	const {
 		authLoading,
@@ -25,6 +25,7 @@ function App(props): React.FC<{}> {
 		token,
 		userId,
 	} = state;
+	const history = useHistory();
 
 	const mobileNavHandler = (isOpen: boolean) => {
 		dispatch({
@@ -46,7 +47,7 @@ function App(props): React.FC<{}> {
 		localStorage.removeItem('userId');
 	};
 
-	const loginHandler = async (event: React.SyntheticEvent, authData) => {
+	const loginHandler = async (event: React.SyntheticEvent, authData: any) => {
 		event.preventDefault();
 		dispatch({ type: 'SET_LOADING' });
 
@@ -60,7 +61,16 @@ function App(props): React.FC<{}> {
 				throw new Error('Could not authenticate you!');
 			}
 
-			const { token, userId } = res.json();
+			type jsonResponse = {
+				token?: string;
+				userId?: string;
+			};
+
+			const { token, userId }: jsonResponse = await res.json();
+
+			if (!token || !userId) {
+				return Promise.reject(new Error('NO user ID or token found!'));
+			}
 
 			dispatch({
 				type: 'LOGIN_SUCCESS',
@@ -70,12 +80,13 @@ function App(props): React.FC<{}> {
 				},
 			});
 
-			localStorage.setItem('token', token);
 			localStorage.setItem('userId', userId);
+			localStorage.setItem('token', token);
 
 			const remainingMilliseconds = 60 * 60 * 1000;
 			const expiryDate = new Date(new Date().getTime() + remainingMilliseconds);
 			localStorage.setItem('expiryDate', expiryDate.toISOString());
+
 			setAutoLogout(remainingMilliseconds);
 		} catch (error) {
 			console.log(error);
@@ -89,7 +100,7 @@ function App(props): React.FC<{}> {
 		}
 	};
 
-	const signupHandler = async (event: React.SyntheticEvent, authData) => {
+	const signupHandler = async (event: React.SyntheticEvent, authData: any) => {
 		event.preventDefault();
 		dispatch({ type: 'SET_LOADING' });
 
@@ -105,13 +116,15 @@ function App(props): React.FC<{}> {
 				console.log('Error!');
 				throw new Error('Creating a user failed!');
 			}
-			const data = res.json();
+			const data = await res.json();
 
 			console.log(data);
+
 			dispatch({ type: 'SIGNUP_SUCCESS' });
-			props.history.replace('/');
+			history.replace('/');
 		} catch (error) {
 			console.log(error);
+
 			dispatch({
 				type: 'LOGIN_FAILED',
 				payload: {
@@ -163,11 +176,7 @@ function App(props): React.FC<{}> {
 				path='/'
 				exact
 				render={(props) => (
-					<LoginPage
-						{...props}
-						onLogin={this.loginHandler}
-						loading={this.state.authLoading}
-					/>
+					<LoginPage {...props} onLogin={loginHandler} loading={authLoading} />
 				)}
 			/>
 			<Route
@@ -176,61 +185,55 @@ function App(props): React.FC<{}> {
 				render={(props) => (
 					<SignupPage
 						{...props}
-						onSignup={this.signupHandler}
-						loading={this.state.authLoading}
+						onSignup={signupHandler}
+						loading={authLoading}
 					/>
 				)}
 			/>
 			<Redirect to='/' />
 		</Switch>
 	);
-	if (this.state.isAuth) {
+
+	if (isAuth) {
 		routes = (
 			<Switch>
 				<Route
 					path='/'
 					exact
-					render={(props) => (
-						<FeedPage userId={this.state.userId} token={this.state.token} />
-					)}
+					render={(props) => <FeedPage userId={userId} token={token} />}
 				/>
 				<Route
 					path='/:postId'
 					render={(props) => (
-						<SinglePostPage
-							{...props}
-							userId={this.state.userId}
-							token={this.state.token}
-						/>
+						<SinglePostPage {...props} userId={userId} token={token} />
 					)}
 				/>
 				<Redirect to='/' />
 			</Switch>
 		);
 	}
+
 	return (
 		<>
-			{this.state.showBackdrop && (
-				<Backdrop onClick={this.backdropClickHandler} />
-			)}
-			<ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
+			{showBackdrop && <Backdrop onClick={backdropClickHandler} />}
+			<ErrorHandler error={error} onHandle={errorHandler} />
 			<Layout
 				header={
 					<Toolbar>
 						<MainNavigation
-							onOpenMobileNav={this.mobileNavHandler.bind(this, true)}
-							onLogout={this.logoutHandler}
-							isAuth={this.state.isAuth}
+							onOpenMobileNav={mobileNavHandler(true)}
+							onLogout={logoutHandler}
+							isAuth={state.isAuth}
 						/>
 					</Toolbar>
 				}
 				mobileNav={
 					<MobileNavigation
-						open={this.state.showMobileNav}
+						open={showMobileNav}
 						mobile
-						onChooseItem={this.mobileNavHandler.bind(this, false)}
-						onLogout={this.logoutHandler}
-						isAuth={this.state.isAuth}
+						onChooseItem={mobileNavHandler(false)}
+						onLogout={logoutHandler}
+						isAuth={isAuth}
 					/>
 				}
 			/>
@@ -239,4 +242,4 @@ function App(props): React.FC<{}> {
 	);
 }
 
-export default withRouter(App);
+export default App;
