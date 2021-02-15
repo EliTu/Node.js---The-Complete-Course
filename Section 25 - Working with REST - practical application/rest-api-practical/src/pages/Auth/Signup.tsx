@@ -1,32 +1,26 @@
 import React from 'react';
 import { useAuthState } from './useAuthState';
 
+import { AuthState } from './types';
 import Input from '../../components/Form/Input/Input';
 import Button from '../../components/Button/Button';
 import Auth from './Auth';
 
-interface LoginProps {
-	onLogin: (
+interface SignupProps {
+	onSignup: (
 		event: React.FormEvent<HTMLFormElement>,
-		authData: Record<'email' | 'password', string>
+		state: AuthState
 	) => Promise<void>;
 	loading: boolean;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin, loading }) => {
+const Signup: React.FC<SignupProps> = ({ onSignup, loading }) => {
 	const { authState, inputBlurHandler, inputChangeHandler } = useAuthState();
 	const { prevAuthForm: authForm } = authState;
 
 	return (
 		<Auth>
-			<form
-				onSubmit={(e) =>
-					onLogin(e, {
-						email: authForm.fields.email.value,
-						password: authForm.fields.password.value,
-					})
-				}
-			>
+			<form onSubmit={(e) => onSignup(e, authState)}>
 				<Input
 					id='email'
 					label='Your E-Mail'
@@ -37,6 +31,17 @@ const Login: React.FC<LoginProps> = ({ onLogin, loading }) => {
 					value={authForm.fields['email'].value}
 					valid={authForm.fields['email'].valid}
 					touched={authForm.fields['email'].touched}
+				/>
+				<Input
+					id='name'
+					label='Your Name'
+					type='text'
+					control='input'
+					onChange={inputChangeHandler}
+					onBlur={() => inputBlurHandler('name')}
+					value={authForm.fields['name']!.value}
+					valid={authForm.fields['name']!.valid}
+					touched={authForm.fields['name']!.touched}
 				/>
 				<Input
 					id='password'
@@ -50,11 +55,11 @@ const Login: React.FC<LoginProps> = ({ onLogin, loading }) => {
 					touched={authForm.fields['password'].touched}
 				/>
 				<Button design='raised' type='submit' loading={loading}>
-					Login
+					Signup
 				</Button>
 			</form>
 		</Auth>
 	);
 };
 
-export default Login;
+export default Signup;

@@ -8,10 +8,11 @@ interface FormField {
 export interface AuthForm {
 	email: FormField;
 	password: FormField;
+	name?: FormField;
 }
 
 export interface AuthState {
-	loginForm: {
+	prevAuthForm: {
 		fields: AuthForm;
 		formIsValid: boolean;
 	};
