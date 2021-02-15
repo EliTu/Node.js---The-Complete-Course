@@ -9,7 +9,7 @@ const SET_BACKDROP_CLICK = 'SET_BACKDROP_CLICK';
 const SET_LOGOUT = 'SET_LOGOUT';
 const NULL_ERROR = 'NULL_ERROR';
 
-export interface State {
+interface AppState {
 	showBackdrop: boolean;
 	showMobileNav: boolean;
 	isAuth: boolean;
@@ -23,13 +23,13 @@ type Action =
 	| { type: typeof SET_LOADING }
 	| {
 			type: typeof AUTHENTICATE_EXISTING_USER;
-			payload: { token: State['token']; userId: State['userId'] };
+			payload: { token: AppState['token']; userId: AppState['userId'] };
 	  }
 	| {
 			type: typeof SET_MOBILE_NAV;
 			payload: {
-				showMobileNav: State['showMobileNav'];
-				showBackdrop: State['showBackdrop'];
+				showMobileNav: AppState['showMobileNav'];
+				showBackdrop: AppState['showBackdrop'];
 			};
 	  }
 	| {
@@ -38,14 +38,14 @@ type Action =
 	| { type: typeof SET_LOGOUT }
 	| {
 			type: typeof LOGIN_SUCCESS;
-			payload: { token: State['token']; userId: State['userId'] };
+			payload: { token: AppState['token']; userId: AppState['userId'] };
 	  }
 	| { type: typeof SIGNUP_SUCCESS }
-	| { type: typeof LOGIN_FAILED; payload: { error: State['error'] } }
-	| { type: typeof SIGNUP_FAILED; payload: { error: State['error'] } }
+	| { type: typeof LOGIN_FAILED; payload: { error: AppState['error'] } }
+	| { type: typeof SIGNUP_FAILED; payload: { error: AppState['error'] } }
 	| { type: typeof NULL_ERROR };
 
-export const initialState: State = {
+export const initialAppState: AppState = {
 	showBackdrop: false,
 	showMobileNav: false,
 	isAuth: true,
@@ -55,7 +55,7 @@ export const initialState: State = {
 	error: null,
 };
 
-export function appReducer(state: State, action: Action): State {
+export function appReducer(state: AppState, action: Action): AppState {
 	switch (action.type) {
 		case SET_LOADING: {
 			return { ...state, authLoading: true };

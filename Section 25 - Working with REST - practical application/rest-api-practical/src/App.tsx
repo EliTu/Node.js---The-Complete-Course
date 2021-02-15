@@ -12,11 +12,11 @@ import SinglePostPage from './pages/Feed/SinglePost/SinglePost';
 import LoginPage from './pages/Auth/Login';
 import SignupPage from './pages/Auth/Signup';
 
-import { appReducer, initialState } from './appReducer';
+import { appReducer, initialAppState } from './appReducer';
 import './App.css';
 
 function App(): React.ReactNode {
-	const [state, dispatch] = useReducer(appReducer, initialState);
+	const [state, dispatch] = useReducer(appReducer, initialAppState);
 	const {
 		authLoading,
 		error,
