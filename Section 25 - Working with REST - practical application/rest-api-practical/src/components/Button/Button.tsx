@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import './Button.css';
 
 interface ButtonProps {
-	design: string;
+	disabled?: boolean;
+	design?: string;
 	mode: string;
-	link: string;
-	disabled: boolean;
-	type: 'button' | 'submit' | 'reset' | undefined;
-	loading: boolean;
-	onClick: () => void;
+	link?: string;
+	type?: 'button' | 'submit' | 'reset' | undefined;
+	loading?: boolean;
+	onClick?: () => void;
 }
 
 const Button: React.FC<ButtonProps> = ({
