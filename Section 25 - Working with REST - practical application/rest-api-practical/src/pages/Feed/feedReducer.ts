@@ -45,7 +45,8 @@ type Action =
 	| { type: typeof SET_ERROR; payload: { error: FeedState['error'] } }
 	| { type: typeof NULL_ERROR };
 
-const nullEditPostState: Post = {
+export const nullEditPostState: Post = {
+	_id: '',
 	author: '',
 	content: '',
 	date: '',
@@ -90,7 +91,9 @@ export const feedReducer = (state: FeedState, action: Action): FeedState => {
 			return {
 				...state,
 				isEditing: !state.isEditing,
-				editPost: nullEditPostState,
+				editPost: Object.values(state.editPost).some((values) => values.length)
+					? state.editPost
+					: nullEditPostState,
 			};
 		}
 
@@ -107,6 +110,7 @@ export const feedReducer = (state: FeedState, action: Action): FeedState => {
 				isEditing: false,
 				editPost: nullEditPostState,
 				editLoading: false,
+				postsLoading: false,
 			};
 		}
 
@@ -117,6 +121,7 @@ export const feedReducer = (state: FeedState, action: Action): FeedState => {
 				error,
 				isEditing: false,
 				editLoading: false,
+				postsLoading: false,
 				editPost: nullEditPostState,
 			};
 		}

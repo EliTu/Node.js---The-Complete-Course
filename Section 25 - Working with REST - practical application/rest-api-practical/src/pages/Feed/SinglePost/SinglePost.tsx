@@ -11,6 +11,7 @@ interface SinglePostProps {
 }
 
 export interface Post {
+	_id: string;
 	title: string;
 	author: string;
 	date: string;
@@ -20,6 +21,7 @@ export interface Post {
 
 const SinglePost: React.FC<SinglePostProps> = ({ match }) => {
 	const [postState, setPostState] = useState<Post>({
+		_id: '',
 		title: '',
 		author: '',
 		date: '',
@@ -38,6 +40,7 @@ const SinglePost: React.FC<SinglePostProps> = ({ match }) => {
 			const data = await res.json();
 
 			setPostState({
+				_id: data.post._id,
 				title: data.post.title,
 				author: data.post.creator.name,
 				date: new Date(data.post.createdAt).toLocaleDateString('en-US'),
