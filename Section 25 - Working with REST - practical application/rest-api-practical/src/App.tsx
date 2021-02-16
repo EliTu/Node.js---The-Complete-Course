@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useCallback, useMemo } from 'react';
+import { useReducer, useEffect, useCallback, useMemo } from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import Layout from './components/Layout/Layout';
@@ -224,7 +224,9 @@ function App(): React.ReactNode {
 
 	return (
 		<>
-			{showBackdrop && <Backdrop onClick={backdropClickHandler} />}
+			{showBackdrop && (
+				<Backdrop open={showBackdrop} onClick={backdropClickHandler} />
+			)}
 			<ErrorHandler error={error} onHandle={errorHandler} />
 			<Layout
 				header={
