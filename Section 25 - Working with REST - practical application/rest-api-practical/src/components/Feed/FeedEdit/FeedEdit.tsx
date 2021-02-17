@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Backdrop from '../../Backdrop/Backdrop';
 import Modal from '../../Modal/Modal';
 import Input from '../../Form/Input/Input';
-import FilePicker from '../../Form/Input/FilePicker';
 import Image from '../../Image/Image';
 import { required, length } from '../../../util/validators';
 import { generateBase64FromImage } from '../../../util/image';
@@ -89,12 +88,14 @@ const FeedEdit: React.FC<FeedEditProps> = ({
 	const postInputChangeHandler = async (
 		input: keyof EditState['postForm'],
 		value: string,
-		files: Blob[]
+		files: FileList | null | undefined
 	) => {
 		if (files) {
 			try {
 				const b64 = await generateBase64FromImage(files[0]);
-				setEditState({ ...editState, imagePreview: b64 });
+				if (b64) {
+					setEditState({ ...editState, imagePreview: b64 });
+				}
 			} catch (error) {
 				setEditState({ ...editState, imagePreview: null });
 			}
@@ -185,16 +186,18 @@ const FeedEdit: React.FC<FeedEditProps> = ({
 						id='title'
 						label='Title'
 						control='input'
+						type='text'
 						onChange={postInputChangeHandler}
 						onBlur={() => inputBlurHandler('title')}
 						valid={postForm['title'].valid}
 						touched={postForm['title'].touched}
 						value={postForm['title'].value}
 					/>
-					<FilePicker
+					<Input
 						id='image'
 						label='Image'
 						control='input'
+						type='image'
 						onChange={postInputChangeHandler}
 						onBlur={() => inputBlurHandler('image')}
 						valid={postForm['image'].valid}
@@ -208,7 +211,7 @@ const FeedEdit: React.FC<FeedEditProps> = ({
 						id='content'
 						label='Content'
 						control='textarea'
-						rows='5'
+						rows={5}
 						onChange={postInputChangeHandler}
 						onBlur={() => inputBlurHandler('content')}
 						valid={postForm['content'].valid}

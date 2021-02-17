@@ -5,7 +5,7 @@ import './Button.css';
 interface ButtonProps {
 	disabled?: boolean;
 	design?: string;
-	mode: string;
+	mode?: string;
 	link?: string;
 	type?: 'button' | 'submit' | 'reset' | undefined;
 	loading?: boolean;
@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({
 	disabled,
 	link,
 	loading,
-	mode,
+	mode = '',
 	onClick,
 	type,
 	children,

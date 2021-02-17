@@ -237,14 +237,14 @@ const Feed: React.FC<FeedProps> = ({ userId, token }) => {
 						{posts.map((post) => (
 							<Post
 								key={post._id}
-								id={post._id}
+								_id={post._id}
 								author={post.author}
 								date={new Date(post.date).toLocaleDateString('en-US')}
 								title={post.title}
 								image={post.image}
 								content={post.content}
-								onStartEdit={startEditPostHandler(post._id)}
-								onDelete={deletePostHandler(post._id)}
+								onStartEdit={() => startEditPostHandler(post._id)}
+								onDelete={() => deletePostHandler(post._id)}
 							/>
 						))}
 					</Paginator>
