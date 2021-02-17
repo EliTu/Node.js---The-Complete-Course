@@ -1,4 +1,4 @@
-interface FormField {
+export interface FormField {
 	value: string;
 	valid: boolean;
 	touched: boolean;
