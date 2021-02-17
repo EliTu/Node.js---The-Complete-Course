@@ -205,7 +205,7 @@ const FeedEdit: React.FC<FeedEditProps> = ({
 					/>
 					<div className='new-post__preview-image'>
 						{!imagePreview && <p>Please choose an image.</p>}
-						{imagePreview && <Image imageUrl={imagePreview} contain left />}
+						{imagePreview && <Image imageUrl={imagePreview} isContain isLeft />}
 					</div>
 					<Input
 						id='content'
