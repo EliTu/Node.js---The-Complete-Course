@@ -3,8 +3,8 @@ export interface NavigationProps {
 	isAuth: boolean;
 	open?: boolean;
 	onLogout: () => void;
-	onChooseItem?: () => void;
-	onOpenMobileNav?: () => void;
+	onChooseItem?: (isOpen: boolean) => void;
+	onOpenMobileNav?: (isOpen: boolean) => void;
 }
 
 export interface NavItem {

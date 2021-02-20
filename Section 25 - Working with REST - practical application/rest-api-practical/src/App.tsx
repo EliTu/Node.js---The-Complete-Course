@@ -232,9 +232,10 @@ function App(): React.ReactNode {
 				header={
 					<Toolbar>
 						<MainNavigation
-							onOpenMobileNav={mobileNavHandler(true)}
+							onOpenMobileNav={() => mobileNavHandler(true)}
 							onLogout={logoutHandler}
 							isAuth={state.isAuth}
+							mobile={false}
 						/>
 					</Toolbar>
 				}
@@ -242,7 +243,7 @@ function App(): React.ReactNode {
 					<MobileNavigation
 						open={showMobileNav}
 						mobile
-						onChooseItem={mobileNavHandler(false)}
+						onChooseItem={() => mobileNavHandler(false)}
 						onLogout={logoutHandler}
 						isAuth={isAuth}
 					/>
