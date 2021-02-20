@@ -13,6 +13,9 @@ interface MobileNavigationProps {
 const MobileNavigation: React.FC<MobileNavigationProps> = ({
 	mobile,
 	open,
+	isAuth,
+	onChooseItem,
+	onLogout,
 }) => (
 	<nav className={['mobile-nav', open ? 'open' : ''].join(' ')}>
 		<ul className={['mobile-nav__items', mobile ? 'mobile' : ''].join(' ')}>
