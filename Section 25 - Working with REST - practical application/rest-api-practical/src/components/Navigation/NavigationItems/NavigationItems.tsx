@@ -1,20 +1,7 @@
 import { NavLink } from 'react-router-dom';
+import { NavigationProps, NavItem } from '../types';
 
 import './NavigationItems.css';
-
-interface NavigationItemsProps {
-	isAuth: boolean;
-	mobile: boolean;
-	onLogout: () => void;
-	onChoose: () => void;
-}
-
-interface NavItem {
-	id: string;
-	text: string;
-	link: string;
-	auth: boolean;
-}
 
 const navItems: NavItem[] = [
 	{ id: 'feed', text: 'Feed', link: '/', auth: true },
@@ -22,11 +9,11 @@ const navItems: NavItem[] = [
 	{ id: 'signup', text: 'Signup', link: '/signup', auth: false },
 ];
 
-const NavigationItems: React.FC<NavigationItemsProps> = ({
+const NavigationItems: React.FC<NavigationProps> = ({
 	isAuth,
-	mobile,
 	onLogout,
-	onChoose,
+	onChooseItem,
+	mobile,
 }) => {
 	return (
 		<>
@@ -38,7 +25,7 @@ const NavigationItems: React.FC<NavigationItemsProps> = ({
 							key={id}
 							className={['navigation-item', mobile ? 'mobile' : ''].join(' ')}
 						>
-							<NavLink to={link} exact onClick={onChoose}>
+							<NavLink to={link} exact onClick={onChooseItem}>
 								{text}
 							</NavLink>
 						</li>

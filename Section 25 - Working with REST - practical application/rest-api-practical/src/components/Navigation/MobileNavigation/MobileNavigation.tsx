@@ -1,16 +1,8 @@
-import { Interface } from 'readline';
 import NavigationItems from '../NavigationItems/NavigationItems';
+import { NavigationProps } from '../types';
 import './MobileNavigation.css';
 
-interface MobileNavigationProps {
-	open: boolean;
-	mobile: boolean;
-	isAuth: boolean;
-	onChooseItem: () => void;
-	onLogout: () => void;
-}
-
-const MobileNavigation: React.FC<MobileNavigationProps> = ({
+const MobileNavigation: React.FC<NavigationProps> = ({
 	mobile,
 	open,
 	isAuth,
@@ -21,7 +13,7 @@ const MobileNavigation: React.FC<MobileNavigationProps> = ({
 		<ul className={['mobile-nav__items', mobile ? 'mobile' : ''].join(' ')}>
 			<NavigationItems
 				mobile
-				onChoose={onChooseItem}
+				onChooseItem={onChooseItem}
 				isAuth={isAuth}
 				onLogout={onLogout}
 			/>

@@ -1,11 +1,10 @@
+import { NavigationProps } from '../types';
 import './MobileToggle.css';
 
-interface MobileToggleProps {
-	onOpen: () => void;
-}
-
-const MobileToggle: React.FC<MobileToggleProps> = ({ onOpen }) => (
-	<button className='mobile-toggle' onClick={onOpen}>
+const MobileToggle: React.FC<Pick<NavigationProps, 'onOpenMobileNav'>> = ({
+	onOpenMobileNav,
+}) => (
+	<button className='mobile-toggle' onClick={onOpenMobileNav}>
 		<span className='mobile-toggle__bar' />
 		<span className='mobile-toggle__bar' />
 		<span className='mobile-toggle__bar' />
