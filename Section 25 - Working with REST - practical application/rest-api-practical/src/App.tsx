@@ -15,7 +15,7 @@ import SignupPage from './pages/Auth/Signup';
 import { appReducer, initialAppState } from './appReducer';
 import './App.css';
 
-function App(): React.ReactNode {
+const App: React.FC = () => {
 	const [state, dispatch] = useReducer(appReducer, initialAppState);
 	const {
 		authLoading,
@@ -232,7 +232,7 @@ function App(): React.ReactNode {
 				header={
 					<Toolbar>
 						<MainNavigation
-							onOpenMobileNav={() => mobileNavHandler(true)}
+							onOpenMobileNav={(e) => mobileNavHandler(true)}
 							onLogout={logoutHandler}
 							isAuth={state.isAuth}
 							mobile={false}
@@ -243,7 +243,7 @@ function App(): React.ReactNode {
 					<MobileNavigation
 						open={showMobileNav}
 						mobile
-						onChooseItem={() => mobileNavHandler(false)}
+						onChooseItem={(e) => mobileNavHandler(false)}
 						onLogout={logoutHandler}
 						isAuth={isAuth}
 					/>
@@ -252,6 +252,6 @@ function App(): React.ReactNode {
 			{routes}
 		</>
 	);
-}
+};
 
 export default App;

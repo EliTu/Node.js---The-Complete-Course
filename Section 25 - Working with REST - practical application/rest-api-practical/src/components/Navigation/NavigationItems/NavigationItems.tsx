@@ -25,7 +25,7 @@ const NavigationItems: React.FC<NavigationProps> = ({
 							key={id}
 							className={['navigation-item', mobile ? 'mobile' : ''].join(' ')}
 						>
-							<NavLink to={link} exact onClick={onChooseItem}>
+							<NavLink to={link} exact onClick={() => onChooseItem}>
 								{text}
 							</NavLink>
 						</li>

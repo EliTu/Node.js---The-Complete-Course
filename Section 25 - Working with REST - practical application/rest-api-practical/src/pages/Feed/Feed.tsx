@@ -229,8 +229,8 @@ const Feed: React.FC<FeedProps> = ({ userId, token }) => {
 				) : null}
 				{!postsLoading && (
 					<Paginator
-						onPrevious={loadPosts('previous')}
-						onNext={loadPosts('next')}
+						onPrevious={() => loadPosts('previous')}
+						onNext={() => loadPosts('next')}
 						lastPage={Math.ceil(totalPosts / 2)}
 						currentPage={postPage}
 					>

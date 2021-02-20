@@ -65,7 +65,7 @@ const SinglePost: React.FC<SinglePostProps> = ({ match }) => {
 				Created by {author} on {date}
 			</h2>
 			<div className='single-post__image'>
-				<Image isContain imageUrl={image} />
+				{image && <Image isContain imageUrl={image} />}
 			</div>
 			<p>{content}</p>
 		</section>

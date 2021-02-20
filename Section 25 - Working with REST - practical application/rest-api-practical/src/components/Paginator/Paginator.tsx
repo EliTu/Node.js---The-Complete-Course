@@ -3,8 +3,8 @@ import './Paginator.css';
 interface PaginatorProps {
 	currentPage: number;
 	lastPage: number;
-	onPrevious: () => void;
-	onNext: () => void;
+	onPrevious: () => Promise<void>;
+	onNext: () => Promise<void>;
 }
 
 const Paginator: React.FC<PaginatorProps> = ({

@@ -2,8 +2,8 @@ import './Image.css';
 
 interface ImageProps {
 	imageUrl: string;
-	isContain: boolean;
-	isLeft: boolean;
+	isContain?: boolean;
+	isLeft?: boolean;
 }
 
 const Image: React.FC<ImageProps> = ({ isContain, imageUrl, isLeft }) => (

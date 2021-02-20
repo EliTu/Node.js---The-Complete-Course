@@ -5,8 +5,8 @@ import './Modal.css';
 
 interface ModalProps {
 	title: string;
-	isLoading: boolean;
 	acceptEnabled: boolean;
+	isLoading?: boolean;
 	onAcceptModal: () => void;
 	onCancelModal: () => void;
 }
