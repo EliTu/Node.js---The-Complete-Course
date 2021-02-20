@@ -2,8 +2,8 @@ export interface NavigationProps {
 	mobile: boolean;
 	isAuth: boolean;
 	open?: boolean;
-	onChooseItem?: () => void;
 	onLogout: () => void;
+	onChooseItem?: () => void;
 	onOpenMobileNav?: () => void;
 }
 
