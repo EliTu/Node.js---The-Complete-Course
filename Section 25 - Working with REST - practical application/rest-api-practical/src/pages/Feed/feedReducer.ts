@@ -1,4 +1,4 @@
-import { Post } from './SinglePost/SinglePost';
+import { Post } from './types';
 
 const SET_STATUS = 'SET_STATUS';
 const SET_POST_LOADING = 'SET_POST_LOADING';

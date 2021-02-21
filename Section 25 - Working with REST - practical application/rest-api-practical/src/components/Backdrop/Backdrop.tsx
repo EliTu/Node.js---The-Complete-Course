@@ -8,13 +8,18 @@ interface BackdropProps {
 	onClick: () => void;
 }
 
-const Backdrop: React.FC<BackdropProps> = ({ open, onClick }) =>
-	ReactDOM.createPortal(
-		<div
-			className={['backdrop', open ? 'open' : ''].join(' ')}
-			onClick={onClick}
-		/>,
-		document.getElementById('backdrop-root')!
+const Backdrop: React.FC<BackdropProps> = ({ open, onClick }) => {
+	const backdropRoot = document.getElementById('backdrop-root');
+	return (
+		backdropRoot &&
+		ReactDOM.createPortal(
+			<div
+				className={['backdrop', open ? 'open' : ''].join(' ')}
+				onClick={onClick}
+			/>,
+			backdropRoot
+		)
 	);
+};
 
 export default Backdrop;

@@ -6,7 +6,7 @@ import Image from '../../Image/Image';
 import { required, length } from '../../../util/validators';
 import { generateBase64FromImage } from '../../../util/image';
 import { FormField } from '../../../pages/Auth/types';
-import { Post } from '../../../pages/Feed/SinglePost/SinglePost';
+import { Post } from '../../../pages/Feed/types';
 
 interface FeedEditProps {
 	editing: boolean;

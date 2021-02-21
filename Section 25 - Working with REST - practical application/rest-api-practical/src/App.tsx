@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback, useMemo } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
 import Layout from './components/Layout/Layout';
@@ -177,50 +177,44 @@ const App: React.FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	let routes = useMemo(() => {
-		!isAuth ? (
-			<Switch>
-				<Route
-					path='/'
-					exact
-					render={(props) => (
-						<LoginPage
-							{...props}
-							onLogin={loginHandler}
-							loading={authLoading}
-						/>
-					)}
-				/>
-				<Route
-					path='/signup'
-					exact
-					render={(props) => (
-						<SignupPage
-							{...props}
-							onSignup={signupHandler}
-							loading={authLoading}
-						/>
-					)}
-				/>
-				<Redirect to='/' />
-			</Switch>
-		) : (
-			<Switch>
-				<Route
-					path='/'
-					exact
-					render={(props) => <FeedPage userId={userId} token={token} />}
-				/>
-				<Route
-					path='/:postId'
-					render={(props) => (
-						<SinglePostPage {...props} userId={userId} token={token} />
-					)}
-				/>
-				<Redirect to='/' />
-			</Switch>
-		);
-	}, [authLoading, isAuth, loginHandler, signupHandler, token, userId]);
+	let routes = !isAuth ? (
+		<Switch>
+			<Route
+				path='/'
+				exact
+				render={(props) => (
+					<LoginPage {...props} onLogin={loginHandler} loading={authLoading} />
+				)}
+			/>
+			<Route
+				path='/signup'
+				exact
+				render={(props) => (
+					<SignupPage
+						{...props}
+						onSignup={signupHandler}
+						loading={authLoading}
+					/>
+				)}
+			/>
+			<Redirect to='/' />
+		</Switch>
+	) : (
+		<Switch>
+			<Route
+				path='/'
+				exact
+				render={(props) => <FeedPage userId={userId} token={token} />}
+			/>
+			<Route
+				path='/:postId'
+				render={(props) => (
+					<SinglePostPage {...props} userId={userId} token={token} />
+				)}
+			/>
+			<Redirect to='/' />
+		</Switch>
+	);
 
 	return (
 		<>

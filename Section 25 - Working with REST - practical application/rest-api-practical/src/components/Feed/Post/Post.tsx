@@ -1,4 +1,4 @@
-import { Post as IPost } from '../../../pages/Feed/SinglePost/SinglePost';
+import { Post as IPost } from '../../../pages/Feed/types';
 
 import Button from '../../Button/Button';
 import './Post.css';

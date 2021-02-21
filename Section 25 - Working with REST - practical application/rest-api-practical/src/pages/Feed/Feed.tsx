@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useCallback, Fragment } from 'react';
+import { useReducer, useEffect, useCallback, memo } from 'react';
 import {
 	feedReducer,
 	initialFeedState,
@@ -13,14 +13,9 @@ import Paginator from '../../components/Paginator/Paginator';
 import Loader from '../../components/Loader/Loader';
 import ErrorHandler from '../../components/ErrorHandler/ErrorHandler';
 import './Feed.css';
-import { Post as IPost } from './SinglePost/SinglePost';
+import { Post as IPost, FeedProps } from './types';
 
-interface FeedProps {
-	userId: string;
-	token: string;
-}
-
-const Feed: React.FC<FeedProps> = ({ userId, token }) => {
+const Feed: React.FC<FeedProps> = memo(({ userId, token }) => {
 	const [state, dispatch] = useReducer(feedReducer, initialFeedState);
 	const {
 		isEditing,
@@ -190,7 +185,7 @@ const Feed: React.FC<FeedProps> = ({ userId, token }) => {
 	};
 
 	return (
-		<Fragment>
+		<>
 			<ErrorHandler error={state.error} onHandle={errorHandler} />
 			<FeedEdit
 				editing={isEditing}
@@ -250,8 +245,8 @@ const Feed: React.FC<FeedProps> = ({ userId, token }) => {
 					</Paginator>
 				)}
 			</section>
-		</Fragment>
+		</>
 	);
-};
+});
 
 export default Feed;

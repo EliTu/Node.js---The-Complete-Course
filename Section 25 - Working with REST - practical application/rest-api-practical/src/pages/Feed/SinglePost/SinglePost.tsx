@@ -1,23 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { match } from 'react-router';
+import { useState, useEffect, useCallback } from 'react';
 
 import Image from '../../../components/Image/Image';
+import { Post, SinglePostProps } from '../types';
 import './SinglePost.css';
-
-interface SinglePostProps {
-	userId: string;
-	token: string;
-	match: match<Record<'postId', string>>;
-}
-
-export interface Post {
-	_id: string;
-	title: string;
-	author: string;
-	date: string;
-	content: string;
-	image?: string;
-}
 
 const SinglePost: React.FC<SinglePostProps> = ({ match }) => {
 	const [postState, setPostState] = useState<Post>({

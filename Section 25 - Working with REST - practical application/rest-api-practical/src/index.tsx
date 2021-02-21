@@ -4,11 +4,14 @@ import { BrowserRouter } from 'react-router-dom';
 
 import './index.css';
 import App from './App';
+import ErrorCatcher from './components/ErrorCatcher/ErrorCatcher';
 
 ReactDOM.render(
-	<BrowserRouter>
-		<App />
-	</BrowserRouter>,
+	<ErrorCatcher>
+		<BrowserRouter>
+			<App />
+		</BrowserRouter>
+	</ErrorCatcher>,
 	document.getElementById('root')
 );
 
