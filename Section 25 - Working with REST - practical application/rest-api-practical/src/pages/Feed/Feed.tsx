@@ -40,6 +40,7 @@ const Feed: React.FC<FeedProps> = memo(({ userId, token }) => {
 	const newPostHandler = () => {
 		dispatch({ type: 'SET_EDITING_MODE' });
 	};
+	console.log(state);
 
 	const startEditPostHandler = (postId: string) => {
 		const editPost: IPost =
@@ -63,7 +64,7 @@ const Feed: React.FC<FeedProps> = memo(({ userId, token }) => {
 				: dispatch({ type: 'SET_POST_PAGE', payload: { postPage: --page } });
 
 			try {
-				const loadPostsRes = await fetch('URL');
+				const loadPostsRes = await fetch('http://localhost:8080/feed/posts');
 				if (loadPostsRes.status !== 200) {
 					throw new Error('Failed to fetch posts.');
 				}
